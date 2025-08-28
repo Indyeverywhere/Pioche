@@ -66,82 +66,80 @@
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
     function parseDate(dateStr) {
-      // Essaye de parser date au format ISO, sinon format européen, etc.
-      // Tu peux adapter cette fonction selon le format de tes dates dans le sheet
-      let d = new Date(dateStr);
-      if (!isNaN(d)) return d;
+  // Date au format ISO attendu : "YYYY-MM-DD"
+  // Crée une date avec heure 0:00 UTC pour éviter décalage de fuseau horaire
+  if (!dateStr) return null;
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const [year, month, day] = parts.map(Number);
+    // Note: mois en JS = 0 à 11 donc on fait month-1
+    return new Date(Date.UTC(year, month - 1, day));
+  }
+  return null;
+}
 
-      // Si date au format "dd/mm/yyyy"
-      const parts = dateStr.split('/');
-      if (parts.length === 3) {
-        const [day, month, year] = parts;
-        d = new Date(`${year}-${month}-${day}`);
-        if (!isNaN(d)) return d;
-      }
-      return null;
+fetch(SHEET_URL)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    const rows = json.table.rows;
+    const container = document.getElementById('events');
+    container.innerHTML = '';
+
+    // Date d'aujourd'hui en UTC (0h00)
+    const now = new Date();
+    const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+    rows.forEach(row => {
+      const cells = row.c.map(cell => cell?.v ?? '');
+      const [
+        dateStr, heure, titre, description, prix,
+        categorie, thumbnail, artiste, lieu, adresse
+      ] = cells;
+
+      if (!dateStr) return;
+
+      const eventDate = parseDate(dateStr);
+      if (!eventDate) return;
+
+      // Comparaison date événement >= date aujourd'hui (toutes en UTC)
+      if (eventDate < todayUTC) return;
+
+      const eventTitle = titre && titre.trim() !== '' ? titre : 'Sans titre';
+
+      const eventEl = document.createElement('div');
+      eventEl.className = 'event';
+
+      const imgEl = document.createElement('img');
+      imgEl.src = thumbnail || 'https://via.placeholder.com/150?text=No+Image';
+      imgEl.alt = eventTitle;
+
+      const detailsEl = document.createElement('div');
+      detailsEl.className = 'event-details';
+
+      detailsEl.innerHTML = `
+        <h2>${eventTitle}</h2>
+        <div class="meta">
+          <strong>Date :</strong> ${dateStr} ${heure ? 'à ' + heure : ''}<br>
+          <strong>Lieu :</strong> ${lieu || '—'}<br>
+          <strong>Adresse :</strong> ${adresse || '—'}<br>
+          <strong>Artiste :</strong> ${artiste || '—'}<br>
+          <strong>Catégorie :</strong> ${categorie || '—'}<br>
+          <strong>Prix :</strong> ${prix || 'Gratuit'}
+        </div>
+        <div class="description">${description || ''}</div>
+      `;
+
+      eventEl.appendChild(imgEl);
+      eventEl.appendChild(detailsEl);
+      container.appendChild(eventEl);
+    });
+
+    if(container.innerHTML === '') {
+      container.innerHTML = '<p>Aucun événement à venir.</p>';
     }
-
-    fetch(SHEET_URL)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const rows = json.table.rows;
-        const container = document.getElementById('events');
-        container.innerHTML = '';
-
-        const today = new Date();
-        today.setHours(0,0,0,0);
-
-        rows.forEach(row => {
-          const cells = row.c.map(cell => cell?.v ?? '');
-          const [
-            dateStr, heure, titre, description, prix,
-            categorie, thumbnail, artiste, lieu, adresse
-          ] = cells;
-
-          if (!dateStr) return;
-
-          const eventDate = parseDate(dateStr);
-          if (!eventDate || eventDate < today) return;
-
-          const eventTitle = titre && titre.trim() !== '' ? titre : 'Sans titre';
-
-          const eventEl = document.createElement('div');
-          eventEl.className = 'event';
-
-          const imgEl = document.createElement('img');
-          imgEl.src = thumbnail || 'https://via.placeholder.com/150?text=No+Image';
-          imgEl.alt = eventTitle;
-
-          const detailsEl = document.createElement('div');
-          detailsEl.className = 'event-details';
-
-          detailsEl.innerHTML = `
-            <h2>${eventTitle}</h2>
-            <div class="meta">
-              <strong>Date :</strong> ${dateStr} ${heure ? 'à ' + heure : ''}<br>
-              <strong>Lieu :</strong> ${lieu || '—'}<br>
-              <strong>Adresse :</strong> ${adresse || '—'}<br>
-              <strong>Artiste :</strong> ${artiste || '—'}<br>
-              <strong>Catégorie :</strong> ${categorie || '—'}<br>
-              <strong>Prix :</strong> ${prix || 'Gratuit'}
-            </div>
-            <div class="description">${description || ''}</div>
-          `;
-
-          eventEl.appendChild(imgEl);
-          eventEl.appendChild(detailsEl);
-          container.appendChild(eventEl);
-        });
-
-        if(container.innerHTML === '') {
-          container.innerHTML = '<p>Aucun événement à venir.</p>';
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('events').innerText = 'Erreur lors du chargement des événements.';
-      });
-  </script>
-</body>
-</html>
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById('events').innerText = 'Erreur lors du chargement des événements.';
+  });
