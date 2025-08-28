@@ -2,39 +2,278 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Événements à venir</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Événements à Marseille | Agenda Culturel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #1e88e5;
+      --secondary-color: #ff6f00;
+      --background-color: #f5f7fa;
+      --card-color: #ffffff;
+      --text-color: #333333;
+      --accent-color: #e91e63;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
     }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), #0d47a1);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+    
+    .marseille-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+    
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 20px;
+    }
+    
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .search-box {
+      flex-grow: 1;
+      max-width: 400px;
+      position: relative;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .search-box input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+    }
+    
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
     .event {
-      border: 1px solid #ccc;
-      padding: 16px;
-      margin-bottom: 20px;
-      border-radius: 8px;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
-    .event img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 10px;
+    
+    .event:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
-    .event h2 {
-      margin-top: 0;
+    
+    .event-image {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
     }
+    
+    .event-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    
+    .event:hover .event-image img {
+      transform: scale(1.05);
+    }
+    
+    .event-content {
+      padding: 1.5rem;
+    }
+    
     .event-date {
-      font-weight: bold;
-      color: #444;
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    
+    .event h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+      color: var(--primary-color);
+    }
+    
+    .event-description {
+      margin-bottom: 1.2rem;
+      color: #555;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .event-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+    
+    .event-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .event-detail i {
+      color: var(--primary-color);
+      min-width: 20px;
+      margin-top: 4px;
+    }
+    
+    .no-events {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+      color: #666;
+    }
+    
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box {
+        max-width: 100%;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="header-content">
+      <div class="marseille-icon">
+        <i class="fas fa-sun"></i>
+      </div>
+      <h1>Événements à Marseille</h1>
+      <p class="subtitle">Découvrez tous les événements à venir dans la cité phocéenne</p>
+    </div>
+  </header>
 
-  <h1>Événements à venir</h1>
-  <div id="events-container">Chargement des événements...</div>
+  <main>
+    <div class="filters">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Rechercher un événement...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+    </div>
+    
+    <div id="events-container" class="events-grid">
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Chargement des événements...
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2023 Agenda des Événements à Marseille | Tous droits réservés</p>
+    </div>
+  </footer>
 
   <script>
     const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
+    let allEvents = [];
 
     async function fetchEvents() {
       try {
@@ -42,61 +281,145 @@
         const text = await response.text();
 
         // Nettoyage JSONP → JSON
-        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const jsonStart = text.indexOf('{');
+        const jsonEnd = text.lastIndexOf('}') + 1;
+        const json = JSON.parse(text.substring(jsonStart, jsonEnd));
+        
         const rows = json.table.rows;
-
-        // Récupérer les colonnes
         const cols = json.table.cols.map(col => col.label);
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const events = rows.map(row => {
+        allEvents = rows.map(row => {
           const event = {};
           cols.forEach((col, index) => {
             event[col] = row.c[index]?.v || "";
           });
 
           // Convertir la date
-          event.eventDate = new Date(event["Date"]);
-          event.eventDate.setHours(0, 0, 0, 0);
+          if (event["Date"]) {
+            if (typeof event["Date"] === 'string') {
+              event.eventDate = new Date(event["Date"]);
+            } else if (typeof event["Date"] === 'number') {
+              // Si la date est un nombre (timestamp), convertir correctement
+              const dateObj = new Date(event["Date"]);
+              event.formattedDate = dateObj.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              });
+              event.eventDate = dateObj;
+            }
+            event.eventDate.setHours(0, 0, 0, 0);
+          } else {
+            event.eventDate = new Date('2099-12-31'); // Date future par défaut
+            event.formattedDate = "Date non spécifiée";
+          }
 
           return event;
         });
 
         // Filtrer et trier les événements à venir
-        const upcomingEvents = events
+        const upcomingEvents = allEvents
           .filter(e => e.eventDate >= today)
           .sort((a, b) => a.eventDate - b.eventDate);
 
-        const container = document.getElementById('events-container');
-        container.innerHTML = '';
-
-        if (upcomingEvents.length === 0) {
-          container.innerHTML = '<p>Aucun événement à venir trouvé.</p>';
-          return;
-        }
-
-        // Générer HTML pour chaque événement
-        upcomingEvents.forEach(event => {
-          const eventHTML = `
-            <div class="event">
-              <h2>${event['Titre'] || 'Sans titre'}</h2>
-              <p class="event-date">📅 ${event['Date'] || 'Date inconnue'}</p>
-              <p>${event['Description'] || ''}</p>
-              ${event['Thumbnail'] ? `<img src="${event['Thumbnail']}" alt="Image de l'événement">` : ''}
-              <p><strong>📍 Lieu :</strong> ${event['Lieu'] || 'Non spécifié'}</p>
-              <p><strong>📫 Adresse :</strong> ${event['Adresse'] || 'Non spécifiée'}</p>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', eventHTML);
-        });
+        displayEvents(upcomingEvents);
+        setupSearch();
       } catch (error) {
         console.error('Erreur lors du chargement des événements :', error);
-        document.getElementById('events-container').innerHTML = '<p>Erreur lors du chargement des événements.</p>';
+        document.getElementById('events-container').innerHTML = `
+          <div class="no-events">
+            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+            <h2>Erreur lors du chargement des événements</h2>
+            <p>Veuillez réessayer ultérieurement.</p>
+          </div>
+        `;
       }
     }
 
+    function displayEvents(events) {
+      const container = document.getElementById('events-container');
+      container.innerHTML = '';
+
+      if (events.length === 0) {
+        container.innerHTML = `
+          <div class="no-events">
+            <i class="fas fa-calendar-times" style="font-size: 3rem; color: #7f8c8d; margin-bottom: 1rem;"></i>
+            <h2>Aucun événement à venir</h2>
+            <p>Revenez bientôt pour découvrir les prochains événements à Marseille.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Générer HTML pour chaque événement
+      events.forEach(event => {
+        const formattedDate = event.formattedDate || new Date(event['Date']).toLocaleDateString('fr-FR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+        
+        const defaultImage = 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1335&q=80';
+        
+        const eventHTML = `
+          <div class="event">
+            <div class="event-image">
+              <img src="${event['Thumbnail'] || defaultImage}" alt="${event['Titre'] || 'Événement à Marseille'}">
+            </div>
+            <div class="event-content">
+              <div class="event-date">
+                <i class="far fa-calendar-alt"></i> ${formattedDate}
+              </div>
+              <h2>${event['Titre'] || 'Événement sans titre'}</h2>
+              <p class="event-description">${event['Description'] || 'Aucune description disponible.'}</p>
+              <div class="event-details">
+                <div class="event-detail">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>${event['Lieu'] || 'Lieu non spécifié'}</span>
+                </div>
+                <div class="event-detail">
+                  <i class="fas fa-location-arrow"></i>
+                  <span>${event['Adresse'] || 'Adresse non spécifiée'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', eventHTML);
+      });
+    }
+
+    function setupSearch() {
+      const searchInput = document.getElementById('search-input');
+      
+      searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        
+        const filteredEvents = allEvents.filter(event => {
+          const title = (event['Titre'] || '').toLowerCase();
+          const description = (event['Description'] || '').toLowerCase();
+          const location = (event['Lieu'] || '').toLowerCase();
+          
+          return title.includes(searchTerm) || 
+                 description.includes(searchTerm) || 
+                 location.includes(searchTerm);
+        });
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const upcomingFilteredEvents = filteredEvents
+          .filter(e => e.eventDate >= today)
+          .sort((a, b) => a.eventDate - b.eventDate);
+          
+        displayEvents(upcomingFilteredEvents);
+      });
+    }
+
+    // Initialiser l'application
     fetchEvents();
   </script>
 </body>
