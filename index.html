@@ -1,3 +1,8 @@
+# Solution pour Afficher les Événements
+
+Je comprends maintenant pourquoi les événements ne s'affichent pas. Le problème vient du format des données dans votre Google Sheet, qui contient des caractères spéciaux et des données mal formatées. Voici une version corrigée du code qui devrait résoudre ces problèmes :
+
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -117,6 +122,9 @@
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     .event:hover {
@@ -143,6 +151,9 @@
     
     .event-content {
       padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
     
     .event-date {
@@ -168,6 +179,7 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      flex-grow: 1;
     }
     
     .event-details {
@@ -175,6 +187,7 @@
       flex-direction: column;
       gap: 0.5rem;
       font-size: 0.95rem;
+      margin-top: auto;
     }
     
     .event-detail {
@@ -229,6 +242,18 @@
       margin-top: 0.5rem;
     }
     
+    .debug-info {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      display: none;
+    }
+    
     @media (max-width: 768px) {
       .events-grid {
         grid-template-columns: 1fr;
@@ -273,6 +298,8 @@
         <i class="fas fa-spinner fa-spin"></i> Chargement des événements...
       </div>
     </div>
+    
+    <div id="debug-info" class="debug-info"></div>
   </main>
 
   <footer>
@@ -293,7 +320,11 @@
         // Nettoyage JSONP → JSON
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}') + 1;
-        const json = JSON.parse(text.substring(jsonStart, jsonEnd));
+        const jsonText = text.substring(jsonStart, jsonEnd);
+        const json = JSON.parse(jsonText);
+        
+        // Debug info
+        const debugInfo = document.getElementById('debug-info');
         
         const rows = json.table.rows;
         const cols = json.table.cols.map(col => col.label);
@@ -303,50 +334,87 @@
 
         allEvents = rows.map(row => {
           const event = {};
+          
+          // Extraire les données de chaque colonne
           cols.forEach((col, index) => {
-            if (row.c[index] !== null) {
-              event[col] = row.c[index]?.v || "";
+            if (row.c && row.c[index] !== null) {
+              let value = row.c[index].v || "";
+              
+              // Nettoyer les valeurs qui contiennent des #
+              if (typeof value === 'string' && value.includes('#')) {
+                value = value.replace(/#+/g, "");
+              }
+              
+              event[col] = value;
             } else {
               event[col] = "";
             }
           });
 
           // Traitement de la date
-          if (event["Date"]) {
-            try {
-              // Essayer de convertir la date
-              const dateStr = event["Date"].toString().trim();
-              if (dateStr.includes("######")) {
-                // Si la date contient des #, on la nettoie
-                event["Date"] = dateStr.replace(/#+/g, "");
+          try {
+            if (event["Date"]) {
+              // Si la date est une chaîne, essayer de la convertir
+              if (typeof event["Date"] === 'string') {
+                // Supprimer les # si présents
+                const cleanDate = event["Date"].replace(/#+/g, "");
+                
+                // Essayer de créer une date valide
+                const dateParts = cleanDate.split('/');
+                if (dateParts.length === 3) {
+                  // Format JJ/MM/AAAA
+                  const day = parseInt(dateParts[0], 10);
+                  const month = parseInt(dateParts[1], 10) - 1; // Les mois commencent à 0
+                  const year = parseInt(dateParts[2], 10);
+                  event.eventDate = new Date(year, month, day);
+                } else {
+                  // Essayer de parser directement
+                  event.eventDate = new Date(cleanDate);
+                }
+              } else {
+                // Si c'est déjà un objet Date ou un timestamp
+                event.eventDate = new Date(event["Date"]);
               }
               
-              // Créer un objet Date
-              event.eventDate = new Date(event["Date"]);
-              
-              // Si la date n'est pas valide, utiliser la date d'aujourd'hui
+              // Vérifier si la date est valide
               if (isNaN(event.eventDate.getTime())) {
+                // Si la date n'est pas valide, utiliser la date d'aujourd'hui + 7 jours
                 event.eventDate = new Date();
+                event.eventDate.setDate(event.eventDate.getDate() + 7);
               }
               
+              // Formater la date pour l'affichage
               event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
               });
-            } catch (e) {
-              console.error("Erreur lors du traitement de la date:", e);
+            } else {
+              // Si pas de date, utiliser la date d'aujourd'hui + 7 jours
               event.eventDate = new Date();
-              event.formattedDate = "Date non spécifiée";
+              event.eventDate.setDate(event.eventDate.getDate() + 7);
+              event.formattedDate = "Date à confirmer";
             }
-          } else {
+          } catch (e) {
+            console.error("Erreur lors du traitement de la date:", e);
             event.eventDate = new Date();
-            event.formattedDate = "Date non spécifiée";
+            event.eventDate.setDate(event.eventDate.getDate() + 7);
+            event.formattedDate = "Date à confirmer";
           }
 
-          // Nettoyer le titre s'il contient des #
-          if (event["Titre"] && event["Titre"].includes("######")) {
-            event["Titre"] = event["Titre"].replace(/#+/g, "");
+          // Nettoyer le titre
+          if (event["Titre"]) {
+            event["Titre"] = event["Titre"].replace(/#+/g, "").trim();
+          }
+          
+          // Utiliser la description courte si disponible, sinon la description complète
+          if (event["ThumbnailDescriptioncourte"] && !event["Description"]) {
+            event["Description"] = event["ThumbnailDescriptioncourte"];
+          }
+          
+          // Nettoyer la description
+          if (event["Description"]) {
+            event["Description"] = event["Description"].replace(/#+/g, "").trim();
           }
 
           return event;
@@ -354,17 +422,8 @@
 
         // Filtrer et trier les événements à venir
         const upcomingEvents = allEvents
-          .filter(e => e.eventDate >= today || isNaN(e.eventDate.getTime()))
-          .sort((a, b) => {
-            // Si les deux dates sont valides, trier normalement
-            if (!isNaN(a.eventDate.getTime()) && !isNaN(b.eventDate.getTime())) {
-              return a.eventDate - b.eventDate;
-            }
-            // Sinon, placer les événements sans date valide à la fin
-            if (isNaN(a.eventDate.getTime())) return 1;
-            if (isNaN(b.eventDate.getTime())) return -1;
-            return 0;
-          });
+          .filter(e => e.eventDate >= today)
+          .sort((a, b) => a.eventDate - b.eventDate);
 
         displayEvents(upcomingEvents);
         setupSearch();
@@ -375,48 +434,11 @@
             <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
             <h2>Erreur lors du chargement des événements</h2>
             <p>Veuillez réessayer ultérieurement.</p>
+            <p style="font-size: 0.8rem; margin-top: 1rem; color: #777;">Détail de l'erreur: ${error.message}</p>
           </div>
         `;
       }
     }
 
     function displayEvents(events) {
-      const container = document.getElementById('events-container');
-      container.innerHTML = '';
-
-      if (events.length === 0) {
-        container.innerHTML = `
-          <div class="no-events">
-            <i class="fas fa-calendar-times" style="font-size: 3rem; color: #7f8c8d; margin-bottom: 1rem;"></i>
-            <h2>Aucun événement à venir</h2>
-            <p>Revenez bientôt pour découvrir les prochains événements à Marseille.</p>
-          </div>
-        `;
-        return;
-      }
-
-      // Générer HTML pour chaque événement
-      events.forEach(event => {
-        const defaultImage = 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1335&q=80';
-        
-        // Nettoyer et préparer les données
-        const title = event['Titre'] || 'Événement sans titre';
-        const description = event['Description'] || event['ThumbnailDescriptioncourte'] || 'Aucune description disponible.';
-        const location = event['Lieu'] || 'Lieu non spécifié';
-        const address = event['Adresse'] || 'Adresse non spécifiée';
-        const price = event['Prix'] || 'Prix non spécifié';
-        const thumbnail = event['Thumbnail'] || defaultImage;
-        
-        const eventHTML = `
-          <div class="event">
-            <div class="event-image">
-              <img src="${thumbnail}" alt="${title}" onerror="this.src='${defaultImage}'">
-            </div>
-            <div class="event-content">
-              <div class="event-date">
-                <i class="far fa-calendar-alt"></i> ${event.formattedDate}
-                ${event['Heure'] ? `<span> à ${event['Heure']}</span>` : ''}
-              </div>
-              <h2>${title}</h2>
-              <p class="event-description">${description}</p>
-              <div
+      const container =
