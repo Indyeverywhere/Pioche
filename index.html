@@ -1,169 +1,103 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Événements à Marseille</title>
+  <meta charset="UTF-8">
+  <title>Événements à venir</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
       padding: 20px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #0074D9;
     }
     .event {
-      background: #fff;
-      margin: 20px 0;
-      padding: 20px;
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin-bottom: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
     }
     .event img {
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 6px;
-      flex-shrink: 0;
-      background: #ddd;
-    }
-    .event-details {
-      flex: 1;
+      max-width: 100%;
+      height: auto;
+      margin-top: 10px;
     }
     .event h2 {
-      margin: 0 0 10px;
-      font-size: 1.4em;
-      color: #333;
+      margin-top: 0;
     }
-    .meta {
-      font-size: 0.9em;
-      color: #666;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-    .description {
-      margin-top: 10px;
+    .event-date {
+      font-weight: bold;
       color: #444;
-      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <h1>Événements à Marseille</h1>
-  <div id="events">Chargement…</div>
+
+  <h1>Événements à venir</h1>
+  <div id="events-container">Chargement des événements...</div>
 
   <script>
-    const SHEET_ID = '1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U';
-    const GID = 0;
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+    const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
 
-    function parseDate(dateStr) {
-      if (!dateStr) return null;
-      const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        const [year, month, day] = parts.map(Number);
-        return new Date(Date.UTC(year, month - 1, day));
-      }
-      return null;
-    }
+    async function fetchEvents() {
+      try {
+        const response = await fetch(sheetURL);
+        const text = await response.text();
 
-    fetch(SHEET_URL)
-      .then(res => res.text())
-      .then(text => {
-        // Parsing robuste avec regex
-        const jsonTextMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/s);
-        if (!jsonTextMatch) throw new Error("Format de réponse inattendu");
-        const json = JSON.parse(jsonTextMatch[1]);
-        
+        // Nettoyage JSONP → JSON
+        const json = JSON.parse(text.substring(47).slice(0, -2));
         const rows = json.table.rows;
-        const container = document.getElementById('events');
+
+        // Récupérer les colonnes
+        const cols = json.table.cols.map(col => col.label);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const events = rows.map(row => {
+          const event = {};
+          cols.forEach((col, index) => {
+            event[col] = row.c[index]?.v || "";
+          });
+
+          // Convertir la date
+          event.eventDate = new Date(event["Date"]);
+          event.eventDate.setHours(0, 0, 0, 0);
+
+          return event;
+        });
+
+        // Filtrer et trier les événements à venir
+        const upcomingEvents = events
+          .filter(e => e.eventDate >= today)
+          .sort((a, b) => a.eventDate - b.eventDate);
+
+        const container = document.getElementById('events-container');
         container.innerHTML = '';
 
-        const now = new Date();
-        const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-
-        // Préparer tableau d'événements filtrés et triés
-        const events = rows
-          .map(row => {
-            const cells = row.c.map(cell => cell?.v ?? '');
-            const [
-              dateStr, heure, titre, description, prix,
-              categorie, thumbnail, artiste, lieu, adresse
-            ] = cells;
-
-            if (!dateStr) return null;
-
-            const eventDate = parseDate(dateStr);
-            if (!eventDate) return null;
-
-            if (eventDate < todayUTC) return null;
-
-            return {
-              dateStr,
-              heure,
-              titre: titre && titre.trim() !== '' ? titre : 'Sans titre',
-              description,
-              prix,
-              categorie,
-              thumbnail,
-              artiste,
-              lieu,
-              adresse,
-              eventDate
-            };
-          })
-          .filter(Boolean);
-
-        events.sort((a, b) => a.eventDate - b.eventDate);
-
-        if (events.length === 0) {
-          container.innerHTML = '<p>Aucun événement à venir.</p>';
+        if (upcomingEvents.length === 0) {
+          container.innerHTML = '<p>Aucun événement à venir trouvé.</p>';
           return;
         }
 
-        // Affichage
-        events.forEach(event => {
-          const eventEl = document.createElement('div');
-          eventEl.className = 'event';
-
-          const imgEl = document.createElement('img');
-          imgEl.src = event.thumbnail || 'https://via.placeholder.com/150?text=No+Image';
-          imgEl.alt = event.titre;
-
-          const detailsEl = document.createElement('div');
-          detailsEl.className = 'event-details';
-
-          detailsEl.innerHTML = `
-            <h2>${event.titre}</h2>
-            <div class="meta">
-              <strong>Date :</strong> ${event.dateStr} ${event.heure ? 'à ' + event.heure : ''}<br>
-              <strong>Lieu :</strong> ${event.lieu || '—'}<br>
-              <strong>Adresse :</strong> ${event.adresse || '—'}<br>
-              <strong>Artiste :</strong> ${event.artiste || '—'}<br>
-              <strong>Catégorie :</strong> ${event.categorie || '—'}<br>
-              <strong>Prix :</strong> ${event.prix || 'Gratuit'}
+        // Générer HTML pour chaque événement
+        upcomingEvents.forEach(event => {
+          const eventHTML = `
+            <div class="event">
+              <h2>${event['Titre'] || 'Sans titre'}</h2>
+              <p class="event-date">📅 ${event['Date'] || 'Date inconnue'}</p>
+              <p>${event['Description'] || ''}</p>
+              ${event['Thumbnail'] ? `<img src="${event['Thumbnail']}" alt="Image de l'événement">` : ''}
+              <p><strong>📍 Lieu :</strong> ${event['Lieu'] || 'Non spécifié'}</p>
+              <p><strong>📫 Adresse :</strong> ${event['Adresse'] || 'Non spécifiée'}</p>
             </div>
-            <div class="description">${event.description || ''}</div>
           `;
-
-          eventEl.appendChild(imgEl);
-          eventEl.appendChild(detailsEl);
-          container.appendChild(eventEl);
+          container.insertAdjacentHTML('beforeend', eventHTML);
         });
+      } catch (error) {
+        console.error('Erreur lors du chargement des événements :', error);
+        document.getElementById('events-container').innerHTML = '<p>Erreur lors du chargement des événements.</p>';
+      }
+    }
 
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('events').innerText = 'Erreur lors du chargement des événements.';
-      });
+    fetchEvents();
   </script>
 </body>
 </html>
