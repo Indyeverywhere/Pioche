@@ -339,18 +339,17 @@
 
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
-      const logEntry = `[${timestamp}] ${message}`;
+      let logEntry = `[${timestamp}] ${message}`;
       if (data) {
-        logEntry += '\n' + JSON.stringify(data, null, 2);
+        logEntry += "\n" + JSON.stringify(data, null, 2);
       }
       debugLogs.push(logEntry);
       console.log(message, data);
     }
-
+    
     function toggleDebug() {
       const debugDiv = document.getElementById('debug-info');
       const button = document.querySelector('.debug-toggle');
-      
       if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
         debugDiv.style.display = 'block';
         debugDiv.textContent = debugLogs.join('\n\n');
@@ -360,113 +359,93 @@
         button.textContent = 'Afficher Debug';
       }
     }
+    
+    // Fonction pour extraire la valeur d'une colonne en passant par le label ou un index
+    function getColumnValue(row, possibleNames) {
+      for (let name of possibleNames) {
+        const index = cols.indexOf(name);
+        if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
+          // Pour la colonne Date, si une version formatée existe (f), on la privilégie
+          if (name === "Date" && row.c[index].f) {
+            return row.c[index].f;
+          }
+          let value = row.c[index].v;
+          if (typeof value === 'string') {
+            value = value.replace(/#+/g, "").trim();
+          }
+          return value;
+        }
+      }
+      return null;
+    }
+    
+    let cols = [];
 
     async function fetchEvents() {
       try {
         logDebug('🚀 Début du chargement des événements');
         logDebug('📍 URL utilisée:', { url: sheetURL });
-
-        const response = await fetch(sheetURL);
         
-        logDebug('📡 Réponse reçue:', { 
-          status: response.status, 
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries())
-        });
-
+        const response = await fetch(sheetURL);
+        logDebug('📡 Réponse reçue:', { status: response.status, statusText: response.statusText });
+        
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
         }
-
+        
         const text = await response.text();
         logDebug('📄 Taille de la réponse:', { bytes: text.length });
         logDebug('📄 Début de la réponse:', text.substring(0, 200) + '...');
-
-        // Extraction du JSON depuis la réponse JSONP
+        
+        // Extraire le JSON depuis la réponse JSONP
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}') + 1;
-        
         if (jsonStart === -1 || jsonEnd === 0) {
-          throw new Error('Format de réponse invalide - pas de JSON trouvé dans la réponse');
+          throw new Error('Format de réponse invalide - pas de JSON trouvé.');
         }
-
         const jsonText = text.substring(jsonStart, jsonEnd);
-        logDebug('🔧 JSON extrait:', { 
-          startPos: jsonStart, 
-          endPos: jsonEnd,
-          jsonStart: jsonText.substring(0, 100) + '...'
-        });
+        logDebug('🔧 JSON extrait:', { jsonSnippet: jsonText.substring(0, 100) + '...' });
         
         const json = JSON.parse(jsonText);
         logDebug('✅ JSON parsé avec succès');
-
-        // Vérification de la structure
-        if (!json.table) {
-          throw new Error('Pas de propriété "table" dans la réponse JSON');
-        }
-        if (!json.table.rows) {
-          throw new Error('Pas de propriété "rows" dans table');
-        }
-        if (!json.table.cols) {
-          throw new Error('Pas de propriété "cols" dans table');
-        }
-
-        const rows = json.table.rows;
-        const cols = json.table.cols.map(col => col.label || col.id || `Col${col.index || 'Unknown'}`);
         
+        // Vérification de la structure
+        if (!json.table || !json.table.rows || !json.table.cols) {
+          throw new Error('La structure attendue (table, rows, cols) n\'est pas présente dans la réponse JSON.');
+        }
+        
+        cols = json.table.cols.map(col => col.label);
+        const rows = json.table.rows;
         logDebug('📊 Structure des données:', {
           nombreLignes: rows.length,
           nombreColonnes: cols.length,
           colonnes: cols
         });
-
-        // Créer un mapping des colonnes pour plus de flexibilité
-        const getColumnValue = (row, possibleNames) => {
-          for (let name of possibleNames) {
-            const index = cols.indexOf(name);
-            if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
-              let value = row.c[index].v;
-              if (typeof value === 'string') {
-                value = value.replace(/#+/g, "").trim();
-              }
-              return value;
-            }
-          }
-          return null;
-        };
-
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
+        
         allEvents = rows.map((row, index) => {
           const event = { _rowIndex: index };
-          
           try {
-            // Extraction intelligente des données avec fallbacks
-            event.title = getColumnValue(row, ['Titre', 'Title', cols[3]]) || `Événement ${index + 1}`;
-            event.description = getColumnValue(row, ['Description', 'Description courte', cols[4], cols[11]]) || 'Description non disponible';
-            event.price = getColumnValue(row, ['Prix', 'Price', cols[5]]) || 'Prix non précisé';
-            event.location = getColumnValue(row, ['Lieu', 'Location', cols[12]]) || 'Lieu non précisé';
-            event.address = getColumnValue(row, ['Adresse', 'Address', cols[13]]) || '';
-            event.thumbnail = getColumnValue(row, ['Thumbnail', cols[7]]) || '';
-            event.category = getColumnValue(row, ['Catégorie', 'Category', cols[6]]) || '';
+            event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
+            event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
+            event.price = getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé';
+            event.location = getColumnValue(row, ['Lieu', 'Location']) || 'Lieu non précisé';
+            event.address = getColumnValue(row, ['Adresse', 'Address']) || '';
+            event.thumbnail = getColumnValue(row, ['Thumbnail']) || '';
+            event.category = getColumnValue(row, ['Catégorie', 'Category']) || '';
             
-            // Traitement spécial pour la date
-            const dateValue = getColumnValue(row, ['Date', cols[1]]);
-            
+            // Traitement de la date
+            const dateValue = getColumnValue(row, ['Date']);
             if (dateValue) {
-              // Si la date est au format ISO (YYYY-MM-DD)
-              if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                event.eventDate = new Date(dateValue + 'T00:00:00');
-              } else if (typeof dateValue === 'string') {
-                // Essayer d'autres formats
-                event.eventDate = new Date(dateValue);
+              // Si la date est au format ISO (YYYY-MM-DD) issu de la propriété "f"
+              if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+                event.eventDate = new Date(dateValue + "T00:00:00");
               } else {
-                // Si c'est un timestamp ou autre
+                // Sinon, tenter de créer une date
                 event.eventDate = new Date(dateValue);
               }
-              
-              // Vérifier si la date est valide
               if (isNaN(event.eventDate.getTime())) {
                 event.eventDate = new Date();
                 event.eventDate.setDate(event.eventDate.getDate() + 7);
@@ -485,18 +464,13 @@
               event.eventDate.setDate(event.eventDate.getDate() + 7);
               event.formattedDate = "Date à confirmer";
             }
-
             return event;
-            
           } catch (e) {
             logDebug(`❌ Erreur lors du traitement de l'événement ${index}:`, e.message);
             return null;
           }
-        }).filter(event => {
-          // Filtrer les événements null ou invalides
-          return event && event.title && event.title.trim() !== '' && !event.title.includes('Événement');
-        });
-
+        }).filter(event => event && event.title && event.title.trim() !== '');
+        
         logDebug('🎉 Événements traités:', {
           nombreTotal: allEvents.length,
           exemple: allEvents.slice(0, 2).map(e => ({
@@ -505,21 +479,16 @@
             lieu: e.location
           }))
         });
-
+        
         // Filtrer les événements à venir
-        const upcomingEvents = allEvents
-          .filter(e => e.eventDate >= today)
-          .sort((a, b) => a.eventDate - b.eventDate);
-
+        const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
         logDebug('📅 Événements à venir:', { nombre: upcomingEvents.length });
-
+        
         displayEvents(upcomingEvents);
         setupSearch();
-
       } catch (error) {
         logDebug('💥 ERREUR CRITIQUE:', error);
         console.error('Erreur lors du chargement des événements:', error);
-        
         document.getElementById('events-container').innerHTML = `
           <div class="no-events">
             <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
@@ -538,78 +507,58 @@
         `;
       }
     }
-
+    
     function displayEvents(events) {
       const container = document.getElementById('events-container');
-      
       if (events.length === 0) {
         container.innerHTML = `
           <div class="no-events">
             <i class="fas fa-calendar-times" style="font-size: 3rem; color: #666; margin-bottom: 1rem;"></i>
             <h2>Aucun événement à venir</h2>
             <p>Revenez bientôt pour découvrir les prochains événements à Marseille !</p>
-            <p><small>Ou cliquez sur "Afficher Debug" pour voir les détails du chargement</small></p>
+            <p><small>Ou cliquez sur "Afficher Debug" pour voir les détails</small></p>
           </div>
         `;
         return;
       }
-
       container.innerHTML = events.map(event => {
-        const hasImage = event.thumbnail && event.thumbnail.trim() !== '';
-        
+        const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
+          ? `<img src="${event.thumbnail}" alt="${event.title}" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
+          : '<i class="fas fa-music"></i>';
         return `
           <div class="event">
-            <div class="event-image">
-              ${hasImage 
-                ? `<img src="${event.thumbnail}" alt="${event.title}" 
-                    onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
-                : '<i class="fas fa-music"></i>'
-              }
-            </div>
+            <div class="event-image">${imageHTML}</div>
             <div class="event-content">
               <span class="event-date">${event.formattedDate}</span>
               <h2>${event.title}</h2>
               <p class="event-description">${event.description}</p>
               <div class="event-details">
-                ${event.location && event.location !== 'Lieu non précisé' ? `
-                  <div class="event-detail">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>${event.location}${event.address ? `, ${event.address}` : ''}</span>
-                  </div>
-                ` : ''}
-                ${event.price && event.price !== 'Prix non précisé' ? `
-                  <div class="event-detail">
-                    <i class="fas fa-tag"></i>
-                    <span class="price-tag">${event.price}</span>
-                  </div>
-                ` : ''}
-                ${event.category ? `
-                  <div class="event-detail">
-                    <i class="fas fa-folder"></i>
-                    <span>${event.category}</span>
-                  </div>
-                ` : ''}
+                ${event.location && event.location !== 'Lieu non précisé'
+                  ? `<div class="event-detail"><i class="fas fa-map-marker-alt"></i><span>${event.location}${event.address ? ', ' + event.address : ''}</span></div>`
+                  : ''}
+                ${event.price && event.price !== 'Prix non précisé'
+                  ? `<div class="event-detail"><i class="fas fa-tag"></i><span class="price-tag">${event.price}</span></div>`
+                  : ''}
+                ${event.category
+                  ? `<div class="event-detail"><i class="fas fa-folder"></i><span>${event.category}</span></div>`
+                  : ''}
               </div>
             </div>
           </div>
         `;
       }).join('');
-
+      
       logDebug('✨ Événements affichés avec succès');
     }
-
+    
     function setupSearch() {
       const searchInput = document.getElementById('search-input');
-      
       searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
-        
         if (searchTerm === '') {
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-          const upcomingEvents = allEvents
-            .filter(event => event.eventDate >= today)
-            .sort((a, b) => a.eventDate - b.eventDate);
+          const upcomingEvents = allEvents.filter(event => event.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
           displayEvents(upcomingEvents);
         } else {
           const filteredEvents = allEvents.filter(event => {
@@ -619,11 +568,9 @@
           displayEvents(filteredEvents);
         }
       });
-
       logDebug('🔍 Recherche configurée');
     }
-
-    // Démarrer le chargement
+    
     document.addEventListener('DOMContentLoaded', () => {
       logDebug('🌟 Page chargée, début de l\'initialisation');
       fetchEvents();
