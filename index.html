@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Événements à Marseille</title>
   <style>
     body {
@@ -10,7 +10,8 @@
       margin: 0;
       padding: 20px;
       max-width: 900px;
-      margin: auto;
+      margin-left: auto;
+      margin-right: auto;
     }
     h1 {
       text-align: center;
@@ -24,12 +25,15 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
       display: flex;
       gap: 20px;
+      align-items: flex-start;
     }
     .event img {
       width: 150px;
       height: 150px;
       object-fit: cover;
       border-radius: 6px;
+      flex-shrink: 0;
+      background: #ddd;
     }
     .event-details {
       flex: 1;
@@ -43,10 +47,12 @@
       font-size: 0.9em;
       color: #666;
       margin-bottom: 10px;
+      line-height: 1.4;
     }
     .description {
       margin-top: 10px;
       color: #444;
+      white-space: pre-wrap; /* Pour garder les retours à la ligne */
     }
   </style>
 </head>
@@ -59,6 +65,22 @@
     const GID = 0;
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
+    function parseDate(dateStr) {
+      // Essaye de parser date au format ISO, sinon format européen, etc.
+      // Tu peux adapter cette fonction selon le format de tes dates dans le sheet
+      let d = new Date(dateStr);
+      if (!isNaN(d)) return d;
+
+      // Si date au format "dd/mm/yyyy"
+      const parts = dateStr.split('/');
+      if (parts.length === 3) {
+        const [day, month, year] = parts;
+        d = new Date(`${year}-${month}-${day}`);
+        if (!isNaN(d)) return d;
+      }
+      return null;
+    }
+
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(text => {
@@ -67,27 +89,37 @@
         const container = document.getElementById('events');
         container.innerHTML = '';
 
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
         rows.forEach(row => {
           const cells = row.c.map(cell => cell?.v ?? '');
           const [
-            date, heure, titre, description, prix,
+            dateStr, heure, titre, description, prix,
             categorie, thumbnail, artiste, lieu, adresse
           ] = cells;
+
+          if (!dateStr) return;
+
+          const eventDate = parseDate(dateStr);
+          if (!eventDate || eventDate < today) return;
+
+          const eventTitle = titre && titre.trim() !== '' ? titre : 'Sans titre';
 
           const eventEl = document.createElement('div');
           eventEl.className = 'event';
 
           const imgEl = document.createElement('img');
-          imgEl.src = thumbnail || 'https://via.placeholder.com/150';
-          imgEl.alt = titre;
+          imgEl.src = thumbnail || 'https://via.placeholder.com/150?text=No+Image';
+          imgEl.alt = eventTitle;
 
           const detailsEl = document.createElement('div');
           detailsEl.className = 'event-details';
 
           detailsEl.innerHTML = `
-            <h2>${titre || 'Événement sans titre'}</h2>
+            <h2>${eventTitle}</h2>
             <div class="meta">
-              <strong>Date :</strong> ${date || '—'} ${heure ? 'à ' + heure : ''}<br>
+              <strong>Date :</strong> ${dateStr} ${heure ? 'à ' + heure : ''}<br>
               <strong>Lieu :</strong> ${lieu || '—'}<br>
               <strong>Adresse :</strong> ${adresse || '—'}<br>
               <strong>Artiste :</strong> ${artiste || '—'}<br>
@@ -101,6 +133,10 @@
           eventEl.appendChild(detailsEl);
           container.appendChild(eventEl);
         });
+
+        if(container.innerHTML === '') {
+          container.innerHTML = '<p>Aucun événement à venir.</p>';
+        }
       })
       .catch(err => {
         console.error(err);
