@@ -219,6 +219,16 @@
       padding: 0 20px;
     }
     
+    .price-tag {
+      display: inline-block;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    
     @media (max-width: 768px) {
       .events-grid {
         grid-template-columns: 1fr;
@@ -294,27 +304,49 @@
         allEvents = rows.map(row => {
           const event = {};
           cols.forEach((col, index) => {
-            event[col] = row.c[index]?.v || "";
+            if (row.c[index] !== null) {
+              event[col] = row.c[index]?.v || "";
+            } else {
+              event[col] = "";
+            }
           });
 
-          // Convertir la date
+          // Traitement de la date
           if (event["Date"]) {
-            if (typeof event["Date"] === 'string') {
+            try {
+              // Essayer de convertir la date
+              const dateStr = event["Date"].toString().trim();
+              if (dateStr.includes("######")) {
+                // Si la date contient des #, on la nettoie
+                event["Date"] = dateStr.replace(/#+/g, "");
+              }
+              
+              // Créer un objet Date
               event.eventDate = new Date(event["Date"]);
-            } else if (typeof event["Date"] === 'number') {
-              // Si la date est un nombre (timestamp), convertir correctement
-              const dateObj = new Date(event["Date"]);
-              event.formattedDate = dateObj.toLocaleDateString('fr-FR', {
+              
+              // Si la date n'est pas valide, utiliser la date d'aujourd'hui
+              if (isNaN(event.eventDate.getTime())) {
+                event.eventDate = new Date();
+              }
+              
+              event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
               });
-              event.eventDate = dateObj;
+            } catch (e) {
+              console.error("Erreur lors du traitement de la date:", e);
+              event.eventDate = new Date();
+              event.formattedDate = "Date non spécifiée";
             }
-            event.eventDate.setHours(0, 0, 0, 0);
           } else {
-            event.eventDate = new Date('2099-12-31'); // Date future par défaut
+            event.eventDate = new Date();
             event.formattedDate = "Date non spécifiée";
+          }
+
+          // Nettoyer le titre s'il contient des #
+          if (event["Titre"] && event["Titre"].includes("######")) {
+            event["Titre"] = event["Titre"].replace(/#+/g, "");
           }
 
           return event;
@@ -322,8 +354,17 @@
 
         // Filtrer et trier les événements à venir
         const upcomingEvents = allEvents
-          .filter(e => e.eventDate >= today)
-          .sort((a, b) => a.eventDate - b.eventDate);
+          .filter(e => e.eventDate >= today || isNaN(e.eventDate.getTime()))
+          .sort((a, b) => {
+            // Si les deux dates sont valides, trier normalement
+            if (!isNaN(a.eventDate.getTime()) && !isNaN(b.eventDate.getTime())) {
+              return a.eventDate - b.eventDate;
+            }
+            // Sinon, placer les événements sans date valide à la fin
+            if (isNaN(a.eventDate.getTime())) return 1;
+            if (isNaN(b.eventDate.getTime())) return -1;
+            return 0;
+          });
 
         displayEvents(upcomingEvents);
         setupSearch();
@@ -356,71 +397,26 @@
 
       // Générer HTML pour chaque événement
       events.forEach(event => {
-        const formattedDate = event.formattedDate || new Date(event['Date']).toLocaleDateString('fr-FR', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        });
-        
         const defaultImage = 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1335&q=80';
+        
+        // Nettoyer et préparer les données
+        const title = event['Titre'] || 'Événement sans titre';
+        const description = event['Description'] || event['ThumbnailDescriptioncourte'] || 'Aucune description disponible.';
+        const location = event['Lieu'] || 'Lieu non spécifié';
+        const address = event['Adresse'] || 'Adresse non spécifiée';
+        const price = event['Prix'] || 'Prix non spécifié';
+        const thumbnail = event['Thumbnail'] || defaultImage;
         
         const eventHTML = `
           <div class="event">
             <div class="event-image">
-              <img src="${event['Thumbnail'] || defaultImage}" alt="${event['Titre'] || 'Événement à Marseille'}">
+              <img src="${thumbnail}" alt="${title}" onerror="this.src='${defaultImage}'">
             </div>
             <div class="event-content">
               <div class="event-date">
-                <i class="far fa-calendar-alt"></i> ${formattedDate}
+                <i class="far fa-calendar-alt"></i> ${event.formattedDate}
+                ${event['Heure'] ? `<span> à ${event['Heure']}</span>` : ''}
               </div>
-              <h2>${event['Titre'] || 'Événement sans titre'}</h2>
-              <p class="event-description">${event['Description'] || 'Aucune description disponible.'}</p>
-              <div class="event-details">
-                <div class="event-detail">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span>${event['Lieu'] || 'Lieu non spécifié'}</span>
-                </div>
-                <div class="event-detail">
-                  <i class="fas fa-location-arrow"></i>
-                  <span>${event['Adresse'] || 'Adresse non spécifiée'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', eventHTML);
-      });
-    }
-
-    function setupSearch() {
-      const searchInput = document.getElementById('search-input');
-      
-      searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        
-        const filteredEvents = allEvents.filter(event => {
-          const title = (event['Titre'] || '').toLowerCase();
-          const description = (event['Description'] || '').toLowerCase();
-          const location = (event['Lieu'] || '').toLowerCase();
-          
-          return title.includes(searchTerm) || 
-                 description.includes(searchTerm) || 
-                 location.includes(searchTerm);
-        });
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        const upcomingFilteredEvents = filteredEvents
-          .filter(e => e.eventDate >= today)
-          .sort((a, b) => a.eventDate - b.eventDate);
-          
-        displayEvents(upcomingFilteredEvents);
-      });
-    }
-
-    // Initialiser l'application
-    fetchEvents();
-  </script>
-</body>
-</html>
+              <h2>${title}</h2>
+              <p class="event-description">${description}</p>
+              <div
