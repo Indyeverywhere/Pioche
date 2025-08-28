@@ -6,33 +6,47 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
+      background: #f4f4f4;
+      margin: 0;
       padding: 20px;
-      background: #f9f9f9;
+      max-width: 900px;
+      margin: auto;
     }
-    h1 { text-align: center; }
+    h1 {
+      text-align: center;
+      color: #0074D9;
+    }
     .event {
       background: #fff;
-      margin-bottom: 15px;
-      padding: 15px;
-      border-radius: 5px;
-      border-left: 5px solid #0074D9;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      display: flex;
+      gap: 20px;
     }
-    .event h2 { margin: 0 0 10px; font-size: 1.3em; color: #0074D9; }
-    .meta { font-size: 0.9em; color: #555; }
-    .description { margin-top: 10px; }
-    .more-info {
+    .event img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .event-details {
+      flex: 1;
+    }
+    .event h2 {
+      margin: 0 0 10px;
+      font-size: 1.4em;
+      color: #333;
+    }
+    .meta {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .description {
       margin-top: 10px;
-      display: inline-block;
-      padding: 6px 10px;
-      background: #0074D9;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 3px;
-    }
-    .more-info:hover {
-      background: #005fa3;
+      color: #444;
     }
   </style>
 </head>
@@ -41,50 +55,50 @@
   <div id="events">Chargement…</div>
 
   <script>
-    const SHEET_ID = '2PACX-1vTl0vOyaoARecfIl9PlsPoWPqVEqL-BgeKMpEp-T8DIqrJ0_gbLmQM2O4CrQSgAatVzRN9zQY2K_zHK';
-    const SHEET_URL = \`https://docs.google.com/spreadsheets/d/\${SHEET_ID}/gviz/tq?tqx=out:json&gid=0\`;
+    const SHEET_ID = '1008k_mILgipGjHE6mX_AmQ6EGdETObVFILJ0QE9GpIs';
+    const GID = 0;
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(text => {
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows;
-        if (!rows || rows.length === 0) {
-          document.getElementById('events').innerText = 'Aucun événement trouvé.';
-          return;
-        }
         const container = document.getElementById('events');
         container.innerHTML = '';
+
         rows.forEach(row => {
-          const [date, titre, lieu, description, lien] = row.c.map(cell => cell?.v ?? '');
+          const cells = row.c.map(cell => cell?.v ?? '');
+          const [
+            date, heure, titre, description, prix,
+            categorie, thumbnail, artiste, lieu, adresse
+          ] = cells;
+
           const eventEl = document.createElement('div');
           eventEl.className = 'event';
 
-          const titleEl = document.createElement('h2');
-          titleEl.textContent = titre || 'Sans titre';
-          eventEl.appendChild(titleEl);
+          const imgEl = document.createElement('img');
+          imgEl.src = thumbnail || 'https://via.placeholder.com/150';
+          imgEl.alt = titre;
 
-          const metaEl = document.createElement('div');
-          metaEl.className = 'meta';
-          metaEl.innerHTML = \`<strong>Date :</strong> \${date || '—'} — <strong>Lieu :</strong> \${lieu || '—'}\`;
-          eventEl.appendChild(metaEl);
+          const detailsEl = document.createElement('div');
+          detailsEl.className = 'event-details';
 
-          if (description) {
-            const descEl = document.createElement('p');
-            descEl.className = 'description';
-            descEl.textContent = description;
-            eventEl.appendChild(descEl);
-          }
+          detailsEl.innerHTML = `
+            <h2>${titre || 'Événement sans titre'}</h2>
+            <div class="meta">
+              <strong>Date :</strong> ${date || '—'} ${heure ? 'à ' + heure : ''}<br>
+              <strong>Lieu :</strong> ${lieu || '—'}<br>
+              <strong>Adresse :</strong> ${adresse || '—'}<br>
+              <strong>Artiste :</strong> ${artiste || '—'}<br>
+              <strong>Catégorie :</strong> ${categorie || '—'}<br>
+              <strong>Prix :</strong> ${prix || 'Gratuit'}
+            </div>
+            <div class="description">${description || ''}</div>
+          `;
 
-          if (lien) {
-            const linkEl = document.createElement('a');
-            linkEl.className = 'more-info';
-            linkEl.href = lien;
-            linkEl.textContent = 'Plus d’infos';
-            linkEl.target = '_blank';
-            eventEl.appendChild(linkEl);
-          }
-
+          eventEl.appendChild(imgEl);
+          eventEl.appendChild(detailsEl);
           container.appendChild(eventEl);
         });
       })
