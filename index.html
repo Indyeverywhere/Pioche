@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Événements à Marseille</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 { text-align: center; }
+    .event {
+      background: #fff;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 5px;
+      border-left: 5px solid #0074D9;
+    }
+    .event h2 { margin: 0 0 10px; font-size: 1.3em; color: #0074D9; }
+    .meta { font-size: 0.9em; color: #555; }
+    .description { margin-top: 10px; }
+    .more-info {
+      margin-top: 10px;
+      display: inline-block;
+      padding: 6px 10px;
+      background: #0074D9;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 3px;
+    }
+    .more-info:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Événements à Marseille</h1>
+  <div id="events">Chargement…</div>
+
+  <script>
+    const SHEET_ID = '2PACX-1vTl0vOyaoARecfIl9PlsPoWPqVEqL-BgeKMpEp-T8DIqrJ0_gbLmQM2O4CrQSgAatVzRN9zQY2K_zHK';
+    const SHEET_URL = \`https://docs.google.com/spreadsheets/d/\${SHEET_ID}/gviz/tq?tqx=out:json&gid=0\`;
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+        if (!rows || rows.length === 0) {
+          document.getElementById('events').innerText = 'Aucun événement trouvé.';
+          return;
+        }
+        const container = document.getElementById('events');
+        container.innerHTML = '';
+        rows.forEach(row => {
+          const [date, titre, lieu, description, lien] = row.c.map(cell => cell?.v ?? '');
+          const eventEl = document.createElement('div');
+          eventEl.className = 'event';
+
+          const titleEl = document.createElement('h2');
+          titleEl.textContent = titre || 'Sans titre';
+          eventEl.appendChild(titleEl);
+
+          const metaEl = document.createElement('div');
+          metaEl.className = 'meta';
+          metaEl.innerHTML = \`<strong>Date :</strong> \${date || '—'} — <strong>Lieu :</strong> \${lieu || '—'}\`;
+          eventEl.appendChild(metaEl);
+
+          if (description) {
+            const descEl = document.createElement('p');
+            descEl.className = 'description';
+            descEl.textContent = description;
+            eventEl.appendChild(descEl);
+          }
+
+          if (lien) {
+            const linkEl = document.createElement('a');
+            linkEl.className = 'more-info';
+            linkEl.href = lien;
+            linkEl.textContent = 'Plus d’infos';
+            linkEl.target = '_blank';
+            eventEl.appendChild(linkEl);
+          }
+
+          container.appendChild(eventEl);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('events').innerText = 'Erreur lors du chargement des événements.';
+      });
+  </script>
+</body>
+</html>
