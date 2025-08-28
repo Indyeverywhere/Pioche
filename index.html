@@ -52,7 +52,7 @@
     .description {
       margin-top: 10px;
       color: #444;
-      white-space: pre-wrap; /* Pour garder les retours à la ligne */
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -61,85 +61,109 @@
   <div id="events">Chargement…</div>
 
   <script>
-    const SHEET_ID = '1008k_mILgipGjHE6mX_AmQ6EGdETObVFILJ0QE9GpIs';
+    const SHEET_ID = '1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U';
     const GID = 0;
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
     function parseDate(dateStr) {
-  // Date au format ISO attendu : "YYYY-MM-DD"
-  // Crée une date avec heure 0:00 UTC pour éviter décalage de fuseau horaire
-  if (!dateStr) return null;
-  const parts = dateStr.split('-');
-  if (parts.length === 3) {
-    const [year, month, day] = parts.map(Number);
-    // Note: mois en JS = 0 à 11 donc on fait month-1
-    return new Date(Date.UTC(year, month - 1, day));
-  }
-  return null;
-}
-
-fetch(SHEET_URL)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substr(47).slice(0, -2));
-    const rows = json.table.rows;
-    const container = document.getElementById('events');
-    container.innerHTML = '';
-
-    // Date d'aujourd'hui en UTC (0h00)
-    const now = new Date();
-    const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-
-    rows.forEach(row => {
-      const cells = row.c.map(cell => cell?.v ?? '');
-      const [
-        dateStr, heure, titre, description, prix,
-        categorie, thumbnail, artiste, lieu, adresse
-      ] = cells;
-
-      if (!dateStr) return;
-
-      const eventDate = parseDate(dateStr);
-      if (!eventDate) return;
-
-      // Comparaison date événement >= date aujourd'hui (toutes en UTC)
-      if (eventDate < todayUTC) return;
-
-      const eventTitle = titre && titre.trim() !== '' ? titre : 'Sans titre';
-
-      const eventEl = document.createElement('div');
-      eventEl.className = 'event';
-
-      const imgEl = document.createElement('img');
-      imgEl.src = thumbnail || 'https://via.placeholder.com/150?text=No+Image';
-      imgEl.alt = eventTitle;
-
-      const detailsEl = document.createElement('div');
-      detailsEl.className = 'event-details';
-
-      detailsEl.innerHTML = `
-        <h2>${eventTitle}</h2>
-        <div class="meta">
-          <strong>Date :</strong> ${dateStr} ${heure ? 'à ' + heure : ''}<br>
-          <strong>Lieu :</strong> ${lieu || '—'}<br>
-          <strong>Adresse :</strong> ${adresse || '—'}<br>
-          <strong>Artiste :</strong> ${artiste || '—'}<br>
-          <strong>Catégorie :</strong> ${categorie || '—'}<br>
-          <strong>Prix :</strong> ${prix || 'Gratuit'}
-        </div>
-        <div class="description">${description || ''}</div>
-      `;
-
-      eventEl.appendChild(imgEl);
-      eventEl.appendChild(detailsEl);
-      container.appendChild(eventEl);
-    });
-
-    if(container.innerHTML === '') {
-      container.innerHTML = '<p>Aucun événement à venir.</p>';
+      if (!dateStr) return null;
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const [year, month, day] = parts.map(Number);
+        return new Date(Date.UTC(year, month - 1, day));
+      }
+      return null;
     }
-  })
-  .catch(err => {
-    console.error(err);
-    document.getElementById('events').innerText = 'Erreur lors du chargement des événements.';
-  });
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(text => {
+        // Parsing robuste avec regex
+        const jsonTextMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/s);
+        if (!jsonTextMatch) throw new Error("Format de réponse inattendu");
+        const json = JSON.parse(jsonTextMatch[1]);
+        
+        const rows = json.table.rows;
+        const container = document.getElementById('events');
+        container.innerHTML = '';
+
+        const now = new Date();
+        const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+        // Préparer tableau d'événements filtrés et triés
+        const events = rows
+          .map(row => {
+            const cells = row.c.map(cell => cell?.v ?? '');
+            const [
+              dateStr, heure, titre, description, prix,
+              categorie, thumbnail, artiste, lieu, adresse
+            ] = cells;
+
+            if (!dateStr) return null;
+
+            const eventDate = parseDate(dateStr);
+            if (!eventDate) return null;
+
+            if (eventDate < todayUTC) return null;
+
+            return {
+              dateStr,
+              heure,
+              titre: titre && titre.trim() !== '' ? titre : 'Sans titre',
+              description,
+              prix,
+              categorie,
+              thumbnail,
+              artiste,
+              lieu,
+              adresse,
+              eventDate
+            };
+          })
+          .filter(Boolean);
+
+        events.sort((a, b) => a.eventDate - b.eventDate);
+
+        if (events.length === 0) {
+          container.innerHTML = '<p>Aucun événement à venir.</p>';
+          return;
+        }
+
+        // Affichage
+        events.forEach(event => {
+          const eventEl = document.createElement('div');
+          eventEl.className = 'event';
+
+          const imgEl = document.createElement('img');
+          imgEl.src = event.thumbnail || 'https://via.placeholder.com/150?text=No+Image';
+          imgEl.alt = event.titre;
+
+          const detailsEl = document.createElement('div');
+          detailsEl.className = 'event-details';
+
+          detailsEl.innerHTML = `
+            <h2>${event.titre}</h2>
+            <div class="meta">
+              <strong>Date :</strong> ${event.dateStr} ${event.heure ? 'à ' + event.heure : ''}<br>
+              <strong>Lieu :</strong> ${event.lieu || '—'}<br>
+              <strong>Adresse :</strong> ${event.adresse || '—'}<br>
+              <strong>Artiste :</strong> ${event.artiste || '—'}<br>
+              <strong>Catégorie :</strong> ${event.categorie || '—'}<br>
+              <strong>Prix :</strong> ${event.prix || 'Gratuit'}
+            </div>
+            <div class="description">${event.description || ''}</div>
+          `;
+
+          eventEl.appendChild(imgEl);
+          eventEl.appendChild(detailsEl);
+          container.appendChild(eventEl);
+        });
+
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('events').innerText = 'Erreur lors du chargement des événements.';
+      });
+  </script>
+</body>
+</html>
