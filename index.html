@@ -120,6 +120,9 @@
       height: 100%;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
     
     .event:hover {
@@ -201,6 +204,26 @@
       color: var(--primary-color);
       min-width: 20px;
       margin-top: 4px;
+    }
+    
+    .view-more-btn {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    .view-more-btn:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
     }
     
     .no-events {
@@ -360,12 +383,11 @@
       }
     }
     
-    // Fonction pour extraire la valeur d'une colonne en passant par le label ou un index
+    // Fonction pour extraire la valeur d'une colonne
     function getColumnValue(row, possibleNames) {
       for (let name of possibleNames) {
         const index = cols.indexOf(name);
         if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
-          // Pour la colonne Date, si une version formatée existe (f), on la privilégie
           if (name === "Date" && row.c[index].f) {
             return row.c[index].f;
           }
@@ -395,7 +417,6 @@
         
         const text = await response.text();
         logDebug('📄 Taille de la réponse:', { bytes: text.length });
-        logDebug('📄 Début de la réponse:', text.substring(0, 200) + '...');
         
         // Extraire le JSON depuis la réponse JSONP
         const jsonStart = text.indexOf('{');
@@ -404,14 +425,12 @@
           throw new Error('Format de réponse invalide - pas de JSON trouvé.');
         }
         const jsonText = text.substring(jsonStart, jsonEnd);
-        logDebug('🔧 JSON extrait:', { jsonSnippet: jsonText.substring(0, 100) + '...' });
         
         const json = JSON.parse(jsonText);
         logDebug('✅ JSON parsé avec succès');
         
-        // Vérification de la structure
         if (!json.table || !json.table.rows || !json.table.cols) {
-          throw new Error('La structure attendue (table, rows, cols) n\'est pas présente dans la réponse JSON.');
+          throw new Error('La structure attendue n\'est pas présente dans la réponse JSON.');
         }
         
         cols = json.table.cols.map(col => col.label);
@@ -426,7 +445,7 @@
         today.setHours(0, 0, 0, 0);
         
         allEvents = rows.map((row, index) => {
-          const event = { _rowIndex: index };
+          const event = { id: index };
           try {
             event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
             event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
@@ -439,11 +458,9 @@
             // Traitement de la date
             const dateValue = getColumnValue(row, ['Date']);
             if (dateValue) {
-              // Si la date est au format ISO (YYYY-MM-DD) issu de la propriété "f"
               if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
                 event.eventDate = new Date(dateValue + "T00:00:00");
               } else {
-                // Sinon, tenter de créer une date
                 event.eventDate = new Date(dateValue);
               }
               if (isNaN(event.eventDate.getTime())) {
@@ -459,7 +476,6 @@
                 });
               }
             } else {
-              // Pas de date trouvée
               event.eventDate = new Date();
               event.eventDate.setDate(event.eventDate.getDate() + 7);
               event.formattedDate = "Date à confirmer";
@@ -471,13 +487,11 @@
           }
         }).filter(event => event && event.title && event.title.trim() !== '');
         
+        // Sauvegarder les événements dans le localStorage pour la page de détail
+        localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
+        
         logDebug('🎉 Événements traités:', {
-          nombreTotal: allEvents.length,
-          exemple: allEvents.slice(0, 2).map(e => ({
-            titre: e.title,
-            date: e.formattedDate,
-            lieu: e.location
-          }))
+          nombreTotal: allEvents.length
         });
         
         // Filtrer les événements à venir
@@ -516,17 +530,18 @@
             <i class="fas fa-calendar-times" style="font-size: 3rem; color: #666; margin-bottom: 1rem;"></i>
             <h2>Aucun événement à venir</h2>
             <p>Revenez bientôt pour découvrir les prochains événements à Marseille !</p>
-            <p><small>Ou cliquez sur "Afficher Debug" pour voir les détails</small></p>
           </div>
         `;
         return;
       }
+      
       container.innerHTML = events.map(event => {
         const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
           ? `<img src="${event.thumbnail}" alt="${event.title}" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
           : '<i class="fas fa-music"></i>';
+        
         return `
-          <div class="event">
+          <a href="event-detail.html?id=${event.id}" class="event">
             <div class="event-image">${imageHTML}</div>
             <div class="event-content">
               <span class="event-date">${event.formattedDate}</span>
@@ -543,8 +558,9 @@
                   ? `<div class="event-detail"><i class="fas fa-folder"></i><span>${event.category}</span></div>`
                   : ''}
               </div>
+              <span class="view-more-btn">Voir plus <i class="fas fa-arrow-right"></i></span>
             </div>
-          </div>
+          </a>
         `;
       }).join('');
       
