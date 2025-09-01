@@ -445,8 +445,10 @@
         today.setHours(0, 0, 0, 0);
         
         allEvents = rows.map((row, index) => {
-          const event = { id: index };
+          const event = {};
           try {
+            // Récupérer l'ID unique depuis le Google Sheet
+            event.id = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']) || `event-${index}`;
             event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
             event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
             event.price = getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé';
