@@ -874,35 +874,75 @@
       try {
         logDebug('🗺️ Initialisation de la carte pour:', { location, address });
         
-        // Construire l'adresse de recherche
-        let searchAddress = location;
-        if (address) {
-          searchAddress = `${address}, ${location}`;
-        }
-        // Ajouter Marseille si ce n'est pas déjà présent
-        if (!searchAddress.toLowerCase().includes('marseille')) {
-          searchAddress += ', Marseille, France';
+        // Stratégie de recherche multiple
+        const searchQueries = [];
+        
+        // Priorité 1: Adresse seule si elle existe (souvent plus précise)
+        if (address && address.trim() !== '') {
+          searchQueries.push(`${address}, Marseille, France`);
         }
         
-        logDebug('📍 Recherche de l\'adresse:', searchAddress);
+        // Priorité 2: Lieu seul
+        searchQueries.push(`${location}, Marseille, France`);
         
-        // Utiliser l'API Nominatim d'OpenStreetMap pour géocoder l'adresse
-        const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}&limit=1`;
+        // Priorité 3: Combinaison lieu + adresse
+        if (address && address.trim() !== '') {
+          searchQueries.push(`${location}, ${address}, Marseille, France`);
+        }
         
-        const response = await fetch(geocodeUrl);
-        const data = await response.json();
+        // Priorité 4: Recherche plus générale
+        searchQueries.push(`${location} Marseille`);
         
-        if (data && data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
+        logDebug('📍 Stratégies de recherche:', searchQueries);
+        
+        let coordinates = null;
+        let foundAddress = '';
+        
+        // Essayer chaque stratégie de recherche
+        for (const query of searchQueries) {
+          logDebug(`🔍 Tentative avec: "${query}"`);
           
-          logDebug('📌 Coordonnées trouvées:', { lat, lon });
+          const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=fr`;
+          
+          try {
+            const response = await fetch(geocodeUrl);
+            const data = await response.json();
+            
+            if (data && data.length > 0) {
+              // Filtrer pour privilégier les résultats à Marseille
+              const marseilleResults = data.filter(result => 
+                result.display_name && 
+                (result.display_name.includes('Marseille') || result.display_name.includes('13000'))
+              );
+              
+              const selectedResult = marseilleResults.length > 0 ? marseilleResults[0] : data[0];
+              
+              coordinates = {
+                lat: parseFloat(selectedResult.lat),
+                lon: parseFloat(selectedResult.lon),
+                display_name: selectedResult.display_name
+              };
+              
+              foundAddress = query;
+              logDebug('✅ Coordonnées trouvées:', coordinates);
+              break;
+            }
+          } catch (err) {
+            logDebug(`⚠️ Erreur pour "${query}":`, err.message);
+          }
+          
+          // Petite pause entre les requêtes pour respecter l'API
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
+        if (coordinates) {
+          logDebug('📌 Utilisation des coordonnées:', coordinates);
           
           // Créer le conteneur de la carte
           mapContainer.innerHTML = '<div id="event-map"></div>';
           
           // Initialiser la carte Leaflet
-          const map = L.map('event-map').setView([lat, lon], 15);
+          const map = L.map('event-map').setView([coordinates.lat, coordinates.lon], 16);
           
           // Ajouter les tuiles OpenStreetMap
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -912,33 +952,59 @@
           
           // Créer une icône personnalisée
           const customIcon = L.divIcon({
-            html: '<div style="background: linear-gradient(135deg, #1e88e5, #e91e63); color: white; width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center;"><i class="fas fa-map-marker-alt" style="transform: rotate(45deg); font-size: 20px;"></i></div>',
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-            popupAnchor: [0, -40],
+            html: `
+              <div style="position: relative;">
+                <div style="
+                  background: linear-gradient(135deg, #1e88e5, #e91e63); 
+                  width: 36px; 
+                  height: 36px; 
+                  border-radius: 50% 50% 50% 0; 
+                  transform: rotate(-45deg); 
+                  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                  border: 3px solid white;
+                "></div>
+                <div style="
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  color: white;
+                  font-size: 18px;
+                ">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+              </div>
+            `,
+            iconSize: [36, 36],
+            iconAnchor: [18, 36],
+            popupAnchor: [0, -36],
             className: 'custom-marker'
           });
           
           // Ajouter un marqueur
-          const marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
+          const marker = L.marker([coordinates.lat, coordinates.lon], { icon: customIcon }).addTo(map);
           
-          // Ajouter un popup au marqueur
-          let popupContent = `<strong>${location}</strong>`;
-          if (address) {
-            popupContent += `<br>${address}`;
+          // Construire le contenu du popup
+          let popupContent = `<div style="min-width: 200px;">`;
+          popupContent += `<strong style="color: #1e88e5; font-size: 14px;">${location}</strong>`;
+          if (address && address.trim() !== '') {
+            popupContent += `<br><span style="color: #666; font-size: 12px;">${address}</span>`;
           }
+          popupContent += `<br><span style="color: #999; font-size: 11px; font-style: italic;">📍 ${coordinates.display_name.split(',').slice(0, 3).join(',')}</span>`;
+          popupContent += `</div>`;
+          
           marker.bindPopup(popupContent).openPopup();
           
           logDebug('✅ Carte initialisée avec succès');
           
         } else {
-          // Si aucune coordonnée trouvée, essayer avec juste "Marseille"
-          logDebug('⚠️ Adresse non trouvée, recherche générique sur Marseille');
+          // Si aucune coordonnée trouvée, afficher Marseille avec message
+          logDebug('⚠️ Aucune adresse trouvée, affichage du centre de Marseille');
           
           mapContainer.innerHTML = '<div id="event-map"></div>';
           
-          // Coordonnées du centre de Marseille
-          const marseilleCenter = [43.2965, 5.3698];
+          // Coordonnées du Vieux-Port de Marseille (plus central)
+          const marseilleCenter = [43.2951, 5.3747];
           
           const map = L.map('event-map').setView(marseilleCenter, 13);
           
@@ -947,10 +1013,24 @@
             maxZoom: 19
           }).addTo(map);
           
+          // Ajouter un cercle pour indiquer la zone approximative
+          L.circle(marseilleCenter, {
+            color: '#1e88e5',
+            fillColor: '#1e88e5',
+            fillOpacity: 0.1,
+            radius: 2000
+          }).addTo(map);
+          
           // Message d'information
           const popup = L.popup()
             .setLatLng(marseilleCenter)
-            .setContent(`<strong>${location}</strong><br><em>Position approximative - Centre de Marseille</em>`)
+            .setContent(`
+              <div style="text-align: center;">
+                <strong style="color: #ff6f00;">${location}</strong><br>
+                <em style="color: #666; font-size: 12px;">Position approximative</em><br>
+                <span style="color: #999; font-size: 11px;">Centre de Marseille</span>
+              </div>
+            `)
             .openOn(map);
         }
         
