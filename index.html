@@ -3,9 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Événements à Marseille | Agenda Culturel</title>
+  
+  <!-- SEO Meta Tags Essentiels -->
+  <title>Sortir à Marseille - Pioche | Guide des Activités & Événements 2025</title>
+  <meta name="description" content="Découvrez où sortir à Marseille avec Pioche : concerts, expositions, théâtres, restaurants et bars. Trouvez les meilleures activités à Marseille ce week-end, en famille ou entre amis. Guide complet des sorties marseillaises.">
+  <meta name="keywords" content="sortir à Marseille, activités Marseille, loisirs Marseille, que faire à Marseille, événements Marseille, Pioche, Marseille by night, sortir à Marseille ce week-end, concerts Marseille, expositions Marseille">
+  
+  <!-- Open Graph pour les réseaux sociaux -->
+  <meta property="og:title" content="Pioche - Sortir à Marseille | Guide des Événements & Activités 2025">
+  <meta property="og:description" content="Découvrez tous les événements et activités à Marseille avec Pioche : concerts, expositions, théâtres. Votre guide pour sortir dans la cité phocéenne !">
+  <meta property="og:image" content="https://pioche.me/images/pioche-og.jpg">
+  <meta property="og:url" content="https://pioche.me">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Pioche - Sortir à Marseille">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pioche - Sortir à Marseille | Guide Culturel 2025">
+  <meta name="twitter:description" content="Tous les événements et activités à Marseille sur Pioche : concerts, expos, théâtres. Votre guide pour sortir à Marseille !">
+  <meta name="twitter:image" content="https://pioche.me/images/pioche-twitter.jpg">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://pioche.me/">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Pioche - Sortir à Marseille",
+    "url": "https://pioche.me",
+    "description": "Guide culturel et agenda des sorties à Marseille : événements, concerts, expositions, théâtres",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://pioche.me/agenda.html?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Pioche",
+      "url": "https://pioche.me",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pioche.me/logo.png"
+      }
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Marseille",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Provence-Alpes-Côte d'Azur",
+        "addressCountry": "FR"
+      }
+    }
+  }
+  </script>
+  
+  <!-- Preconnect pour optimiser les performances -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <!-- CSS externe -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -29,225 +97,327 @@
       line-height: 1.6;
     }
     
-    header {
-      background: linear-gradient(135deg, var(--primary-color), #0d47a1);
+    /* Skip to main content for accessibility */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary-color);
       color: white;
-      padding: 2rem 0;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      text-decoration: none;
+      z-index: 100;
     }
     
-    .header-content {
+    .skip-link:focus {
+      top: 0;
+    }
+    
+    /* Navigation */
+    nav {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    
+    .cta-button {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      padding: 10px 25px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: inline-block;
+    }
+    
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(30, 136, 229, 0.3);
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-color), #0d47a1);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .hero-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
     
-    h1 {
+    .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
+      font-size: 3rem;
       margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease;
     }
     
-    .marseille-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--secondary-color);
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
-    main {
+    .hero-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+    
+    .hero-cta {
+      background: white;
+      color: var(--primary-color);
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .hero-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+    }
+    
+    .hero-cta-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .hero-cta-secondary:hover {
+      background: white;
+      color: var(--primary-color);
+    }
+    
+    /* Main Content Sections */
+    .section {
+      padding: 4rem 0;
+    }
+    
+    .section-container {
       max-width: 1200px;
-      margin: 2rem auto;
+      margin: 0 auto;
       padding: 0 20px;
     }
     
-    .filters {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 3rem;
     }
     
-    .search-box {
-      flex-grow: 1;
-      max-width: 400px;
-      position: relative;
-    }
-    
-    .search-box input {
-      width: 100%;
-      padding: 12px 20px;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      font-size: 1rem;
-      outline: none;
-      transition: all 0.3s;
-    }
-    
-    .search-box input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
-    }
-    
-    .search-icon {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #888;
-    }
-    
-    .events-grid {
+    /* Categories Grid */
+    .categories-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 2rem;
+      margin-bottom: 3rem;
     }
     
-    .event {
-      background-color: var(--card-color);
+    .category-card {
+      background: white;
+      padding: 2rem;
       border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s, box-shadow 0.3s;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
       cursor: pointer;
-      text-decoration: none;
-      color: inherit;
     }
     
-    .event:hover {
+    .category-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
     
-    .event-image {
-      height: 200px;
-      overflow: hidden;
-      position: relative;
-      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    .category-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 2rem;
       color: white;
-      font-size: 3rem;
     }
     
-    .event-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s;
+    .category-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
     }
     
-    .event:hover .event-image img {
-      transform: scale(1.05);
+    .category-card p {
+      color: #666;
+      font-size: 0.95rem;
     }
     
-    .event-content {
-      padding: 1.5rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
+    /* Content Section */
+    .content-section {
+      background: white;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 3rem;
     }
     
-    .event-date {
-      display: inline-block;
-      background-color: var(--accent-color);
-      color: white;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
+    .content-section h2 {
+      color: var(--primary-color);
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .content-section h3 {
+      color: var(--primary-color);
+      margin: 2rem 0 1rem;
+    }
+    
+    .content-section p {
+      line-height: 1.8;
       margin-bottom: 1rem;
     }
     
-    .event h2 {
-      font-size: 1.4rem;
-      margin-bottom: 0.8rem;
-      color: var(--primary-color);
+    /* FAQ Section */
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
     }
     
-    .event-description {
-      margin-bottom: 1.2rem;
-      color: #555;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+    .faq-item {
+      background: white;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
       overflow: hidden;
-      flex-grow: 1;
     }
     
-    .event-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      font-size: 0.95rem;
-      margin-top: auto;
-    }
-    
-    .event-detail {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    
-    .event-detail i {
+    .faq-question {
+      padding: 1.5rem;
+      font-weight: 600;
       color: var(--primary-color);
-      min-width: 20px;
-      margin-top: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
     }
     
-    .view-more-btn {
+    .faq-question:hover {
+      background: #f8f9fa;
+    }
+    
+    .faq-question::after {
+      content: '+';
+      font-size: 1.5rem;
+      transition: transform 0.3s;
+    }
+    
+    .faq-item.active .faq-question::after {
+      transform: rotate(45deg);
+    }
+    
+    .faq-answer {
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s, padding 0.3s;
+    }
+    
+    .faq-item.active .faq-answer {
+      padding: 0 1.5rem 1.5rem;
+      max-height: 500px;
+    }
+    
+    /* CTA Section */
+    .cta-section {
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
       color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 1rem;
       text-align: center;
-      display: inline-block;
-      text-decoration: none;
+      padding: 4rem 0;
+      border-radius: 20px;
+      margin: 3rem 0;
     }
     
-    .view-more-btn:hover {
-      transform: translateX(5px);
-      box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+    .cta-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
     }
     
-    .no-events {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 3rem;
-      background-color: var(--card-color);
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 2rem;
+    .cta-section p {
       font-size: 1.2rem;
-      color: #666;
+      margin-bottom: 2rem;
+      opacity: 0.95;
     }
     
+    /* Footer */
     footer {
-      background-color: #333;
+      background: #2c3e50;
       color: white;
+      padding: 3rem 0 2rem;
       text-align: center;
-      padding: 2rem 0;
-      margin-top: 3rem;
     }
     
     .footer-content {
@@ -256,342 +426,329 @@
       padding: 0 20px;
     }
     
-    .price-tag {
-      display: inline-block;
-      background-color: var(--secondary-color);
-      color: white;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
     }
     
-    .debug-info {
-      background-color: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
+    .footer-tagline {
+      margin-bottom: 2rem;
+      opacity: 0.9;
     }
     
-    .debug-toggle {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 12px;
+    .footer-copyright {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 2rem;
+      opacity: 0.7;
     }
     
-    .error-message {
-      background-color: #ffe6e6;
-      border: 1px solid #ff9999;
-      color: #cc0000;
-      padding: 15px;
-      border-radius: 8px;
-      margin: 20px 0;
-    }
-    
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .events-grid {
+      .nav-links {
+        display: none;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .categories-grid {
         grid-template-columns: 1fr;
       }
       
-      .filters {
-        flex-direction: column;
-        align-items: stretch;
+      .content-section {
+        padding: 2rem;
       }
-      
-      .search-box {
-        max-width: 100%;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
+    }
+    
+    /* Visually Hidden for Accessibility */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <div class="marseille-icon">
-        <i class="fas fa-sun"></i>
+  <!-- Skip link for accessibility -->
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+  
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="/" class="logo">Pioche</a>
+      <ul class="nav-links">
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/agenda.html">Agenda</a></li>
+        <li><a href="/agenda.html" class="cta-button">Voir les événements</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Sortir à Marseille avec Pioche</h1>
+      <p class="hero-subtitle">Découvrez les meilleures activités, événements et sorties dans la cité phocéenne</p>
+      <div class="hero-buttons">
+        <a href="/agenda.html" class="hero-cta">
+          <i class="fas fa-calendar-alt"></i>
+          Consulter l'agenda
+        </a>
+        <a href="#decouvrir" class="hero-cta hero-cta-secondary">
+          <i class="fas fa-compass"></i>
+          Découvrir Marseille
+        </a>
       </div>
-      <h1>Événements à Marseille</h1>
-      <p class="subtitle">Découvrez tous les événements à venir dans la cité phocéenne</p>
     </div>
   </header>
-
-  <main>
-    <div class="filters">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Rechercher un événement...">
-        <i class="fas fa-search search-icon"></i>
+  
+  <main id="main-content">
+    <!-- Categories Section -->
+    <section class="section" id="decouvrir">
+      <div class="section-container">
+        <h2 class="section-title">Que faire à Marseille ?</h2>
+        
+        <div class="categories-grid">
+          <div class="category-card">
+            <div class="category-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <h3>Concerts & Festivals</h3>
+            <p>Jazz au Moulin, rock au Dôme, électro sur le Vieux-Port. Les meilleures scènes musicales de Marseille vous attendent.</p>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <h3>Expositions & Musées</h3>
+            <p>Du Mucem à la Vieille Charité, en passant par Cantini, explorez l'art et la culture à travers les musées marseillais.</p>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">
+              <i class="fas fa-theater-masks"></i>
+            </div>
+            <h3>Théâtres & Spectacles</h3>
+            <p>La Criée, le Gymnase, Toursky... Découvrez la programmation riche des théâtres marseillais.</p>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <h3>Restaurants & Gastronomie</h3>
+            <p>Bouillabaisse sur le Vieux-Port, tapas au Cours Julien, cuisine du monde au Panier.</p>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">
+              <i class="fas fa-cocktail"></i>
+            </div>
+            <h3>Bars & Vie Nocturne</h3>
+            <p>Marseille by night : rooftops, bars à cocktails, clubs. Vivez les nuits marseillaises.</p>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">
+              <i class="fas fa-umbrella-beach"></i>
+            </div>
+            <h3>Plages & Nature</h3>
+            <p>Des plages du Prado aux calanques de Sormiou, profitez du soleil méditerranéen.</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
     
-    <div id="events-container" class="events-grid">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Chargement des événements...
+    <!-- Content SEO Section -->
+    <section class="section">
+      <div class="section-container">
+        <div class="content-section">
+          <h2>Pioche : Votre guide pour sortir à Marseille</h2>
+          <p>
+            <strong>Pioche</strong> est votre compagnon idéal pour découvrir où <strong>sortir à Marseille</strong>. 
+            Que vous soyez à la recherche d'<strong>activités à Marseille ce week-end</strong>, de 
+            <strong>sorties en famille</strong> ou de <strong>divertissements entre amis</strong>, notre plateforme 
+            rassemble tous les <strong>événements à Marseille</strong> en un seul endroit. Des <strong>concerts</strong> 
+            aux <strong>expositions</strong>, en passant par les <strong>restaurants</strong> et <strong>bars</strong>, 
+            Pioche vous guide vers les meilleures expériences marseillaises.
+          </p>
+          
+          <h3>Sortir à Marseille selon vos envies</h3>
+          <p>
+            Marseille offre une diversité incroyable d'activités. Envie de <strong>sortir à Marseille quand il pleut</strong> ? 
+            Direction les musées comme le Mucem ou les centres commerciaux des Terrasses du Port. Vous cherchez des 
+            <strong>activités gratuites à Marseille</strong> ? Baladez-vous dans le quartier historique du <strong>Panier</strong>, 
+            admirez la vue depuis Notre-Dame de la Garde, ou profitez des <strong>plages du Prado</strong>.
+          </p>
+          
+          <p>
+            Pour <strong>sortir à Marseille le dimanche</strong>, explorez les marchés provençaux, visitez les 
+            <strong>calanques</strong>, ou assistez à un match au <strong>Stade Vélodrome</strong>. Les amateurs de 
+            <strong>Marseille by night</strong> apprécieront l'ambiance alternative du <strong>Cours Julien</strong>, 
+            les rooftops avec vue sur la Méditerranée, ou les soirées sur le <strong>Vieux-Port</strong>.
+          </p>
+          
+          <h3>Des activités pour tous les goûts</h3>
+          <p>
+            Que vous souhaitiez <strong>sortir à Marseille en famille</strong> avec des enfants, organiser une 
+            <strong>sortie entre amis</strong>, ou découvrir les <strong>meilleures activités pas cher</strong>, 
+            Pioche vous propose un agenda complet et actualisé. Notre sélection couvre tous les arrondissements, 
+            du 1er au 16e, avec une attention particulière pour les quartiers emblématiques comme le 
+            <strong>Panier</strong>, <strong>Castellane</strong>, <strong>Longchamp</strong> et la <strong>Plaine</strong>.
+          </p>
+        </div>
       </div>
-    </div>
+    </section>
     
-    <button class="debug-toggle" onclick="toggleDebug()">Afficher Debug</button>
-    <div id="debug-info" class="debug-info"></div>
+    <!-- FAQ Section -->
+    <section class="section">
+      <div class="section-container">
+        <h2 class="section-title">Questions fréquentes</h2>
+        
+        <div class="faq-container">
+          <div class="faq-item">
+            <div class="faq-question">
+              Que faire à Marseille ce week-end ?
+            </div>
+            <div class="faq-answer">
+              <p>
+                Ce week-end à Marseille, profitez des nombreux événements culturels : expositions au Mucem, 
+                concerts sur le Vieux-Port, marchés provençaux au Cours Julien, ou balades dans les calanques. 
+                Consultez notre agenda Pioche mis à jour quotidiennement pour découvrir tous les événements du week-end.
+              </p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question">
+              Quels sont les meilleurs endroits pour sortir le soir à Marseille ?
+            </div>
+            <div class="faq-answer">
+              <p>
+                Pour sortir le soir à Marseille, dirigez-vous vers le Cours Julien pour ses bars alternatifs et concerts, 
+                le Vieux-Port pour ses terrasses animées et restaurants, ou la Plaine pour son ambiance étudiante. 
+                Les théâtres de la Criée et du Gymnase proposent également d'excellents spectacles en soirée.
+              </p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question">
+              Où aller à Marseille quand il pleut ?
+            </div>
+            <div class="faq-answer">
+              <p>
+                Les jours de pluie, visitez les musées marseillais : le Mucem pour l'art contemporain, 
+                le musée Cantini pour les beaux-arts, ou le musée d'Histoire de Marseille. 
+                Les Terrasses du Port offrent shopping et restauration à l'abri, tandis que les cinémas 
+                comme le Pathé Madeleine proposent les dernières sorties.
+              </p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question">
+              Quelles sont les activités gratuites à Marseille ?
+            </div>
+            <div class="faq-answer">
+              <p>
+                Marseille regorge d'activités gratuites : balade dans le quartier historique du Panier, 
+                visite de la cathédrale de la Major, promenade sur la Corniche Kennedy, découverte des plages du Prado, 
+                ou montée à Notre-Dame de la Garde pour une vue panoramique. Le parc Longchamp et le jardin du Pharo 
+                sont parfaits pour une pause nature en ville.
+              </p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question">
+              Comment se déplacer facilement à Marseille ?
+            </div>
+            <div class="faq-answer">
+              <p>
+                Marseille dispose d'un réseau de transports en commun RTM efficace : métro (2 lignes), 
+                tramway (3 lignes) et nombreux bus. Le vélo en libre-service "Le Vélo" est idéal pour 
+                les courtes distances. Pour les calanques, optez pour les navettes maritimes depuis le Vieux-Port.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="section">
+      <div class="section-container">
+        <div class="cta-section">
+          <h2>Prêt à explorer Marseille ?</h2>
+          <p>Découvrez tous les événements à venir et planifiez vos sorties avec Pioche</p>
+          <a href="/agenda.html" class="hero-cta">
+            <i class="fas fa-calendar-check"></i>
+            Accéder à l'agenda complet
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
-
+  
   <footer>
     <div class="footer-content">
-      <p>&copy; 2025 Agenda des Événements à Marseille | Tous droits réservés</p>
+      <div class="footer-brand">Pioche</div>
+      <p class="footer-tagline">Votre guide pour sortir à Marseille</p>
+      <p class="footer-copyright">
+        © 2025 Pioche - Tous droits réservés<br>
+        <small>Le meilleur agenda culturel pour découvrir les activités et événements à Marseille</small>
+      </p>
     </div>
   </footer>
-
+  
   <script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
-    let allEvents = [];
-    let debugLogs = [];
-
-    function logDebug(message, data = null) {
-      const timestamp = new Date().toLocaleTimeString();
-      let logEntry = `[${timestamp}] ${message}`;
-      if (data) {
-        logEntry += "\n" + JSON.stringify(data, null, 2);
-      }
-      debugLogs.push(logEntry);
-      console.log(message, data);
-    }
-    
-    function toggleDebug() {
-      const debugDiv = document.getElementById('debug-info');
-      const button = document.querySelector('.debug-toggle');
-      if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
-        debugDiv.style.display = 'block';
-        debugDiv.textContent = debugLogs.join('\n\n');
-        button.textContent = 'Masquer Debug';
-      } else {
-        debugDiv.style.display = 'none';
-        button.textContent = 'Afficher Debug';
-      }
-    }
-    
-    // Fonction pour extraire la valeur d'une colonne
-    function getColumnValue(row, possibleNames) {
-      for (let name of possibleNames) {
-        const index = cols.indexOf(name);
-        if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
-          if (name === "Date" && row.c[index].f) {
-            return row.c[index].f;
+    // FAQ Toggle
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const faqItem = question.parentElement;
+        faqItem.classList.toggle('active');
+        
+        // Close other FAQs
+        document.querySelectorAll('.faq-item').forEach(item => {
+          if (item !== faqItem) {
+            item.classList.remove('active');
           }
-          let value = row.c[index].v;
-          if (typeof value === 'string') {
-            value = value.replace(/#+/g, "").trim();
-          }
-          return value;
-        }
-      }
-      return null;
-    }
-    
-    let cols = [];
-
-    async function fetchEvents() {
-      try {
-        logDebug('🚀 Début du chargement des événements');
-        logDebug('📍 URL utilisée:', { url: sheetURL });
-        
-        const response = await fetch(sheetURL);
-        logDebug('📡 Réponse reçue:', { status: response.status, statusText: response.statusText });
-        
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
-        }
-        
-        const text = await response.text();
-        logDebug('📄 Taille de la réponse:', { bytes: text.length });
-        
-        // Extraire le JSON depuis la réponse JSONP
-        const jsonStart = text.indexOf('{');
-        const jsonEnd = text.lastIndexOf('}') + 1;
-        if (jsonStart === -1 || jsonEnd === 0) {
-          throw new Error('Format de réponse invalide - pas de JSON trouvé.');
-        }
-        const jsonText = text.substring(jsonStart, jsonEnd);
-        
-        const json = JSON.parse(jsonText);
-        logDebug('✅ JSON parsé avec succès');
-        
-        if (!json.table || !json.table.rows || !json.table.cols) {
-          throw new Error('La structure attendue n\'est pas présente dans la réponse JSON.');
-        }
-        
-        cols = json.table.cols.map(col => col.label);
-        const rows = json.table.rows;
-        logDebug('📊 Structure des données:', {
-          nombreLignes: rows.length,
-          nombreColonnes: cols.length,
-          colonnes: cols
         });
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        allEvents = rows.map((row, index) => {
-          const event = {};
-          try {
-            // Récupérer l'ID unique depuis le Google Sheet
-            event.id = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']) || `event-${index}`;
-            event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
-            event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
-            event.price = getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé';
-            event.location = getColumnValue(row, ['Lieu', 'Location']) || 'Lieu non précisé';
-            event.address = getColumnValue(row, ['Adresse', 'Address']) || '';
-            event.thumbnail = getColumnValue(row, ['Thumbnail']) || '';
-            event.category = getColumnValue(row, ['Catégorie', 'Category']) || '';
-            
-            // Traitement de la date
-            const dateValue = getColumnValue(row, ['Date']);
-            if (dateValue) {
-              if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-                event.eventDate = new Date(dateValue + "T00:00:00");
-              } else {
-                event.eventDate = new Date(dateValue);
-              }
-              if (isNaN(event.eventDate.getTime())) {
-                event.eventDate = new Date();
-                event.eventDate.setDate(event.eventDate.getDate() + 7);
-                event.formattedDate = "Date à confirmer";
-              } else {
-                event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                });
-              }
-            } else {
-              event.eventDate = new Date();
-              event.eventDate.setDate(event.eventDate.getDate() + 7);
-              event.formattedDate = "Date à confirmer";
-            }
-            return event;
-          } catch (e) {
-            logDebug(`❌ Erreur lors du traitement de l'événement ${index}:`, e.message);
-            return null;
-          }
-        }).filter(event => event && event.title && event.title.trim() !== '');
-        
-        // Sauvegarder les événements dans le localStorage pour la page de détail
-        localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
-        
-        logDebug('🎉 Événements traités:', {
-          nombreTotal: allEvents.length
-        });
-        
-        // Filtrer les événements à venir
-        const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
-        logDebug('📅 Événements à venir:', { nombre: upcomingEvents.length });
-        
-        displayEvents(upcomingEvents);
-        setupSearch();
-      } catch (error) {
-        logDebug('💥 ERREUR CRITIQUE:', error);
-        console.error('Erreur lors du chargement des événements:', error);
-        document.getElementById('events-container').innerHTML = `
-          <div class="no-events">
-            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
-            <h2>Erreur lors du chargement des événements</h2>
-            <p><strong>Erreur:</strong> ${error.message}</p>
-            <div class="error-message">
-              <strong>Actions à vérifier:</strong>
-              <ul style="text-align: left; margin-top: 10px;">
-                <li>Le Google Sheets est-il bien public ?</li>
-                <li>L'URL est-elle correcte ?</li>
-                <li>Y a-t-il des données dans le sheet ?</li>
-              </ul>
-              <p><strong>Cliquez sur "Afficher Debug" pour plus de détails</strong></p>
-            </div>
-          </div>
-        `;
-      }
-    }
+      });
+    });
     
-    function displayEvents(events) {
-      const container = document.getElementById('events-container');
-      if (events.length === 0) {
-        container.innerHTML = `
-          <div class="no-events">
-            <i class="fas fa-calendar-times" style="font-size: 3rem; color: #666; margin-bottom: 1rem;"></i>
-            <h2>Aucun événement à venir</h2>
-            <p>Revenez bientôt pour découvrir les prochains événements à Marseille !</p>
-          </div>
-        `;
-        return;
-      }
-      
-      container.innerHTML = events.map(event => {
-        const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
-          ? `<img src="${event.thumbnail}" alt="${event.title}" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
-          : '<i class="fas fa-music"></i>';
-        
-        return `
-          <a href="event-detail.html?id=${event.id}" class="event">
-            <div class="event-image">${imageHTML}</div>
-            <div class="event-content">
-              <span class="event-date">${event.formattedDate}</span>
-              <h2>${event.title}</h2>
-              <p class="event-description">${event.description}</p>
-              <div class="event-details">
-                ${event.location && event.location !== 'Lieu non précisé'
-                  ? `<div class="event-detail"><i class="fas fa-map-marker-alt"></i><span>${event.location}${event.address ? ', ' + event.address : ''}</span></div>`
-                  : ''}
-                ${event.price && event.price !== 'Prix non précisé'
-                  ? `<div class="event-detail"><i class="fas fa-tag"></i><span class="price-tag">${event.price}</span></div>`
-                  : ''}
-                ${event.category
-                  ? `<div class="event-detail"><i class="fas fa-folder"></i><span>${event.category}</span></div>`
-                  : ''}
-              </div>
-              <span class="view-more-btn">Voir plus <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        `;
-      }).join('');
-      
-      logDebug('✨ Événements affichés avec succès');
-    }
-    
-    function setupSearch() {
-      const searchInput = document.getElementById('search-input');
-      searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        if (searchTerm === '') {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const upcomingEvents = allEvents.filter(event => event.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
-          displayEvents(upcomingEvents);
-        } else {
-          const filteredEvents = allEvents.filter(event => {
-            const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
-            return searchableText.includes(searchTerm);
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
           });
-          displayEvents(filteredEvents);
         }
       });
-      logDebug('🔍 Recherche configurée');
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-      logDebug('🌟 Page chargée, début de l\'initialisation');
-      fetchEvents();
     });
   </script>
 </body>
