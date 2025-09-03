@@ -1,0 +1,95 @@
+# Robots.txt pour Pioche.me
+# Dernière mise à jour : 2025
+# Contact : contact@pioche.me
+
+# Règles pour tous les robots légitimes
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /config/
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*?debug=
+Disallow: /*&debug=
+
+# Limitation du crawl rate (en secondes entre chaque requête)
+Crawl-delay: 1
+
+# Règles spécifiques pour Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Règles spécifiques pour Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Blocage des scrapers connus et bots malveillants
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: AspiegelBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Blocage des outils de scraping
+User-agent: wget
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: HTTrack
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: WebStripper
+Disallow: /
+
+# Indication du sitemap
+Sitemap: https://pioche.me/sitemap.xml
+
+# Protection supplémentaire contre le scraping
+# Les vrais visiteurs ne devraient pas accéder à ces patterns
+User-agent: *
+Disallow: /*?page=*&page=
+Disallow: /*?id=*&id=
+Disallow: /*.php$
+Disallow: /event-detail.html?id=*
+Allow: /event-detail.html

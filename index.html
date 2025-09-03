@@ -283,11 +283,15 @@
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s, box-shadow 0.3s;
       cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
     
-    .category-card:hover {
+    a.category-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
     }
     
     .category-icon {
@@ -701,9 +705,9 @@
         <div class="cta-section">
           <h2>Prêt à explorer Marseille ?</h2>
           <p>Découvrez tous les événements à venir et planifiez vos sorties avec Pioche</p>
-          <a href="/agenda.html" class="hero-cta">
-            <i class="fas fa-calendar-check"></i>
-            Accéder à l'agenda complet
+          <a href="/agenda.html" class="hero-cta" aria-label="Accéder à l'agenda complet des événements">
+            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+            <span>Accéder à l'agenda complet</span>
           </a>
         </div>
       </div>
