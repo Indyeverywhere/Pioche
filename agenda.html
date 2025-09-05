@@ -554,10 +554,10 @@
       </div>
       <div class="filter-buttons">
         <button class="filter-btn active" data-filter="all">Tous</button>
+        <button class="filter-btn" data-filter="today">Ce soir</button>
+        <button class="filter-btn" data-filter="tomorrow">Demain</button>
         <button class="filter-btn" data-filter="weekend">Ce week-end</button>
         <button class="filter-btn" data-filter="gratuit">Gratuit</button>
-        <button class="filter-btn" data-filter="concert">Concerts</button>
-        <button class="filter-btn" data-filter="expo">Expositions</button>
       </div>
     </div>
     
@@ -815,11 +815,22 @@
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
       let filtered = allEvents.filter(e => e.eventDate >= today);
       
       // Appliquer le filtre de catégorie
       const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-      if (activeFilter === 'weekend') {
+      if (activeFilter === 'today') {
+        const todayEnd = new Date(today);
+        todayEnd.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
+      } else if (activeFilter === 'tomorrow') {
+        const tomorrowEnd = new Date(tomorrow);
+        tomorrowEnd.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
+      } else if (activeFilter === 'weekend') {
         const friday = new Date();
         const sunday = new Date();
         const dayOfWeek = today.getDay();
@@ -830,10 +841,6 @@
         filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate <= sunday);
       } else if (activeFilter === 'gratuit') {
         filtered = filtered.filter(e => e.price && (e.price.toLowerCase().includes('gratuit') || e.price === '0'));
-      } else if (activeFilter === 'concert') {
-        filtered = filtered.filter(e => e.category && e.category.toLowerCase().includes('concert'));
-      } else if (activeFilter === 'expo') {
-        filtered = filtered.filter(e => e.category && e.category.toLowerCase().includes('expo'));
       }
       
       // Appliquer la recherche textuelle
@@ -855,5 +862,4 @@
     });
   </script>
 </body>
-
 </html>
