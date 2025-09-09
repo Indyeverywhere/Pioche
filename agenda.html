@@ -231,40 +231,8 @@
       background: var(--primary-color);
       color: white;
       border-color: var(--primary-color);
-    }
-    
-    .events-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .events-count {
-      color: #666;
-      font-size: 1.1rem;
-    }
-    
-    .view-options {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    .view-btn {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      background: white;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.3s;
-    }
-    
-    .view-btn.active {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-    }
-    
+    }  
+  
     .events-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -560,22 +528,7 @@
         <button class="filter-btn" data-filter="gratuit">Gratuit</button>
       </div>
     </div>
-    
-    <!-- En-tête de la liste -->
-    <div class="events-header">
-      <div class="events-count">
-        <span id="event-count">0</span> événements trouvés
-      </div>
-      <div class="view-options">
-        <button class="view-btn active" data-view="grid">
-          <i class="fas fa-th"></i>
-        </button>
-        <button class="view-btn" data-view="list">
-          <i class="fas fa-list"></i>
-        </button>
-      </div>
-    </div>
-    
+       
     <!-- Liste des événements -->
     <div id="events-container" class="events-grid">
       <div class="loading">
@@ -720,7 +673,6 @@
         const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
         
         displayEvents(upcomingEvents);
-        updateEventCount(upcomingEvents.length);
         setupSearch();
         setupFilters();
         
@@ -789,10 +741,6 @@
       }).join('');
     }
     
-    function updateEventCount(count) {
-      document.getElementById('event-count').textContent = count;
-    }
-    
     function setupSearch() {
       const searchInput = document.getElementById('search-input');
       searchInput.addEventListener('input', (e) => {
@@ -853,7 +801,6 @@
       
       filtered.sort((a, b) => a.eventDate - b.eventDate);
       displayEvents(filtered);
-      updateEventCount(filtered.length);
     }
     
     document.addEventListener('DOMContentLoaded', () => {
@@ -863,3 +810,4 @@
   </script>
 </body>
 </html>
+
