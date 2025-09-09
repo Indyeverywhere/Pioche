@@ -21,26 +21,16 @@
   
   <!-- CSS externe -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   
   <style>
     :root {
       --primary-color: #1e88e5;
-      --primary-dark: #0d47a1;
       --secondary-color: #ff6f00;
-      --accent-color: #e91e63;
       --background-color: #f5f7fa;
       --card-color: #ffffff;
       --text-color: #333333;
-      --text-light: #666666;
-      --border-color: #e0e0e0;
-      --shadow-light: rgba(0, 0, 0, 0.05);
-      --shadow-medium: rgba(0, 0, 0, 0.08);
-      --shadow-dark: rgba(0, 0, 0, 0.12);
-      --transition: all 0.3s ease;
-      --border-radius: 12px;
-      --border-radius-sm: 8px;
-      --border-radius-lg: 30px;
+      --accent-color: #e91e63;
     }
     
     * {
@@ -50,32 +40,16 @@
     }
     
     body {
-      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background-color: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    
-    /* Accessibility helpers */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
     }
     
     /* Navigation */
     nav {
       background: white;
-      box-shadow: 0 2px 10px var(--shadow-light);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -96,12 +70,6 @@
       color: var(--primary-color);
       text-decoration: none;
       font-weight: 700;
-      transition: var(--transition);
-    }
-    
-    .logo:hover {
-      color: var(--primary-dark);
-      transform: translateY(-2px);
     }
     
     .nav-links {
@@ -114,87 +82,54 @@
       color: var(--text-color);
       text-decoration: none;
       font-weight: 500;
-      transition: var(--transition);
-      padding: 0.5rem 1rem;
-      border-radius: var(--border-radius-sm);
+      transition: color 0.3s;
     }
     
     .nav-links a:hover {
       color: var(--primary-color);
-      background-color: rgba(30, 136, 229, 0.05);
     }
     
     .nav-links a.active {
       color: var(--primary-color);
       font-weight: 600;
-      background-color: rgba(30, 136, 229, 0.1);
     }
     
-    /* Header */
     header {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      background: linear-gradient(135deg, var(--primary-color), #0d47a1);
       color: white;
-      padding: 3rem 0;
+      padding: 2rem 0;
       text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    header::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-      background-size: cover;
-      opacity: 0.1;
     }
     
     .header-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
-      position: relative;
-      z-index: 1;
     }
     
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     
     .subtitle {
       font-size: 1.2rem;
       opacity: 0.9;
       margin-bottom: 1rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
     }
     
     .marseille-icon {
-      font-size: 3rem;
+      font-size: 2rem;
       margin-bottom: 1rem;
       color: var(--secondary-color);
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
     }
     
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 20px;
-      flex: 1;
     }
     
     /* Breadcrumb */
@@ -207,7 +142,6 @@
       display: flex;
       list-style: none;
       gap: 0.5rem;
-      flex-wrap: wrap;
     }
     
     .breadcrumb li::after {
@@ -223,15 +157,12 @@
     .breadcrumb a {
       color: var(--primary-color);
       text-decoration: none;
-      transition: var(--transition);
     }
     
     .breadcrumb a:hover {
       text-decoration: underline;
-      color: var(--primary-dark);
     }
     
-    /* Filters */
     .filters {
       display: flex;
       justify-content: space-between;
@@ -239,10 +170,10 @@
       margin-bottom: 2rem;
       flex-wrap: wrap;
       gap: 1rem;
-      background: var(--card-color);
+      background: white;
       padding: 1.5rem;
-      border-radius: var(--border-radius);
-      box-shadow: 0 2px 10px var(--shadow-light);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
     
     .search-box {
@@ -254,11 +185,11 @@
     .search-box input {
       width: 100%;
       padding: 12px 20px;
-      border: 2px solid var(--border-color);
-      border-radius: var(--border-radius-lg);
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
       font-size: 1rem;
       outline: none;
-      transition: var(--transition);
+      transition: all 0.3s;
     }
     
     .search-box input:focus {
@@ -271,8 +202,7 @@
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-light);
-      pointer-events: none;
+      color: #888;
     }
     
     .filter-buttons {
@@ -283,20 +213,18 @@
     
     .filter-btn {
       padding: 8px 16px;
-      border: 1px solid var(--border-color);
+      border: 1px solid #ddd;
       border-radius: 20px;
-      background: var(--card-color);
+      background: white;
       color: var(--text-color);
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s;
       font-size: 0.9rem;
-      font-weight: 500;
     }
     
     .filter-btn:hover {
       border-color: var(--primary-color);
       color: var(--primary-color);
-      background-color: rgba(30, 136, 229, 0.05);
     }
     
     .filter-btn.active {
@@ -305,20 +233,16 @@
       border-color: var(--primary-color);
     }
     
-    /* Events Header */
     .events-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-      gap: 1rem;
     }
     
     .events-count {
-      color: var(--text-light);
+      color: #666;
       font-size: 1.1rem;
-      font-weight: 500;
     }
     
     .view-options {
@@ -328,14 +252,11 @@
     
     .view-btn {
       padding: 8px 12px;
-      border: 1px solid var(--border-color);
-      background: var(--card-color);
+      border: 1px solid #ddd;
+      background: white;
       cursor: pointer;
-      border-radius: var(--border-radius-sm);
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.3s;
     }
     
     .view-btn.active {
@@ -344,35 +265,29 @@
       border-color: var(--primary-color);
     }
     
-    .view-btn:hover {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-    }
-    
-    /* Events Grid */
-    .events-container {
+    .events-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2rem;
     }
     
-    .event-card {
+    .event {
       background-color: var(--card-color);
-      border-radius: var(--border-radius);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 15px var(--shadow-medium);
-      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
       height: 100%;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
       text-decoration: none;
       color: inherit;
     }
     
-    .event-card:hover {
+    .event:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 25px var(--shadow-dark);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }
     
     .event-image {
@@ -391,10 +306,10 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      transition: transform 0.5s;
     }
     
-    .event-card:hover .event-image img {
+    .event:hover .event-image img {
       transform: scale(1.05);
     }
     
@@ -414,26 +329,18 @@
       font-size: 0.85rem;
       margin-bottom: 1rem;
       font-weight: 600;
-      align-self: flex-start;
     }
     
-    .event-title {
+    .event h2 {
       font-size: 1.4rem;
       margin-bottom: 0.8rem;
       color: var(--primary-color);
       font-weight: 600;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    
-    .event-title:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
     }
     
     .event-description {
       margin-bottom: 1.2rem;
-      color: var(--text-light);
+      color: #555;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -445,7 +352,7 @@
     .event-details {
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
+      gap: 0.5rem;
       font-size: 0.95rem;
       margin-top: auto;
     }
@@ -453,7 +360,7 @@
     .event-detail {
       display: flex;
       align-items: flex-start;
-      gap: 0.8rem;
+      gap: 0.5rem;
     }
     
     .event-detail i {
@@ -463,21 +370,19 @@
     }
     
     .view-more-btn {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
       color: white;
       border: none;
       padding: 10px 20px;
-      border-radius: var(--border-radius-lg);
+      border-radius: 25px;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s;
       margin-top: 1rem;
       text-align: center;
       display: inline-block;
       text-decoration: none;
       font-weight: 600;
-      align-self: flex-start;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
     .view-more-btn:hover {
@@ -485,14 +390,13 @@
       box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
     }
     
-    /* No events message */
     .no-events {
       grid-column: 1 / -1;
       text-align: center;
       padding: 4rem 2rem;
       background-color: var(--card-color);
-      border-radius: var(--border-radius);
-      box-shadow: 0 4px 15px var(--shadow-medium);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
     
     .no-events i {
@@ -502,28 +406,20 @@
     }
     
     .no-events h2 {
-      color: var(--text-light);
+      color: #666;
       margin-bottom: 1rem;
     }
     
-    /* Loading state */
     .loading {
       text-align: center;
       padding: 3rem;
       font-size: 1.2rem;
-      color: var(--text-light);
-      grid-column: 1 / -1;
+      color: #666;
     }
     
     .loading i {
       font-size: 2rem;
       margin-bottom: 1rem;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
     
     .price-tag {
@@ -533,23 +429,8 @@
       padding: 3px 10px;
       border-radius: 20px;
       font-size: 0.8rem;
-      font-weight: 500;
     }
     
-    /* Debug info */
-    .debug-info {
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      padding: 1rem;
-      margin: 1rem 0;
-      font-family: monospace;
-      font-size: 0.9rem;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    
-    /* Footer */
     footer {
       background: #2c3e50;
       color: white;
@@ -571,14 +452,39 @@
       color: var(--secondary-color);
     }
     
-    /* Responsive improvements */
+    .debug-info {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .debug-toggle {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin: 20px auto;
+      font-size: 12px;
+      display: block;
+    }
+    
     @media (max-width: 768px) {
       .nav-links {
         gap: 1rem;
         font-size: 0.9rem;
       }
       
-      .events-container {
+      .events-grid {
         grid-template-columns: 1fr;
       }
       
@@ -598,48 +504,20 @@
       h1 {
         font-size: 2rem;
       }
-      
-      .subtitle {
-        font-size: 1rem;
-      }
-      
-      .marseille-icon {
-        font-size: 2rem;
-      }
-      
-      .event-content {
-        padding: 1rem;
-      }
-      
-      .event-title {
-        font-size: 1.2rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .nav-container {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .filter-buttons {
-        gap: 0.3rem;
-      }
-      
-      .filter-btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-      }
-      
-      .event-date, .price-tag {
-        font-size: 0.8rem;
-      }
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V5D8WPSPGB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V5D8WPSPGB');
+</script>
 </head>
 <body>
   <!-- Navigation -->
-  <nav role="navigation" aria-label="Navigation principale">
+  <nav>
     <div class="nav-container">
       <a href="/" class="logo">Pioche</a>
       <ul class="nav-links">
@@ -661,27 +539,25 @@
 
   <main>
     <!-- Breadcrumb -->
-    <nav class="breadcrumb" aria-label="Breadcrumb">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
       <ol>
         <li><a href="/">Accueil</a></li>
-        <li aria-current="page">Agenda</li>
+        <li>Agenda</li>
       </ol>
     </nav>
     
     <!-- Filtres et recherche -->
     <div class="filters">
       <div class="search-box">
-        <label for="search-input" class="sr-only">Rechercher parmi les événements</label>
         <input type="text" id="search-input" placeholder="Rechercher un événement, concert, exposition...">
         <i class="fas fa-search search-icon"></i>
       </div>
-      
-      <div class="filter-buttons" role="group" aria-label="Filtres des événements">
-        <button class="filter-btn active" data-filter="all" aria-pressed="true">Tous</button>
-        <button class="filter-btn" data-filter="today" aria-pressed="false">Ce soir</button>
-        <button class="filter-btn" data-filter="tomorrow" aria-pressed="false">Demain</button>
-        <button class="filter-btn" data-filter="weekend" aria-pressed="false">Ce week-end</button>
-        <button class="filter-btn" data-filter="gratuit" aria-pressed="false">Gratuit</button>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">Tous</button>
+        <button class="filter-btn" data-filter="today">Ce soir</button>
+        <button class="filter-btn" data-filter="tomorrow">Demain</button>
+        <button class="filter-btn" data-filter="weekend">Ce week-end</button>
+        <button class="filter-btn" data-filter="gratuit">Gratuit</button>
       </div>
     </div>
     
@@ -690,30 +566,26 @@
       <div class="events-count">
         <span id="event-count">0</span> événements trouvés
       </div>
-      
-      <div class="view-options" role="group" aria-label="Options d'affichage">
-        <button class="view-btn active" data-view="grid" aria-pressed="true" title="Affichage grille">
+      <div class="view-options">
+        <button class="view-btn active" data-view="grid">
           <i class="fas fa-th"></i>
         </button>
-        <button class="view-btn" data-view="list" aria-pressed="false" title="Affichage liste">
+        <button class="view-btn" data-view="list">
           <i class="fas fa-list"></i>
         </button>
       </div>
     </div>
     
-    <!-- Debug info (à supprimer en production) -->
-    <div id="debug-info" class="debug-info" style="display: none;">
-      <h3>Informations de débogage :</h3>
-      <div id="debug-content"></div>
-    </div>
-    
     <!-- Liste des événements -->
-    <div id="events-container" class="events-container">
+    <div id="events-container" class="events-grid">
       <div class="loading">
-        <i class="fas fa-spinner"></i>
+        <i class="fas fa-spinner fa-spin"></i>
         <p>Chargement des événements...</p>
       </div>
     </div>
+    
+    <button class="debug-toggle" onclick="toggleDebug()">Debug</button>
+    <div id="debug-info" class="debug-info"></div>
   </main>
 
   <footer>
@@ -724,539 +596,269 @@
   </footer>
 
   <script>
-    // Enable debug mode (set to false in production)
-    const DEBUG_MODE = true;
+    const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
+    let allEvents = [];
+    let debugLogs = [];
+
+    function logDebug(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      let logEntry = `[${timestamp}] ${message}`;
+      if (data) {
+        logEntry += "\n" + JSON.stringify(data, null, 2);
+      }
+      debugLogs.push(logEntry);
+      console.log(message, data);
+    }
     
-    function debugLog(message, data = null) {
-      if (DEBUG_MODE) {
-        console.log(`[DEBUG] ${message}`, data);
-        const debugDiv = document.getElementById('debug-info');
-        const debugContent = document.getElementById('debug-content');
-        if (debugDiv && debugContent) {
-          debugDiv.style.display = 'block';
-          debugContent.innerHTML += `<p><strong>${message}</strong>${data ? ': ' + JSON.stringify(data, null, 2) : ''}</p>`;
-        }
+    function toggleDebug() {
+      const debugDiv = document.getElementById('debug-info');
+      const button = document.querySelector('.debug-toggle');
+      if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
+        debugDiv.style.display = 'block';
+        debugDiv.textContent = debugLogs.join('\n\n');
+        button.textContent = 'Masquer Debug';
+      } else {
+        debugDiv.style.display = 'none';
+        button.textContent = 'Debug';
       }
     }
+    
+    function getColumnValue(row, possibleNames) {
+      for (let name of possibleNames) {
+        const index = cols.indexOf(name);
+        if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
+          if (name === "Date" && row.c[index].f) {
+            return row.c[index].f;
+          }
+          let value = row.c[index].v;
+          if (typeof value === 'string') {
+            value = value.replace(/#+/g, "").trim();
+          }
+          return value;
+        }
+      }
+      return null;
+    }
+    
+    let cols = [];
 
-    // Event data management
-    const EventManager = {
-      sheetURL: "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0",
-      allEvents: [],
-      filteredEvents: [],
-      
-      // Normalize text data from sheet
-      cleanText(text) {
-        if (text && typeof text === 'string') {
-          return text.replace(/#.*$/gm, '').trim();
-        }
-        return text;
-      },
-      
-      // Safely get column value
-      getColumnValue(row, columnIndex) {
-        try {
-          if (row.c && row.c[columnIndex] && row.c[columnIndex].v !== null && row.c[columnIndex].v !== undefined) {
-            let value = row.c[columnIndex].v;
-            
-            // Handle formatted values for dates
-            if (row.c[columnIndex].f && typeof row.c[columnIndex].f === 'string') {
-              return row.c[columnIndex].f;
-            }
-            
-            // Clean text values
-            if (typeof value === 'string') {
-              value = this.cleanText(value);
-            }
-            
-            return value;
-          }
-        } catch (e) {
-          debugLog(`Error getting column ${columnIndex}`, e);
-        }
-        return null;
-      },
-      
-      // Parse date from various formats
-      parseDate(dateValue) {
-        if (!dateValue) return null;
+    async function fetchEvents() {
+      try {
+        logDebug('🚀 Chargement des événements Pioche');
         
-        try {
-          // If it's already a Date object
-          if (dateValue instanceof Date) {
-            return dateValue;
-          }
-          
-          // If it's a string in format YYYY-MM-DD
-          if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-            return new Date(dateValue + "T00:00:00");
-          }
-          
-          // Try to parse as regular date
-          const parsed = new Date(dateValue);
-          if (!isNaN(parsed.getTime())) {
-            return parsed;
-          }
-        } catch (e) {
-          debugLog('Error parsing date', { dateValue, error: e });
+        const response = await fetch(sheetURL);
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
         }
         
-        return null;
-      },
-      
-      // Fetch events from Google Sheets
-      async fetchEvents() {
-        debugLog('Fetching events from Google Sheets...');
+        const text = await response.text();
+        const jsonStart = text.indexOf('{');
+        const jsonEnd = text.lastIndexOf('}') + 1;
         
-        try {
-          const response = await fetch(this.sheetURL);
-          debugLog('Response status', response.status);
-          
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-          
-          const text = await response.text();
-          debugLog('Raw response length', text.length);
-          
-          // Extract JSON from JSONP response
-          const jsonStart = text.indexOf('{');
-          const jsonEnd = text.lastIndexOf('}') + 1;
-          
-          if (jsonStart === -1 || jsonEnd === 0) {
-            throw new Error('Format de réponse invalide');
-          }
-          
-          const jsonText = text.substring(jsonStart, jsonEnd);
-          debugLog('JSON text length', jsonText.length);
-          
-          const json = JSON.parse(jsonText);
-          debugLog('Parsed JSON structure', {
-            hasTable: !!json.table,
-            hasRows: !!(json.table && json.table.rows),
-            hasCols: !!(json.table && json.table.cols),
-            rowCount: json.table && json.table.rows ? json.table.rows.length : 0,
-            colCount: json.table && json.table.cols ? json.table.cols.length : 0
-          });
-          
-          if (!json.table || !json.table.rows || !json.table.cols) {
-            throw new Error('Structure de données invalide');
-          }
-          
-          const cols = json.table.cols.map(col => col.label || col.id || '');
-          const rows = json.table.rows;
-          
-          debugLog('Column headers', cols);
-          debugLog('First few rows', rows.slice(0, 3));
-          
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          
-          // Process events with more flexible column mapping
-          this.allEvents = rows.map((row, index) => {
-            // Skip empty rows
-            if (!row.c || row.c.every(cell => !cell || cell.v === null || cell.v === undefined || cell.v === '')) {
-              return null;
-            }
-            
-            const event = {
-              id: this.getColumnValue(row, 0) || `event-${index}`,
-              title: this.getColumnValue(row, 1) || `Événement ${index + 1}`,
-              description: this.getColumnValue(row, 2) || 'Description non disponible',
-              price: this.getColumnValue(row, 3) || 'Prix non précisé',
-              location: this.getColumnValue(row, 4) || 'Lieu non précisé',
-              address: this.getColumnValue(row, 5) || '',
-              thumbnail: this.getColumnValue(row, 6) || '',
-              category: this.getColumnValue(row, 7) || ''
-            };
-            
-            // Process event date (try multiple columns if needed)
-            const rawDate = this.getColumnValue(row, 8) || this.getColumnValue(row, 1);
-            const parsedDate = this.parseDate(rawDate);
-            
-            if (parsedDate && !isNaN(parsedDate.getTime())) {
-              event.eventDate = parsedDate;
-              event.formattedDate = parsedDate.toLocaleDateString('fr-FR', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              });
-              event.isoDate = parsedDate.toISOString();
-            } else {
-              // Default date for events without valid dates
-              event.eventDate = new Date();
-              event.eventDate.setDate(event.eventDate.getDate() + 7);
-              event.formattedDate = "Date à confirmer";
-              event.isoDate = event.eventDate.toISOString();
-            }
-            
-            debugLog(`Processed event ${index}`, {
-              title: event.title,
-              date: event.formattedDate,
-              rawDate: rawDate,
-              parsedDate: parsedDate
-            });
-            
-            return event;
-          }).filter(event => event && event.title && this.cleanText(event.title));
-          
-          debugLog('Processed events', {
-            total: this.allEvents.length,
-            sample: this.allEvents.slice(0, 2)
-          });
-          
-          // Store in localStorage with timestamp
-          const timestamp = new Date().getTime();
-          localStorage.setItem('marseilleEvents', JSON.stringify({
-            timestamp,
-            data: this.allEvents
-          }));
-          
-          this.filterEvents();
-          
-        } catch (error) {
-          console.error('Erreur:', error);
-          debugLog('Error details', error);
-          
-          // Try to load sample data for testing
-          this.loadSampleData();
+        if (jsonStart === -1 || jsonEnd === 0) {
+          throw new Error('Format de réponse invalide');
         }
-      },
-      
-      // Load sample data for testing when Google Sheets fails
-      loadSampleData() {
-        debugLog('Loading sample data for testing...');
         
-        const sampleEvents = [
-          {
-            id: "sample-1",
-            title: "Concert Jazz au Dock des Suds",
-            description: "Une soirée jazz exceptionnelle avec des artistes locaux et internationaux dans le cadre unique du Dock des Suds.",
-            price: "25€",
-            location: "Dock des Suds",
-            address: "12 Rue Urbain V, 13002 Marseille",
-            thumbnail: "",
-            category: "Concert",
-            eventDate: new Date(2025, 8, 15), // 15 septembre 2025
-            formattedDate: "dimanche 15 septembre 2025",
-            isoDate: new Date(2025, 8, 15).toISOString()
-          },
-          {
-            id: "sample-2",
-            title: "Exposition Photo - Marseille d'hier et d'aujourd'hui",
-            description: "Découvrez l'évolution de Marseille à travers une exposition photo unique mettant en parallèle le passé et le présent de la cité phocéenne.",
-            price: "Gratuit",
-            location: "Musée d'Histoire de Marseille",
-            address: "Square Belsunce, Centre Bourse, 13001 Marseille",
-            thumbnail: "",
-            category: "Exposition",
-            eventDate: new Date(2025, 8, 10), // 10 septembre 2025
-            formattedDate: "mercredi 10 septembre 2025",
-            isoDate: new Date(2025, 8, 10).toISOString()
-          },
-          {
-            id: "sample-3",
-            title: "Festival Electrochoc",
-            description: "Le festival de musique électronique incontournable de Marseille revient avec une programmation éclectique et des DJ internationaux.",
-            price: "45€",
-            location: "Friche Belle de Mai",
-            address: "41 Rue Jobin, 13003 Marseille",
-            thumbnail: "",
-            category: "Festival",
-            eventDate: new Date(2025, 8, 12), // 12 septembre 2025
-            formattedDate: "vendredi 12 septembre 2025",
-            isoDate: new Date(2025, 8, 12).toISOString()
-          },
-          {
-            id: "sample-4",
-            title: "Théâtre - Les Misérables",
-            description: "La célèbre comédie musicale adaptée du chef-d'œuvre de Victor Hugo, interprétée par une troupe exceptionnelle.",
-            price: "35€",
-            location: "Théâtre National de Marseille La Criée",
-            address: "30 Quai de Rive Neuve, 13007 Marseille",
-            thumbnail: "",
-            category: "Théâtre",
-            eventDate: new Date(2025, 8, 20), // 20 septembre 2025
-            formattedDate: "samedi 20 septembre 2025",
-            isoDate: new Date(2025, 8, 20).toISOString()
-          }
-        ];
+        const jsonText = text.substring(jsonStart, jsonEnd);
+        const json = JSON.parse(jsonText);
         
-        this.allEvents = sampleEvents;
-        debugLog('Sample events loaded', { count: this.allEvents.length });
-        
-        document.getElementById('events-container').innerHTML = `
-          <div class="no-events" style="background: #fff3cd; border: 1px solid #ffeaa7; color: #856404;">
-            <i class="fas fa-info-circle" style="color: #856404;"></i>
-            <h2>Mode de démonstration</h2>
-            <p>Impossible de charger les données depuis Google Sheets. Affichage des événements de démonstration.</p>
-          </div>
-        `;
-        
-        // Wait a bit then show sample data
-        setTimeout(() => {
-          this.filterEvents();
-        }, 1000);
-      },
-      
-      // Get events from localStorage if recent
-      getStoredEvents() {
-        try {
-          const stored = localStorage.getItem('marseilleEvents');
-          if (stored) {
-            const data = JSON.parse(stored);
-            const now = new Date().getTime();
-            // Cache for 1 hour
-            if (now - data.timestamp < 3600000) {
-              return data.data;
-            }
-          }
-        } catch (e) {
-          debugLog('Error parsing stored events', e);
+        if (!json.table || !json.table.rows || !json.table.cols) {
+          throw new Error('Structure de données invalide');
         }
-        return null;
-      },
-      
-      // Filter events based on current settings
-      filterEvents() {
-        debugLog('Filtering events...');
         
-        const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-        const activeFilter = document.querySelector('.filter-btn.active');
-        const filterType = activeFilter ? activeFilter.dataset.filter : 'all';
-        
-        debugLog('Filter settings', { searchTerm, filterType });
+        cols = json.table.cols.map(col => col.label);
+        const rows = json.table.rows;
         
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        
-        // Start with all future events
-        let filtered = this.allEvents.filter(e => e.eventDate >= today);
-        
-        debugLog('Future events count', filtered.length);
-        
-        // Apply category filter
-        if (filterType === 'today') {
-          const todayEnd = new Date(today);
-          todayEnd.setHours(23, 59, 59, 999);
-          filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
-        } else if (filterType === 'tomorrow') {
-          const tomorrowEnd = new Date(tomorrow);
-          tomorrowEnd.setHours(23, 59, 59, 999);
-          filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
-        } else if (filterType === 'weekend') {
-          // Find next weekend (Friday to Sunday)
-          const friday = new Date(today);
-          const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-          let daysUntilFriday;
-          
-          if (dayOfWeek <= 5) { // Monday to Friday
-            daysUntilFriday = 5 - dayOfWeek; // Days until this Friday
-          } else { // Weekend
-            daysUntilFriday = 7 - dayOfWeek + 5; // Days until next Friday
-          }
-          
-          friday.setDate(today.getDate() + daysUntilFriday);
-          const sunday = new Date(friday);
-          sunday.setDate(friday.getDate() + 2);
-          sunday.setHours(23, 59, 59, 999);
-          
-          filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate <= sunday);
-        } else if (filterType === 'gratuit') {
-          filtered = filtered.filter(e => {
-            const price = e.price.toLowerCase();
-            return price.includes('gratuit') || price === '0' || price === '0€';
-          });
-        }
-        
-        // Apply text search
-        if (searchTerm) {
-          filtered = filtered.filter(event => {
-            const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
-            return searchableText.includes(searchTerm);
-          });
-        }
-        
-        // Sort by date
-        this.filteredEvents = filtered.sort((a, b) => a.eventDate - b.eventDate);
-        
-        debugLog('Filtered events', { 
-          count: this.filteredEvents.length,
-          sample: this.filteredEvents.slice(0, 2)
-        });
-        
-        this.displayEvents();
-        this.updateEventCount(this.filteredEvents.length);
-      },
-      
-      // Display events in the container
-      displayEvents() {
-        const container = document.getElementById('events-container');
-        
-        if (this.filteredEvents.length === 0) {
-          container.innerHTML = `
-            <div class="no-events">
-              <i class="fas fa-calendar-times"></i>
-              <h2>Aucun événement trouvé</h2>
-              <p>Modifiez vos filtres ou revenez plus tard pour découvrir de nouveaux événements.</p>
-            </div>
-          `;
-          return;
-        }
-        
-        container.innerHTML = this.filteredEvents.map(event => {
-          const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
-            ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
-            : '<i class="fas fa-music"></i>';
+        allEvents = rows.map((row, index) => {
+          const event = {};
+          try {
+            event.id = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']) || `event-${index}`;
+            event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
+            event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
+            event.price = getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé';
+            event.location = getColumnValue(row, ['Lieu', 'Location']) || 'Lieu non précisé';
+            event.address = getColumnValue(row, ['Adresse', 'Address']) || '';
+            event.thumbnail = getColumnValue(row, ['Thumbnail']) || '';
+            event.category = getColumnValue(row, ['Catégorie', 'Category']) || '';
             
-          // Format address display
-          const addressDisplay = event.address && event.address.trim() ? `, ${event.address}` : '';
-          
-          // Format price display
-          const priceHTML = event.price && event.price !== 'Prix non précisé' ? 
-            `<div class="event-detail">
-              <i class="fas fa-tag"></i>
-              <span class="price-tag">${event.price}</span>
-            </div>` : '';
-            
-          // Format category display
-          const categoryHTML = event.category && event.category.trim() ? 
-            `<div class="event-detail">
-              <i class="fas fa-folder"></i>
-              <span>${event.category}</span>
-            </div>` : '';
-            
-          // Format location display
-          const locationHTML = event.location && event.location !== 'Lieu non précisé' ? 
-            `<div class="event-detail">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>${event.location}${addressDisplay}</span>
-            </div>` : '';
-          
-          return `
-            <div class="event-card">
-              <div class="event-image">${imageHTML}</div>
-              <div class="event-content">
-                <time class="event-date" datetime="${event.isoDate || ''}">${event.formattedDate}</time>
-                <h2 class="event-title">${event.title}</h2>
-                <p class="event-description">${event.description}</p>
-                <div class="event-details">
-                  ${locationHTML}
-                  ${priceHTML}
-                  ${categoryHTML}
-                </div>
-                <span class="view-more-btn">Voir les détails <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </div>
-          `;
-        }).join('');
-        
-        debugLog('Events displayed successfully', { count: this.filteredEvents.length });
-      },
-      
-      // Update event count display
-      updateEventCount(count) {
-        const countElement = document.getElementById('event-count');
-        if (countElement) {
-          countElement.textContent = count;
-        }
-      }
-    };
-    
-    // Search functionality with debounce
-    const SearchHandler = {
-      init() {
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) {
-          searchInput.addEventListener('input', this.debounce((e) => {
-            EventManager.filterEvents();
-          }, 300));
-        }
-      },
-      
-      debounce(func, delay) {
-        let timer;
-        return function (...args) {
-          clearTimeout(timer);
-          timer = setTimeout(() => func.apply(this, args), delay);
-        };
-      }
-    };
-    
-    // Filter buttons functionality
-    const FilterHandler = {
-      init() {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            // Update active state for filter buttons
-            document.querySelectorAll('.filter-btn').forEach(b => {
-              b.classList.remove('active');
-              b.setAttribute('aria-pressed', 'false');
-            });
-            
-            btn.classList.add('active');
-            btn.setAttribute('aria-pressed', 'true');
-            
-            // Update filters
-            EventManager.filterEvents();
-          });
-        });
-      }
-    };
-    
-    // View toggle functionality
-    const ViewHandler = {
-      init() {
-        document.querySelectorAll('.view-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            // Update active state for view buttons
-            document.querySelectorAll('.view-btn').forEach(b => {
-              b.classList.remove('active');
-              b.setAttribute('aria-pressed', 'false');
-            });
-            
-            btn.classList.add('active');
-            btn.setAttribute('aria-pressed', 'true');
-            
-            // Apply view style
-            const viewType = btn.dataset.view;
-            const container = document.getElementById('events-container');
-            
-            if (viewType === 'list') {
-              container.style.gridTemplateColumns = '1fr';
+            const dateValue = getColumnValue(row, ['Date']);
+            if (dateValue) {
+              if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+                event.eventDate = new Date(dateValue + "T00:00:00");
+              } else {
+                event.eventDate = new Date(dateValue);
+              }
+              if (isNaN(event.eventDate.getTime())) {
+                event.eventDate = new Date();
+                event.eventDate.setDate(event.eventDate.getDate() + 7);
+                event.formattedDate = "Date à confirmer";
+              } else {
+                event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                });
+              }
             } else {
-              container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(320px, 1fr))';
+              event.eventDate = new Date();
+              event.eventDate.setDate(event.eventDate.getDate() + 7);
+              event.formattedDate = "Date à confirmer";
             }
-          });
+            return event;
+          } catch (e) {
+            logDebug(`Erreur événement ${index}:`, e.message);
+            return null;
+          }
+        }).filter(event => event && event.title && event.title.trim() !== '');
+        
+        localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
+        
+        const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
+        
+        displayEvents(upcomingEvents);
+        updateEventCount(upcomingEvents.length);
+        setupSearch();
+        setupFilters();
+        
+      } catch (error) {
+        logDebug('Erreur:', error);
+        document.getElementById('events-container').innerHTML = `
+          <div class="no-events">
+            <i class="fas fa-exclamation-circle"></i>
+            <h2>Erreur de chargement</h2>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    }
+    
+    function displayEvents(events) {
+      const container = document.getElementById('events-container');
+      
+      if (events.length === 0) {
+        container.innerHTML = `
+          <div class="no-events">
+            <i class="fas fa-calendar-times"></i>
+            <h2>Aucun événement trouvé</h2>
+            <p>Modifiez vos filtres ou revenez plus tard pour découvrir de nouveaux événements.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = events.map(event => {
+        const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
+          ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
+          : '<i class="fas fa-music"></i>';
+        
+        return `
+          <a href="event-detail.html?id=${event.id}" class="event">
+            <div class="event-image">${imageHTML}</div>
+            <div class="event-content">
+              <span class="event-date">${event.formattedDate}</span>
+              <h2>${event.title}</h2>
+              <p class="event-description">${event.description}</p>
+              <div class="event-details">
+                ${event.location !== 'Lieu non précisé' ? `
+                  <div class="event-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${event.location}${event.address ? ', ' + event.address : ''}</span>
+                  </div>
+                ` : ''}
+                ${event.price !== 'Prix non précisé' ? `
+                  <div class="event-detail">
+                    <i class="fas fa-tag"></i>
+                    <span class="price-tag">${event.price}</span>
+                  </div>
+                ` : ''}
+                ${event.category ? `
+                  <div class="event-detail">
+                    <i class="fas fa-folder"></i>
+                    <span>${event.category}</span>
+                  </div>
+                ` : ''}
+              </div>
+              <span class="view-more-btn">Voir les détails <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+    
+    function updateEventCount(count) {
+      document.getElementById('event-count').textContent = count;
+    }
+    
+    function setupSearch() {
+      const searchInput = document.getElementById('search-input');
+      searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        filterEvents(searchTerm);
+      });
+    }
+    
+    function setupFilters() {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterEvents(document.getElementById('search-input').value.toLowerCase().trim());
+        });
+      });
+    }
+    
+    function filterEvents(searchTerm) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      let filtered = allEvents.filter(e => e.eventDate >= today);
+      
+      // Appliquer le filtre de catégorie
+      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+      if (activeFilter === 'today') {
+        const todayEnd = new Date(today);
+        todayEnd.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
+      } else if (activeFilter === 'tomorrow') {
+        const tomorrowEnd = new Date(tomorrow);
+        tomorrowEnd.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
+      } else if (activeFilter === 'weekend') {
+        const friday = new Date();
+        const sunday = new Date();
+        const dayOfWeek = today.getDay();
+        const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+        const daysUntilSunday = daysUntilFriday + 2;
+        friday.setDate(today.getDate() + daysUntilFriday);
+        sunday.setDate(today.getDate() + daysUntilSunday);
+        filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate <= sunday);
+      } else if (activeFilter === 'gratuit') {
+        filtered = filtered.filter(e => e.price && (e.price.toLowerCase().includes('gratuit') || e.price === '0'));
+      }
+      
+      // Appliquer la recherche textuelle
+      if (searchTerm) {
+        filtered = filtered.filter(event => {
+          const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
+          return searchableText.includes(searchTerm);
         });
       }
-    };
+      
+      filtered.sort((a, b) => a.eventDate - b.eventDate);
+      displayEvents(filtered);
+      updateEventCount(filtered.length);
+    }
     
-    // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
-      debugLog('DOM loaded, initializing...');
-      
-      // Check for cached events first
-      const cachedEvents = EventManager.getStoredEvents();
-      if (cachedEvents && cachedEvents.length > 0) {
-        debugLog('Using cached events', { count: cachedEvents.length });
-        EventManager.allEvents = cachedEvents;
-        EventManager.filterEvents();
-      }
-      
-      // Always try to fetch fresh data (will update cache if successful)
-      EventManager.fetchEvents();
-      
-      // Setup handlers
-      SearchHandler.init();
-      FilterHandler.init();
-      ViewHandler.init();
-      
-      debugLog('Initialization complete');
+      logDebug('Initialisation Pioche Agenda');
+      fetchEvents();
     });
   </script>
 </body>
