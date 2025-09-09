@@ -21,16 +21,26 @@
   
   <!-- CSS externe -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   
   <style>
     :root {
       --primary-color: #1e88e5;
+      --primary-dark: #0d47a1;
       --secondary-color: #ff6f00;
+      --accent-color: #e91e63;
       --background-color: #f5f7fa;
       --card-color: #ffffff;
       --text-color: #333333;
-      --accent-color: #e91e63;
+      --text-light: #666666;
+      --border-color: #e0e0e0;
+      --shadow-light: rgba(0, 0, 0, 0.05);
+      --shadow-medium: rgba(0, 0, 0, 0.08);
+      --shadow-dark: rgba(0, 0, 0, 0.12);
+      --transition: all 0.3s ease;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --border-radius-lg: 30px;
     }
     
     * {
@@ -40,16 +50,32 @@
     }
     
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
       background-color: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* Accessibility helpers */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     
     /* Navigation */
     nav {
       background: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 10px var(--shadow-light);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -70,6 +96,12 @@
       color: var(--primary-color);
       text-decoration: none;
       font-weight: 700;
+      transition: var(--transition);
+    }
+    
+    .logo:hover {
+      color: var(--primary-dark);
+      transform: translateY(-2px);
     }
     
     .nav-links {
@@ -82,54 +114,87 @@
       color: var(--text-color);
       text-decoration: none;
       font-weight: 500;
-      transition: color 0.3s;
+      transition: var(--transition);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius-sm);
     }
     
     .nav-links a:hover {
       color: var(--primary-color);
+      background-color: rgba(30, 136, 229, 0.05);
     }
     
     .nav-links a.active {
       color: var(--primary-color);
       font-weight: 600;
+      background-color: rgba(30, 136, 229, 0.1);
     }
     
+    /* Header */
     header {
-      background: linear-gradient(135deg, var(--primary-color), #0d47a1);
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
       color: white;
-      padding: 2rem 0;
+      padding: 3rem 0;
       text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+      background-size: cover;
+      opacity: 0.1;
     }
     
     .header-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
+      position: relative;
+      z-index: 1;
     }
     
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     
     .subtitle {
       font-size: 1.2rem;
       opacity: 0.9;
       margin-bottom: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
     
     .marseille-icon {
-      font-size: 2rem;
+      font-size: 3rem;
       margin-bottom: 1rem;
       color: var(--secondary-color);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
     
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 20px;
+      flex: 1;
     }
     
     /* Breadcrumb */
@@ -142,6 +207,7 @@
       display: flex;
       list-style: none;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
     
     .breadcrumb li::after {
@@ -157,12 +223,15 @@
     .breadcrumb a {
       color: var(--primary-color);
       text-decoration: none;
+      transition: var(--transition);
     }
     
     .breadcrumb a:hover {
       text-decoration: underline;
+      color: var(--primary-dark);
     }
     
+    /* Filters */
     .filters {
       display: flex;
       justify-content: space-between;
@@ -170,10 +239,10 @@
       margin-bottom: 2rem;
       flex-wrap: wrap;
       gap: 1rem;
-      background: white;
+      background: var(--card-color);
       padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 10px var(--shadow-light);
     }
     
     .search-box {
@@ -185,11 +254,11 @@
     .search-box input {
       width: 100%;
       padding: 12px 20px;
-      border: 2px solid #e0e0e0;
-      border-radius: 30px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius-lg);
       font-size: 1rem;
       outline: none;
-      transition: all 0.3s;
+      transition: var(--transition);
     }
     
     .search-box input:focus {
@@ -202,7 +271,8 @@
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
-      color: #888;
+      color: var(--text-light);
+      pointer-events: none;
     }
     
     .filter-buttons {
@@ -213,18 +283,20 @@
     
     .filter-btn {
       padding: 8px 16px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color);
       border-radius: 20px;
-      background: white;
+      background: var(--card-color);
       color: var(--text-color);
       cursor: pointer;
-      transition: all 0.3s;
+      transition: var(--transition);
       font-size: 0.9rem;
+      font-weight: 500;
     }
     
     .filter-btn:hover {
       border-color: var(--primary-color);
       color: var(--primary-color);
+      background-color: rgba(30, 136, 229, 0.05);
     }
     
     .filter-btn.active {
@@ -233,16 +305,20 @@
       border-color: var(--primary-color);
     }
     
+    /* Events Header */
     .events-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
     
     .events-count {
-      color: #666;
+      color: var(--text-light);
       font-size: 1.1rem;
+      font-weight: 500;
     }
     
     .view-options {
@@ -252,11 +328,14 @@
     
     .view-btn {
       padding: 8px 12px;
-      border: 1px solid #ddd;
-      background: white;
+      border: 1px solid var(--border-color);
+      background: var(--card-color);
       cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.3s;
+      border-radius: var(--border-radius-sm);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
     .view-btn.active {
@@ -265,29 +344,35 @@
       border-color: var(--primary-color);
     }
     
-    .events-grid {
+    .view-btn:hover {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    /* Events Grid */
+    .events-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2rem;
     }
     
-    .event {
+    .event-card {
       background-color: var(--card-color);
-      border-radius: 12px;
+      border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 15px var(--shadow-medium);
+      transition: var(--transition);
       height: 100%;
       display: flex;
       flex-direction: column;
-      cursor: pointer;
       text-decoration: none;
       color: inherit;
     }
     
-    .event:hover {
+    .event-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 25px var(--shadow-dark);
     }
     
     .event-image {
@@ -306,10 +391,10 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s;
+      transition: transform 0.5s ease;
     }
     
-    .event:hover .event-image img {
+    .event-card:hover .event-image img {
       transform: scale(1.05);
     }
     
@@ -329,18 +414,26 @@
       font-size: 0.85rem;
       margin-bottom: 1rem;
       font-weight: 600;
+      align-self: flex-start;
     }
     
-    .event h2 {
+    .event-title {
       font-size: 1.4rem;
       margin-bottom: 0.8rem;
       color: var(--primary-color);
       font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .event-title:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
     }
     
     .event-description {
       margin-bottom: 1.2rem;
-      color: #555;
+      color: var(--text-light);
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -352,7 +445,7 @@
     .event-details {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.8rem;
       font-size: 0.95rem;
       margin-top: auto;
     }
@@ -360,7 +453,7 @@
     .event-detail {
       display: flex;
       align-items: flex-start;
-      gap: 0.5rem;
+      gap: 0.8rem;
     }
     
     .event-detail i {
@@ -370,19 +463,21 @@
     }
     
     .view-more-btn {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
       color: white;
       border: none;
       padding: 10px 20px;
-      border-radius: 25px;
+      border-radius: var(--border-radius-lg);
       font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: var(--transition);
       margin-top: 1rem;
       text-align: center;
       display: inline-block;
       text-decoration: none;
       font-weight: 600;
+      align-self: flex-start;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
     .view-more-btn:hover {
@@ -390,13 +485,14 @@
       box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
     }
     
+    /* No events message */
     .no-events {
       grid-column: 1 / -1;
       text-align: center;
       padding: 4rem 2rem;
       background-color: var(--card-color);
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 15px var(--shadow-medium);
     }
     
     .no-events i {
@@ -406,20 +502,28 @@
     }
     
     .no-events h2 {
-      color: #666;
+      color: var(--text-light);
       margin-bottom: 1rem;
     }
     
+    /* Loading state */
     .loading {
       text-align: center;
       padding: 3rem;
       font-size: 1.2rem;
-      color: #666;
+      color: var(--text-light);
+      grid-column: 1 / -1;
     }
     
     .loading i {
       font-size: 2rem;
       margin-bottom: 1rem;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     
     .price-tag {
@@ -429,8 +533,10 @@
       padding: 3px 10px;
       border-radius: 20px;
       font-size: 0.8rem;
+      font-weight: 500;
     }
     
+    /* Footer */
     footer {
       background: #2c3e50;
       color: white;
@@ -452,39 +558,14 @@
       color: var(--secondary-color);
     }
     
-    .debug-info {
-      background-color: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
-    }
-    
-    .debug-toggle {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin: 20px auto;
-      font-size: 12px;
-      display: block;
-    }
-    
+    /* Responsive improvements */
     @media (max-width: 768px) {
       .nav-links {
         gap: 1rem;
         font-size: 0.9rem;
       }
       
-      .events-grid {
+      .events-container {
         grid-template-columns: 1fr;
       }
       
@@ -504,20 +585,57 @@
       h1 {
         font-size: 2rem;
       }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+      
+      .marseille-icon {
+        font-size: 2rem;
+      }
+      
+      .event-content {
+        padding: 1rem;
+      }
+      
+      .event-title {
+        font-size: 1.2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .filter-buttons {
+        gap: 0.3rem;
+      }
+      
+      .filter-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .event-date, .price-tag {
+        font-size: 0.8rem;
+      }
     }
   </style>
+  
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-V5D8WPSPGB');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5D8WPSPGB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5D8WPSPGB');
+  </script>
 </head>
 <body>
   <!-- Navigation -->
-  <nav>
+  <nav role="navigation" aria-label="Navigation principale">
     <div class="nav-container">
       <a href="/" class="logo">Pioche</a>
       <ul class="nav-links">
@@ -539,25 +657,27 @@
 
   <main>
     <!-- Breadcrumb -->
-    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="/">Accueil</a></li>
-        <li>Agenda</li>
+        <li aria-current="page">Agenda</li>
       </ol>
     </nav>
     
     <!-- Filtres et recherche -->
     <div class="filters">
       <div class="search-box">
+        <label for="search-input" class="sr-only">Rechercher parmi les événements</label>
         <input type="text" id="search-input" placeholder="Rechercher un événement, concert, exposition...">
         <i class="fas fa-search search-icon"></i>
       </div>
-      <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">Tous</button>
-        <button class="filter-btn" data-filter="today">Ce soir</button>
-        <button class="filter-btn" data-filter="tomorrow">Demain</button>
-        <button class="filter-btn" data-filter="weekend">Ce week-end</button>
-        <button class="filter-btn" data-filter="gratuit">Gratuit</button>
+      
+      <div class="filter-buttons" role="group" aria-label="Filtres des événements">
+        <button class="filter-btn active" data-filter="all" aria-pressed="true">Tous</button>
+        <button class="filter-btn" data-filter="today" aria-pressed="false">Ce soir</button>
+        <button class="filter-btn" data-filter="tomorrow" aria-pressed="false">Demain</button>
+        <button class="filter-btn" data-filter="weekend" aria-pressed="false">Ce week-end</button>
+        <button class="filter-btn" data-filter="gratuit" aria-pressed="false">Gratuit</button>
       </div>
     </div>
     
@@ -566,26 +686,24 @@
       <div class="events-count">
         <span id="event-count">0</span> événements trouvés
       </div>
-      <div class="view-options">
-        <button class="view-btn active" data-view="grid">
+      
+      <div class="view-options" role="group" aria-label="Options d'affichage">
+        <button class="view-btn active" data-view="grid" aria-pressed="true" title="Affichage grille">
           <i class="fas fa-th"></i>
         </button>
-        <button class="view-btn" data-view="list">
+        <button class="view-btn" data-view="list" aria-pressed="false" title="Affichage liste">
           <i class="fas fa-list"></i>
         </button>
       </div>
     </div>
     
     <!-- Liste des événements -->
-    <div id="events-container" class="events-grid">
+    <div id="events-container" class="events-container">
       <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner"></i>
         <p>Chargement des événements...</p>
       </div>
     </div>
-    
-    <button class="debug-toggle" onclick="toggleDebug()">Debug</button>
-    <div id="debug-info" class="debug-info"></div>
   </main>
 
   <footer>
@@ -596,101 +714,95 @@
   </footer>
 
   <script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
-    let allEvents = [];
-    let debugLogs = [];
-
-    function logDebug(message, data = null) {
-      const timestamp = new Date().toLocaleTimeString();
-      let logEntry = `[${timestamp}] ${message}`;
-      if (data) {
-        logEntry += "\n" + JSON.stringify(data, null, 2);
-      }
-      debugLogs.push(logEntry);
-      console.log(message, data);
-    }
-    
-    function toggleDebug() {
-      const debugDiv = document.getElementById('debug-info');
-      const button = document.querySelector('.debug-toggle');
-      if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
-        debugDiv.style.display = 'block';
-        debugDiv.textContent = debugLogs.join('\n\n');
-        button.textContent = 'Masquer Debug';
-      } else {
-        debugDiv.style.display = 'none';
-        button.textContent = 'Debug';
-      }
-    }
-    
-    function getColumnValue(row, possibleNames) {
-      for (let name of possibleNames) {
-        const index = cols.indexOf(name);
+    // Event data management
+    const EventManager = {
+      sheetURL: "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0",
+      allEvents: [],
+      filteredEvents: [],
+      
+      // Normalize text data from sheet
+      cleanText(text) {
+        if (text && typeof text === 'string') {
+          return text.replace(/#.*$/gm, '').trim();
+        }
+        return text;
+      },
+      
+      // Find column index with preference for specific labels
+      findColumn(cols, preferredLabels) {
+        for (const label of preferredLabels) {
+          const index = cols.findIndex(col => col === label);
+          if (index !== -1) return index;
+        }
+        return -1;
+      },
+      
+      // Extract column value from a row
+      getColumnValue(row, possibleNames, cols) {
+        const index = this.findColumn(cols, possibleNames);
         if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
-          if (name === "Date" && row.c[index].f) {
+          if (possibleNames.includes("Date") && row.c[index].f) {
             return row.c[index].f;
           }
           let value = row.c[index].v;
           if (typeof value === 'string') {
-            value = value.replace(/#+/g, "").trim();
+            value = this.cleanText(value);
           }
           return value;
         }
-      }
-      return null;
-    }
-    
-    let cols = [];
-
-    async function fetchEvents() {
-      try {
-        logDebug('🚀 Chargement des événements Pioche');
-        
-        const response = await fetch(sheetURL);
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        
-        const text = await response.text();
-        const jsonStart = text.indexOf('{');
-        const jsonEnd = text.lastIndexOf('}') + 1;
-        
-        if (jsonStart === -1 || jsonEnd === 0) {
-          throw new Error('Format de réponse invalide');
-        }
-        
-        const jsonText = text.substring(jsonStart, jsonEnd);
-        const json = JSON.parse(jsonText);
-        
-        if (!json.table || !json.table.rows || !json.table.cols) {
-          throw new Error('Structure de données invalide');
-        }
-        
-        cols = json.table.cols.map(col => col.label);
-        const rows = json.table.rows;
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        allEvents = rows.map((row, index) => {
-          const event = {};
-          try {
-            event.id = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']) || `event-${index}`;
-            event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
-            event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
-            event.price = getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé';
-            event.location = getColumnValue(row, ['Lieu', 'Location']) || 'Lieu non précisé';
-            event.address = getColumnValue(row, ['Adresse', 'Address']) || '';
-            event.thumbnail = getColumnValue(row, ['Thumbnail']) || '';
-            event.category = getColumnValue(row, ['Catégorie', 'Category']) || '';
+        return null;
+      },
+      
+      // Fetch events from Google Sheets
+      async fetchEvents() {
+        try {
+          const response = await fetch(this.sheetURL);
+          if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+          }
+          
+          const text = await response.text();
+          const jsonStart = text.indexOf('{');
+          const jsonEnd = text.lastIndexOf('}') + 1;
+          
+          if (jsonStart === -1 || jsonEnd === 0) {
+            throw new Error('Format de réponse invalide');
+          }
+          
+          const jsonText = text.substring(jsonStart, jsonEnd);
+          const json = JSON.parse(jsonText);
+          
+          if (!json.table || !json.table.rows || !json.table.cols) {
+            throw new Error('Structure de données invalide');
+          }
+          
+          const cols = json.table.cols.map(col => col.label);
+          const rows = json.table.rows;
+          
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          this.allEvents = rows.map((row, index) => {
+            const event = {
+              id: this.getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID'], cols) || `event-${index}`,
+              title: this.getColumnValue(row, ['Titre', 'Title'], cols) || `Événement ${index + 1}`,
+              description: this.getColumnValue(row, ['Description', 'Description courte'], cols) || 'Description non disponible',
+              price: this.getColumnValue(row, ['Prix', 'Price'], cols) || 'Prix non précisé',
+              location: this.getColumnValue(row, ['Lieu', 'Location'], cols) || 'Lieu non précisé',
+              address: this.getColumnValue(row, ['Adresse', 'Address'], cols) || '',
+              thumbnail: this.getColumnValue(row, ['Thumbnail'], cols) || '',
+              category: this.getColumnValue(row, ['Catégorie', 'Category'], cols) || ''
+            };
             
-            const dateValue = getColumnValue(row, ['Date']);
+            // Process event date
+            const dateValue = this.getColumnValue(row, ['Date'], cols);
             if (dateValue) {
               if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
                 event.eventDate = new Date(dateValue + "T00:00:00");
               } else {
                 event.eventDate = new Date(dateValue);
               }
+              
               if (isNaN(event.eventDate.getTime())) {
                 event.eventDate = new Date();
                 event.eventDate.setDate(event.eventDate.getDate() + 7);
@@ -702,163 +814,262 @@
                   month: 'long',
                   year: 'numeric'
                 });
+                event.isoDate = event.eventDate.toISOString();
               }
             } else {
               event.eventDate = new Date();
               event.eventDate.setDate(event.eventDate.getDate() + 7);
               event.formattedDate = "Date à confirmer";
             }
+            
             return event;
-          } catch (e) {
-            logDebug(`Erreur événement ${index}:`, e.message);
-            return null;
-          }
-        }).filter(event => event && event.title && event.title.trim() !== '');
-        
-        localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
-        
-        const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
-        
-        displayEvents(upcomingEvents);
-        updateEventCount(upcomingEvents.length);
-        setupSearch();
-        setupFilters();
-        
-      } catch (error) {
-        logDebug('Erreur:', error);
-        document.getElementById('events-container').innerHTML = `
-          <div class="no-events">
-            <i class="fas fa-exclamation-circle"></i>
-            <h2>Erreur de chargement</h2>
-            <p>${error.message}</p>
-          </div>
-        `;
-      }
-    }
-    
-    function displayEvents(events) {
-      const container = document.getElementById('events-container');
-      
-      if (events.length === 0) {
-        container.innerHTML = `
-          <div class="no-events">
-            <i class="fas fa-calendar-times"></i>
-            <h2>Aucun événement trouvé</h2>
-            <p>Modifiez vos filtres ou revenez plus tard pour découvrir de nouveaux événements.</p>
-          </div>
-        `;
-        return;
-      }
-      
-      container.innerHTML = events.map(event => {
-        const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
-          ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
-          : '<i class="fas fa-music"></i>';
-        
-        return `
-          <a href="event-detail.html?id=${event.id}" class="event">
-            <div class="event-image">${imageHTML}</div>
-            <div class="event-content">
-              <span class="event-date">${event.formattedDate}</span>
-              <h2>${event.title}</h2>
-              <p class="event-description">${event.description}</p>
-              <div class="event-details">
-                ${event.location !== 'Lieu non précisé' ? `
-                  <div class="event-detail">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>${event.location}${event.address ? ', ' + event.address : ''}</span>
-                  </div>
-                ` : ''}
-                ${event.price !== 'Prix non précisé' ? `
-                  <div class="event-detail">
-                    <i class="fas fa-tag"></i>
-                    <span class="price-tag">${event.price}</span>
-                  </div>
-                ` : ''}
-                ${event.category ? `
-                  <div class="event-detail">
-                    <i class="fas fa-folder"></i>
-                    <span>${event.category}</span>
-                  </div>
-                ` : ''}
-              </div>
-              <span class="view-more-btn">Voir les détails <i class="fas fa-arrow-right"></i></span>
+          }).filter(event => event && event.title && this.cleanText(event.title));
+          
+          // Store in localStorage with timestamp
+          const timestamp = new Date().getTime();
+          localStorage.setItem('marseilleEvents', JSON.stringify({
+            timestamp,
+            data: this.allEvents
+          }));
+          
+          this.filterEvents();
+        } catch (error) {
+          console.error('Erreur:', error);
+          document.getElementById('events-container').innerHTML = `
+            <div class="no-events">
+              <i class="fas fa-exclamation-circle"></i>
+              <h2>Erreur de chargement</h2>
+              <p>Impossible de charger les événements. Veuillez réessayer plus tard.</p>
             </div>
-          </a>
-        `;
-      }).join('');
-    }
-    
-    function updateEventCount(count) {
-      document.getElementById('event-count').textContent = count;
-    }
-    
-    function setupSearch() {
-      const searchInput = document.getElementById('search-input');
-      searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        filterEvents(searchTerm);
-      });
-    }
-    
-    function setupFilters() {
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          filterEvents(document.getElementById('search-input').value.toLowerCase().trim());
-        });
-      });
-    }
-    
-    function filterEvents(searchTerm) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+          `;
+          this.updateEventCount(0);
+        }
+      },
       
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
+      // Get events from localStorage if recent
+      getStoredEvents() {
+        try {
+          const stored = localStorage.getItem('marseilleEvents');
+          if (stored) {
+            const data = JSON.parse(stored);
+            const now = new Date().getTime();
+            // Cache for 1 hour
+            if (now - data.timestamp < 3600000) {
+              return data.data;
+            }
+          }
+        } catch (e) {
+          console.error('Error parsing stored events:', e);
+        }
+        return null;
+      },
       
-      let filtered = allEvents.filter(e => e.eventDate >= today);
+      // Filter events based on current settings
+      filterEvents() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        
+        let filtered = this.allEvents.filter(e => e.eventDate >= today);
+        
+        // Apply category filter
+        if (activeFilter === 'today') {
+          const todayEnd = new Date(today);
+          todayEnd.setHours(23, 59, 59, 999);
+          filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
+        } else if (activeFilter === 'tomorrow') {
+          const tomorrowEnd = new Date(tomorrow);
+          tomorrowEnd.setHours(23, 59, 59, 999);
+          filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
+        } else if (activeFilter === 'weekend') {
+          const friday = new Date();
+          const sunday = new Date();
+          const dayOfWeek = today.getDay();
+          const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+          const daysUntilSunday = daysUntilFriday + 2;
+          friday.setDate(today.getDate() + daysUntilFriday);
+          sunday.setDate(today.getDate() + daysUntilSunday);
+          filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate <= sunday);
+        } else if (activeFilter === 'gratuit') {
+          filtered = filtered.filter(e => {
+            const price = e.price.toLowerCase();
+            return price.includes('gratuit') || price === '0';
+          });
+        }
+        
+        // Apply text search
+        if (searchTerm) {
+          filtered = filtered.filter(event => {
+            const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
+            return searchableText.includes(searchTerm);
+          });
+        }
+        
+        this.filteredEvents = filtered.sort((a, b) => a.eventDate - b.eventDate);
+        this.displayEvents();
+        this.updateEventCount(this.filteredEvents.length);
+      },
       
-      // Appliquer le filtre de catégorie
-      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-      if (activeFilter === 'today') {
-        const todayEnd = new Date(today);
-        todayEnd.setHours(23, 59, 59, 999);
-        filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
-      } else if (activeFilter === 'tomorrow') {
-        const tomorrowEnd = new Date(tomorrow);
-        tomorrowEnd.setHours(23, 59, 59, 999);
-        filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
-      } else if (activeFilter === 'weekend') {
-        const friday = new Date();
-        const sunday = new Date();
-        const dayOfWeek = today.getDay();
-        const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
-        const daysUntilSunday = daysUntilFriday + 2;
-        friday.setDate(today.getDate() + daysUntilFriday);
-        sunday.setDate(today.getDate() + daysUntilSunday);
-        filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate <= sunday);
-      } else if (activeFilter === 'gratuit') {
-        filtered = filtered.filter(e => e.price && (e.price.toLowerCase().includes('gratuit') || e.price === '0'));
+      // Display events in the container
+      displayEvents() {
+        const container = document.getElementById('events-container');
+        
+        if (this.filteredEvents.length === 0) {
+          container.innerHTML = `
+            <div class="no-events">
+              <i class="fas fa-calendar-times"></i>
+              <h2>Aucun événement trouvé</h2>
+              <p>Modifiez vos filtres ou revenez plus tard pour découvrir de nouveaux événements.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = this.filteredEvents.map(event => {
+          const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
+            ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
+            : '<i class="fas fa-music"></i>';
+            
+          // Format address display
+          const addressDisplay = event.address ? `, ${event.address}` : '';
+          
+          // Format price display
+          const priceHTML = event.price !== 'Prix non précisé' ? 
+            `<div class="event-detail">
+              <i class="fas fa-tag"></i>
+              <span class="price-tag">${event.price}</span>
+            </div>` : '';
+            
+          // Format category display
+          const categoryHTML = event.category ? 
+            `<div class="event-detail">
+              <i class="fas fa-folder"></i>
+              <span>${event.category}</span>
+            </div>` : '';
+            
+          // Format location display
+          const locationHTML = event.location !== 'Lieu non précisé' ? 
+            `<div class="event-detail">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>${event.location}${addressDisplay}</span>
+            </div>` : '';
+          
+          return `
+            <a href="event-detail.html?id=${event.id}" class="event-card">
+              <div class="event-image">${imageHTML}</div>
+              <div class="event-content">
+                <time class="event-date" datetime="${event.isoDate || ''}">${event.formattedDate}</time>
+                <h2 class="event-title">${event.title}</h2>
+                <p class="event-description">${event.description}</p>
+                <div class="event-details">
+                  ${locationHTML}
+                  ${priceHTML}
+                  ${categoryHTML}
+                </div>
+                <span class="view-more-btn">Voir les détails <i class="fas fa-arrow-right"></i></span>
+              </div>
+            </a>
+          `;
+        }).join('');
+      },
+      
+      // Update event count display
+      updateEventCount(count) {
+        document.getElementById('event-count').textContent = count;
       }
+    };
+    
+    // Search functionality with debounce
+    const SearchHandler = {
+      init() {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.addEventListener('input', this.debounce((e) => {
+            EventManager.filterEvents();
+          }, 300));
+        }
+      },
       
-      // Appliquer la recherche textuelle
-      if (searchTerm) {
-        filtered = filtered.filter(event => {
-          const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
-          return searchableText.includes(searchTerm);
+      debounce(func, delay) {
+        let timer;
+        return function (...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => func.apply(this, args), delay);
+        };
+      }
+    };
+    
+    // Filter buttons functionality
+    const FilterHandler = {
+      init() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            // Update active state for filter buttons
+            document.querySelectorAll('.filter-btn').forEach(b => {
+              b.classList.remove('active');
+              b.setAttribute('aria-pressed', 'false');
+            });
+            
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            
+            // Update filters
+            EventManager.filterEvents();
+          });
         });
       }
-      
-      filtered.sort((a, b) => a.eventDate - b.eventDate);
-      displayEvents(filtered);
-      updateEventCount(filtered.length);
-    }
+    };
     
+    // View toggle functionality
+    const ViewHandler = {
+      init() {
+        document.querySelectorAll('.view-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            // Update active state for view buttons
+            document.querySelectorAll('.view-btn').forEach(b => {
+              b.classList.remove('active');
+              b.setAttribute('aria-pressed', 'false');
+            });
+            
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            
+            // Apply view style (simplified for example)
+            const viewType = btn.dataset.view;
+            const container = document.getElementById('events-container');
+            
+            if (viewType === 'list') {
+              container.classList.add('events-list');
+              container.classList.remove('events-container');
+            } else {
+              container.classList.add('events-container');
+              container.classList.remove('events-list');
+            }
+          });
+        });
+      }
+    };
+    
+    // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
-      logDebug('Initialisation Pioche Agenda');
-      fetchEvents();
+      // Check for cached events
+      const cachedEvents = EventManager.getStoredEvents();
+      if (cachedEvents) {
+        EventManager.allEvents = cachedEvents;
+        EventManager.filterEvents();
+      } else {
+        EventManager.fetchEvents();
+      }
+      
+      // Setup handlers
+      SearchHandler.init();
+      FilterHandler.init();
+      ViewHandler.init();
     });
   </script>
 </body>
