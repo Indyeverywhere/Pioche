@@ -133,37 +133,6 @@
       padding: 0 20px;
     }
     
-    /* Breadcrumb */
-    .breadcrumb {
-      padding: 1rem 0;
-      font-size: 0.9rem;
-    }
-    
-    .breadcrumb ol {
-      display: flex;
-      list-style: none;
-      gap: 0.5rem;
-    }
-    
-    .breadcrumb li::after {
-      content: "›";
-      margin-left: 0.5rem;
-      color: #999;
-    }
-    
-    .breadcrumb li:last-child::after {
-      content: "";
-    }
-    
-    .breadcrumb a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-    
-    .breadcrumb a:hover {
-      text-decoration: underline;
-    }
-    
     .filters {
       display: flex;
       justify-content: space-between;
@@ -497,13 +466,6 @@
   </nav>
 
   <main>
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb" aria-label="Fil d'Ariane">
-      <ol>
-        <li><a href="/">Accueil</a></li>
-        <li>Agenda</li>
-      </ol>
-    </nav>
     
     <!-- Filtres et recherche -->
     <div class="filters">
@@ -801,5 +763,6 @@
   </script>
 </body>
 </html>
+
 
 
