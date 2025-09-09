@@ -3,27 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  
   <!-- SEO Meta Tags -->
   <title>Agenda des Événements à Marseille - Pioche | Concerts, Expos, Sorties 2025</title>
   <meta name="description" content="Découvrez l'agenda complet des événements à Marseille sur Pioche : concerts, expositions, théâtres, festivals. Trouvez que faire ce week-end et planifiez vos sorties.">
   <meta name="keywords" content="agenda Marseille, événements Marseille, concerts Marseille, expositions Marseille, sorties Marseille, Pioche agenda">
-
+  
   <!-- Open Graph -->
   <meta property="og:title" content="Agenda Marseille - Tous les événements sur Pioche">
   <meta property="og:description" content="L'agenda complet des sorties à Marseille : concerts, expos, théâtres, festivals. Planifiez vos sorties avec Pioche.">
   <meta property="og:url" content="https://pioche.me/agenda.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Pioche">
-
+  
   <!-- Canonical URL -->
   <link rel="canonical" href="https://pioche.me/agenda.html">
-
+  
   <!-- CSS externe -->
-  <!-- Optimized Google Fonts loading with display=swap -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
+  
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -33,68 +32,69 @@
       --text-color: #333333;
       --accent-color: #e91e63;
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
     }
-
+    
     /* Navigation */
     nav {
-      background: linear-gradient(135deg, var(--primary-color), #0d47a1);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+  background: linear-gradient(135deg, var(--primary-color), #0d47a1); /* Changer de "white" vers ce gradient */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+    
+   .nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary-color), #0d47a1); /* Ajouter cette ligne */
+}
+    
     .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      color: white;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: white; /* Changer de "var(--primary-color)" vers "white" */
+  text-decoration: none;
+  font-weight: 700;
+}
+    
     .nav-links {
       display: flex;
       gap: 2rem;
       list-style: none;
     }
-
+    
     .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
+  color: white; /* Changer de "var(--text-color)" vers "white" */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+    
     .nav-links a:hover {
-      color: var(--secondary-color);
-    }
-
+  color: var(--secondary-color); /* Changer de "var(--primary-color)" vers "var(--secondary-color)" */
+}
+    
     .nav-links a.active {
-      color: var(--secondary-color);
-      font-weight: 600;
-    }
-
+  color: var(--secondary-color); /* Changer de "var(--primary-color)" vers "var(--secondary-color)" */
+  font-weight: 600;
+}
+    
     header {
       background: linear-gradient(135deg, var(--primary-color), #0d47a1);
       color: white;
@@ -102,37 +102,37 @@
       text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
+    
     .header-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
-
+    
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
     }
-
+    
     .subtitle {
       font-size: 1.2rem;
       opacity: 0.9;
       margin-bottom: 1rem;
     }
-
+    
     .marseille-icon {
       font-size: 2rem;
       margin-bottom: 1rem;
       color: var(--secondary-color);
     }
-
+    
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 20px;
     }
-
+    
     .filters {
       display: flex;
       justify-content: space-between;
@@ -145,13 +145,13 @@
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
-
+    
     .search-box {
       flex-grow: 1;
       max-width: 500px;
       position: relative;
     }
-
+    
     .search-box input {
       width: 100%;
       padding: 12px 20px;
@@ -161,12 +161,12 @@
       outline: none;
       transition: all 0.3s;
     }
-
+    
     .search-box input:focus {
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
     }
-
+    
     .search-icon {
       position: absolute;
       right: 20px;
@@ -174,13 +174,13 @@
       transform: translateY(-50%);
       color: #888;
     }
-
+    
     .filter-buttons {
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
     }
-
+    
     .filter-btn {
       padding: 8px 16px;
       border: 1px solid #ddd;
@@ -191,24 +191,24 @@
       transition: all 0.3s;
       font-size: 0.9rem;
     }
-
+    
     .filter-btn:hover {
       border-color: var(--primary-color);
       color: var(--primary-color);
     }
-
+    
     .filter-btn.active {
       background: var(--primary-color);
       color: white;
       border-color: var(--primary-color);
-    }
-
+    }  
+  
     .events-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2rem;
     }
-
+    
     .event {
       background-color: var(--card-color);
       border-radius: 12px;
@@ -222,12 +222,12 @@
       text-decoration: none;
       color: inherit;
     }
-
+    
     .event:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }
-
+    
     .event-image {
       height: 200px;
       overflow: hidden;
@@ -238,30 +238,26 @@
       justify-content: center;
       color: white;
       font-size: 3rem;
-      /* Added background color for image loading/fallback */
-      background-color: #f0f0f0;
     }
-
+    
     .event-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform 0.5s;
-      /* Ensure background is transparent if icon is shown via JS */
-      background-color: transparent;
     }
-
+    
     .event:hover .event-image img {
       transform: scale(1.05);
     }
-
+    
     .event-content {
       padding: 1.5rem;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
     }
-
+    
     .event-date {
       display: inline-block;
       background-color: var(--accent-color);
@@ -272,14 +268,14 @@
       margin-bottom: 1rem;
       font-weight: 600;
     }
-
+    
     .event h2 {
       font-size: 1.4rem;
       margin-bottom: 0.8rem;
       color: var(--primary-color);
       font-weight: 600;
     }
-
+    
     .event-description {
       margin-bottom: 1.2rem;
       color: #555;
@@ -290,7 +286,7 @@
       flex-grow: 1;
       line-height: 1.5;
     }
-
+    
     .event-details {
       display: flex;
       flex-direction: column;
@@ -298,19 +294,19 @@
       font-size: 0.95rem;
       margin-top: auto;
     }
-
+    
     .event-detail {
       display: flex;
       align-items: flex-start;
       gap: 0.5rem;
     }
-
+    
     .event-detail i {
       color: var(--primary-color);
       min-width: 20px;
       margin-top: 4px;
     }
-
+    
     .view-more-btn {
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
       color: white;
@@ -326,12 +322,12 @@
       text-decoration: none;
       font-weight: 600;
     }
-
+    
     .view-more-btn:hover {
       transform: translateX(5px);
       box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
     }
-
+    
     .no-events {
       grid-column: 1 / -1;
       text-align: center;
@@ -340,37 +336,30 @@
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
-
+    
     .no-events i {
       font-size: 4rem;
       color: #ddd;
       margin-bottom: 1rem;
     }
-
+    
     .no-events h2 {
       color: #666;
       margin-bottom: 1rem;
     }
-
+    
     .loading {
       text-align: center;
       padding: 3rem;
       font-size: 1.2rem;
       color: #666;
     }
-
-    /* Enhanced loading spinner animation */
+    
     .loading i {
       font-size: 2rem;
       margin-bottom: 1rem;
-      animation: pulse 1.5s ease-in-out infinite alternate;
     }
-
-    @keyframes pulse {
-      0% { opacity: 0.5; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
+    
     .price-tag {
       display: inline-block;
       background-color: var(--secondary-color);
@@ -379,7 +368,7 @@
       border-radius: 20px;
       font-size: 0.8rem;
     }
-
+    
     footer {
       background: #2c3e50;
       color: white;
@@ -387,20 +376,20 @@
       padding: 2rem 0;
       margin-top: 4rem;
     }
-
+    
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
-
+    
     .footer-brand {
       font-family: 'Playfair Display', serif;
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
       color: var(--secondary-color);
     }
-
+    
     .debug-info {
       background-color: #f8f9fa;
       border: 1px solid #ddd;
@@ -414,7 +403,7 @@
       overflow-y: auto;
       display: none;
     }
-
+    
     .debug-toggle {
       background: #6c757d;
       color: white;
@@ -426,43 +415,43 @@
       font-size: 12px;
       display: block;
     }
-
+    
     @media (max-width: 768px) {
       .nav-links {
         gap: 1rem;
         font-size: 0.9rem;
       }
-
+      
       .events-grid {
         grid-template-columns: 1fr;
       }
-
+      
       .filters {
         flex-direction: column;
         align-items: stretch;
       }
-
+      
       .search-box {
         max-width: 100%;
       }
-
+      
       .filter-buttons {
         justify-content: center;
       }
-
+      
       h1 {
         font-size: 2rem;
       }
     }
   </style>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5D8WPSPGB"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-V5D8WPSPGB');
-  </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V5D8WPSPGB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V5D8WPSPGB');
+</script>
 </head>
 <body>
   <!-- Navigation -->
@@ -477,12 +466,11 @@
   </nav>
 
   <main>
-
+    
     <!-- Filtres et recherche -->
     <div class="filters">
       <div class="search-box">
-        <!-- Added aria-label for accessibility -->
-        <input type="text" id="search-input" placeholder="Rechercher un événement, concert, exposition..." aria-label="Rechercher des événements">
+        <input type="text" id="search-input" placeholder="Rechercher un événement, concert, exposition...">
         <i class="fas fa-search search-icon"></i>
       </div>
       <div class="filter-buttons">
@@ -493,7 +481,7 @@
         <button class="filter-btn" data-filter="gratuit">Gratuit</button>
       </div>
     </div>
-
+       
     <!-- Liste des événements -->
     <div id="events-container" class="events-grid">
       <div class="loading">
@@ -501,7 +489,7 @@
         <p>Chargement des événements...</p>
       </div>
     </div>
-
+    
     <button class="debug-toggle" onclick="toggleDebug()">Debug</button>
     <div id="debug-info" class="debug-info"></div>
   </main>
@@ -514,7 +502,6 @@
   </footer>
 
   <script>
-    // Trimmed URL whitespace
     const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
     let allEvents = [];
     let debugLogs = [];
@@ -528,7 +515,7 @@
       debugLogs.push(logEntry);
       console.log(message, data);
     }
-
+    
     function toggleDebug() {
       const debugDiv = document.getElementById('debug-info');
       const button = document.querySelector('.debug-toggle');
@@ -541,7 +528,7 @@
         button.textContent = 'Debug';
       }
     }
-
+    
     function getColumnValue(row, possibleNames) {
       for (let name of possibleNames) {
         const index = cols.indexOf(name);
@@ -558,39 +545,39 @@
       }
       return null;
     }
-
+    
     let cols = [];
 
     async function fetchEvents() {
       try {
         logDebug('🚀 Chargement des événements Pioche');
-
+        
         const response = await fetch(sheetURL);
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
         }
-
+        
         const text = await response.text();
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}') + 1;
-
+        
         if (jsonStart === -1 || jsonEnd === 0) {
           throw new Error('Format de réponse invalide');
         }
-
+        
         const jsonText = text.substring(jsonStart, jsonEnd);
         const json = JSON.parse(jsonText);
-
+        
         if (!json.table || !json.table.rows || !json.table.cols) {
           throw new Error('Structure de données invalide');
         }
-
+        
         cols = json.table.cols.map(col => col.label);
         const rows = json.table.rows;
-
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
+        
         allEvents = rows.map((row, index) => {
           const event = {};
           try {
@@ -602,7 +589,7 @@
             event.address = getColumnValue(row, ['Adresse', 'Address']) || '';
             event.thumbnail = getColumnValue(row, ['Thumbnail']) || '';
             event.category = getColumnValue(row, ['Catégorie', 'Category']) || '';
-
+            
             const dateValue = getColumnValue(row, ['Date']);
             if (dateValue) {
               if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
@@ -633,15 +620,15 @@
             return null;
           }
         }).filter(event => event && event.title && event.title.trim() !== '');
-
+        
         localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
-
+        
         const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
-
+        
         displayEvents(upcomingEvents);
         setupSearch();
         setupFilters();
-
+        
       } catch (error) {
         logDebug('Erreur:', error);
         document.getElementById('events-container').innerHTML = `
@@ -653,28 +640,26 @@
         `;
       }
     }
-
+    
     function displayEvents(events) {
       const container = document.getElementById('events-container');
-
+      
       if (events.length === 0) {
         container.innerHTML = `
           <div class="no-events">
             <i class="fas fa-calendar-times"></i>
             <h2>Aucun événement trouvé</h2>
-            <!-- Improved message -->
-            <p>Aucun événement ne correspond à vos critères. Essayez de modifier vos filtres ou votre recherche.</p>
+            <p>Modifiez vos filtres ou revenez plus tard pour découvrir de nouveaux événements.</p>
           </div>
         `;
         return;
       }
-
+      
       container.innerHTML = events.map(event => {
-        // Improved image HTML with better onerror handling and ensuring background is managed
         const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
-          ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'; this.style.backgroundColor='transparent';">`
+          ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
           : '<i class="fas fa-music"></i>';
-
+        
         return `
           <a href="event-detail.html?id=${event.id}" class="event">
             <div class="event-image">${imageHTML}</div>
@@ -708,7 +693,7 @@
         `;
       }).join('');
     }
-
+    
     function setupSearch() {
       const searchInput = document.getElementById('search-input');
       searchInput.addEventListener('input', (e) => {
@@ -716,7 +701,7 @@
         filterEvents(searchTerm);
       });
     }
-
+    
     function setupFilters() {
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -726,26 +711,16 @@
         });
       });
     }
-
+    
     function filterEvents(searchTerm) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
+      
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
-
-      // Calculate weekend dates once for potential use
-      const dayOfWeek = today.getDay();
-      const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
-      const friday = new Date(today);
-      friday.setDate(today.getDate() + daysUntilFriday);
-      const sunday = new Date(friday);
-      sunday.setDate(friday.getDate() + 2); // Sunday is 2 days after Friday
-      const weekendEnd = new Date(sunday);
-      weekendEnd.setDate(sunday.getDate() + 1); // Include Sunday, end just after (Monday 00:00)
-
+      
       let filtered = allEvents.filter(e => e.eventDate >= today);
-
+      
       // Appliquer le filtre de catégorie
       const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
       if (activeFilter === 'today') {
@@ -757,16 +732,18 @@
         tomorrowEnd.setHours(23, 59, 59, 999);
         filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
       } else if (activeFilter === 'weekend') {
-        // Filter for events within the calculated weekend range (Friday to Sunday)
-        filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate < weekendEnd);
+        const friday = new Date();
+        const sunday = new Date();
+        const dayOfWeek = today.getDay();
+        const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+        const daysUntilSunday = daysUntilFriday + 2;
+        friday.setDate(today.getDate() + daysUntilFriday);
+        sunday.setDate(today.getDate() + daysUntilSunday);
+        filtered = filtered.filter(e => e.eventDate >= friday && e.eventDate <= sunday);
       } else if (activeFilter === 'gratuit') {
-        // Improved price check logic to catch common "free" variations
-        filtered = filtered.filter(e => {
-            const priceStr = (e.price || '').toString().toLowerCase().trim();
-            return priceStr.includes('gratuit') || priceStr === '0' || priceStr === '0 €' || priceStr === 'free';
-        });
+        filtered = filtered.filter(e => e.price && (e.price.toLowerCase().includes('gratuit') || e.price === '0'));
       }
-
+      
       // Appliquer la recherche textuelle
       if (searchTerm) {
         filtered = filtered.filter(event => {
@@ -774,11 +751,11 @@
           return searchableText.includes(searchTerm);
         });
       }
-
+      
       filtered.sort((a, b) => a.eventDate - b.eventDate);
       displayEvents(filtered);
     }
-
+    
     document.addEventListener('DOMContentLoaded', () => {
       logDebug('Initialisation Pioche Agenda');
       fetchEvents();
