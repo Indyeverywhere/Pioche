@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda des événements | Marseille</title>
+  <title>Détail de l'événement | Marseille</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    /* VOTRE CSS EXISTANT - Je ne le modifie pas, juste ajout du CSS pour les dates collantes */
     :root {
       --primary-color: #1e88e5;
       --secondary-color: #ff6f00;
@@ -28,9 +28,12 @@
       background-color: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Navigation - Votre code existant */
+    
+    /* Navigation cohérente avec agenda.html */
     nav {
       background: white;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -77,239 +80,538 @@
       color: var(--primary-color);
       font-weight: 600;
     }
-
-    /* ========= NOUVEAU CSS POUR LES DATES COLLANTES ========= */
-    .events-container {
+    
+    .back-button {
+      background: rgba(30, 136, 229, 0.1);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+      font-weight: 600;
+      margin-left: 1rem;
+    }
+    
+    .back-button:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateX(-5px);
+    }
+    
+    main {
+      flex: 1;
       max-width: 1200px;
+      width: 100%;
       margin: 2rem auto;
       padding: 0 20px;
-      position: relative;
     }
-
-    /* Conteneur avec hauteur fixe et scroll pour démonstration */
-    .events-wrapper {
-      height: 700px;
-      overflow-y: auto;
+    
+    /* Breadcrumb cohérent avec agenda.html */
+    .breadcrumb {
+      padding: 1rem 0;
+      font-size: 0.9rem;
+    }
+    
+    .breadcrumb ol {
+      display: flex;
+      list-style: none;
+      gap: 0.5rem;
+    }
+    
+    .breadcrumb li::after {
+      content: "›";
+      margin-left: 0.5rem;
+      color: #999;
+    }
+    
+    .breadcrumb li:last-child::after {
+      content: "";
+    }
+    
+    .breadcrumb a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    
+    .event-detail-container {
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.5s ease;
     }
-
-    /* Section pour chaque groupe de date */
-    .date-section {
-      position: relative;
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-
-    /* Style pour la date collante */
-    .sticky-date {
-      position: sticky;
-      top: 0;
-      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-      color: white;
-      padding: 15px 25px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      z-index: 50;
-      backdrop-filter: blur(10px);
+    
+    .event-hero {
+      position: relative;
+      height: 400px;
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
       display: flex;
       align-items: center;
-      gap: 12px;
-      border-bottom: 3px solid var(--primary-color);
-      transition: all 0.3s ease;
-    }
-
-    /* Icône de calendrier pour la date */
-    .sticky-date::before {
-      content: '\f073';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      font-size: 1.2rem;
-      opacity: 0.8;
-    }
-
-    /* Effet au survol de la date collante */
-    .sticky-date:hover {
-      background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-    }
-
-    /* Badge "Aujourd'hui" */
-    .today-badge {
-      background: var(--accent-color);
-      color: white;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      margin-left: auto;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    /* Liste des événements dans chaque section */
-    .events-list {
-      padding: 20px 25px;
-    }
-
-    /* ========= VOTRE CSS EXISTANT POUR LES CARTES D'ÉVÉNEMENTS ========= */
-    .event-card {
-      background: var(--card-color);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      position: relative;
+      justify-content: center;
       overflow: hidden;
     }
-
-    .event-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    }
-
-    .event-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
+    
+    .event-hero img {
+      width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      transform: scaleY(0);
-      transition: transform 0.3s;
+      object-fit: cover;
+      animation: zoomIn 0.8s ease;
     }
-
-    .event-card:hover::before {
-      transform: scaleY(1);
+    
+    @keyframes zoomIn {
+      from {
+        transform: scale(1.1);
+      }
+      to {
+        transform: scale(1);
+      }
     }
-
+    
+    .event-hero-placeholder {
+      color: white;
+      font-size: 6rem;
+      opacity: 0.8;
+    }
+    
+    .event-hero-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      padding: 2rem;
+      color: white;
+    }
+    
+    .event-detail-content {
+      padding: 2rem;
+    }
+    
     .event-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
     }
-
-    .event-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-    }
-
-    .event-time {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    
+    .event-date-badge {
+      display: inline-block;
+      background-color: var(--accent-color);
       color: white;
       padding: 5px 12px;
       border-radius: 20px;
       font-size: 0.85rem;
-      font-weight: 500;
-      white-space: nowrap;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      animation: slideInLeft 0.6s ease;
     }
-
-    .event-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+    
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
-
-    .event-location {
+    
+    .event-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      animation: slideInRight 0.6s ease;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .event-category-badge {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    
+    .event-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .info-card {
+      background: var(--background-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .info-card-icon {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 0.8rem;
+    }
+    
+    .info-card-title {
+      font-size: 0.9rem;
       color: #666;
-      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .info-card-content {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    
+    .event-description-section {
+      margin-bottom: 2rem;
+    }
+    
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .event-description-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #555;
+      background: var(--background-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .event-actions {
       display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .action-button {
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
     }
-
-    .event-location i {
+    
+    .primary-button {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+    }
+    
+    .primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+    }
+    
+    .secondary-button {
+      background: white;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+    
+    .secondary-button:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .share-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .share-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .share-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: white;
+      transition: transform 0.3s;
+    }
+    
+    .share-button:hover {
+      transform: scale(1.1);
+    }
+    
+    .share-facebook {
+      background: #1877f2;
+    }
+    
+    .share-twitter {
+      background: #1da1f2;
+    }
+    
+    .share-whatsapp {
+      background: #25d366;
+    }
+    
+    .share-email {
+      background: var(--secondary-color);
+    }
+    
+    .map-section {
+      margin-top: 2rem;
+      background: var(--background-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    
+    #event-map {
+      height: 300px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .map-loading {
+      height: 300px;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      font-size: 1rem;
+    }
+    
+    .map-error {
+      padding: 1.5rem;
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      color: #856404;
+      text-align: center;
+    }
+    
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 4rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
       color: var(--secondary-color);
     }
-
-    .event-description {
-      color: #555;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-top: 0.5rem;
+    
+    .error-container {
+      background: white;
+      border-radius: 12px;
+      padding: 3rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
-
-    .event-price {
+    
+    .error-icon {
+      font-size: 4rem;
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+    }
+    
+    .error-title {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .error-message {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .loading-spinner {
+      font-size: 3rem;
+      color: var(--primary-color);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .loading-text {
+      margin-top: 1rem;
+      color: #666;
+      font-size: 1.2rem;
+    }
+    
+    .debug-info {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .debug-toggle {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin: 20px auto;
+      font-size: 12px;
+      display: block;
+    }
+    
+    .price-tag {
       display: inline-block;
-      background: var(--secondary-color);
+      background-color: var(--secondary-color);
       color: white;
       padding: 3px 10px;
-      border-radius: 15px;
+      border-radius: 20px;
       font-size: 0.8rem;
-      margin-top: 0.5rem;
     }
-
-    /* Scrollbar personnalisée */
-    .events-wrapper::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .events-wrapper::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    .events-wrapper::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border-radius: 10px;
-    }
-
-    .events-wrapper::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-    }
-
-    /* Message de chargement */
-    .loading-message {
-      text-align: center;
-      padding: 3rem;
-      color: #666;
-    }
-
-    .loading-spinner {
-      font-size: 2rem;
-      animation: spin 1s linear infinite;
-      color: var(--primary-color);
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    /* Responsive */
+    
     @media (max-width: 768px) {
-      .events-wrapper {
-        height: 600px;
-      }
-      
-      .sticky-date {
-        padding: 12px 20px;
-        font-size: 1rem;
-      }
-      
-      .event-card {
-        padding: 1rem;
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.9rem;
       }
       
       .event-title {
-        font-size: 1.1rem;
+        font-size: 2rem;
+      }
+      
+      .event-detail-content {
+        padding: 1.5rem;
+      }
+      
+      .event-hero {
+        height: 250px;
+      }
+      
+      .info-card {
+        padding: 1rem;
+      }
+      
+      .nav-container {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      
+      .back-button {
+        margin-left: 0;
+        order: -1;
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .event-actions {
+        flex-direction: column;
+      }
+      
+      .action-button {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V5D8WPSPGB');
+</script>
 </head>
 <body>
-  <!-- Navigation - Votre code existant -->
+  <!-- Navigation cohérente avec agenda.html -->
   <nav>
     <div class="nav-container">
       <a href="/" class="logo">Pioche</a>
@@ -317,228 +619,559 @@
         <li><a href="/">Accueil</a></li>
         <li><a href="/agenda.html" class="active">Agenda</a></li>
       </ul>
+      <a href="agenda.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Retour aux événements
+      </a>
     </div>
   </nav>
 
-  <div class="events-container">
-    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 2rem; color: var(--primary-color);">
-      Agenda des événements
-    </h1>
+  <main>
+    <!-- Breadcrumb cohérent avec agenda.html -->
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <ol>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/agenda.html">Agenda</a></li>
+        <li>Détail événement</li>
+      </ol>
+    </nav>
     
-    <div class="events-wrapper" id="eventsWrapper">
-      <div class="loading-message">
+    <div id="event-container">
+      <div class="loading-container">
         <i class="fas fa-spinner loading-spinner"></i>
-        <p style="margin-top: 1rem;">Chargement des événements...</p>
+        <p class="loading-text">Chargement de l'événement...</p>
       </div>
     </div>
-  </div>
+    
+    <button class="debug-toggle" onclick="toggleDebug()">Afficher Debug</button>
+    <div id="debug-info" class="debug-info"></div>
+  </main>
 
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">Pioche</div>
+      <p>© 2025 Pioche - Votre guide pour sortir à Marseille</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // URL de votre Google Sheet (remplacez par votre URL)
     const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('id');
+    let debugLogs = [];
+    let cols = [];
     
-    // Fonction pour formater la date
-    function formatDateForDisplay(date) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      
-      const eventDate = new Date(date);
-      eventDate.setHours(0, 0, 0, 0);
-      
-      // Vérifier si c'est aujourd'hui
-      if (eventDate.getTime() === today.getTime()) {
-        return "Aujourd'hui";
+    function logDebug(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      let logEntry = `[${timestamp}] ${message}`;
+      if (data) {
+        logEntry += "\n" + JSON.stringify(data, null, 2);
       }
-      
-      // Vérifier si c'est demain
-      if (eventDate.getTime() === tomorrow.getTime()) {
-        return "Demain";
-      }
-      
-      // Sinon, retourner la date formatée
-      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      const formattedDate = eventDate.toLocaleDateString('fr-FR', options);
-      
-      // Capitaliser la première lettre
-      return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+      debugLogs.push(logEntry);
+      console.log(message, data);
+      updateDebugDisplay();
     }
     
-    // Fonction pour grouper les événements par date
-    function groupEventsByDate(events) {
-      const grouped = {};
-      
-      events.forEach(event => {
-        const dateKey = formatDateForDisplay(event.eventDate);
-        if (!grouped[dateKey]) {
-          grouped[dateKey] = [];
-        }
-        grouped[dateKey].push(event);
-      });
-      
-      return grouped;
-    }
-    
-    // Fonction pour charger les événements depuis Google Sheets
-    async function loadEvents() {
-      try {
-        const response = await fetch(sheetURL);
-        const text = await response.text();
-        
-        // Parser le JSON depuis la réponse
-        const jsonStart = text.indexOf('{');
-        const jsonEnd = text.lastIndexOf('}') + 1;
-        const jsonText = text.substring(jsonStart, jsonEnd);
-        const json = JSON.parse(jsonText);
-        
-        // Extraire les colonnes et les données
-        const cols = json.table.cols.map(col => col.label);
-        const rows = json.table.rows;
-        
-        // Transformer les données en objets événements
-        const events = rows.map((row, index) => {
-          const event = {
-            id: index + 1,
-            title: getColumnValue(row, cols, ['Titre', 'Title']) || 'Sans titre',
-            description: getColumnValue(row, cols, ['Description', 'Description courte']) || '',
-            location: getColumnValue(row, cols, ['Lieu', 'Location']) || '',
-            price: getColumnValue(row, cols, ['Prix', 'Price']) || 'Gratuit',
-            eventDate: new Date(getColumnValue(row, cols, ['Date']) || new Date()),
-            time: getColumnValue(row, cols, ['Heure', 'Time']) || '',
-            category: getColumnValue(row, cols, ['Catégorie', 'Category']) || ''
-          };
-          
-          // S'assurer que la date est valide
-          if (isNaN(event.eventDate.getTime())) {
-            event.eventDate = new Date();
-          }
-          
-          return event;
-        });
-        
-        // Trier les événements par date
-        events.sort((a, b) => a.eventDate - b.eventDate);
-        
-        // Filtrer pour ne garder que les événements futurs
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const futureEvents = events.filter(event => {
-          const eventDate = new Date(event.eventDate);
-          eventDate.setHours(0, 0, 0, 0);
-          return eventDate >= today;
-        });
-        
-        // Grouper par date
-        const groupedEvents = groupEventsByDate(futureEvents);
-        
-        // Afficher les événements
-        displayEvents(groupedEvents);
-        
-      } catch (error) {
-        console.error('Erreur lors du chargement des événements:', error);
-        document.getElementById('eventsWrapper').innerHTML = `
-          <div style="text-align: center; padding: 3rem; color: #666;">
-            <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-            <p>Impossible de charger les événements.</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Veuillez réessayer plus tard.</p>
-          </div>
-        `;
+    function updateDebugDisplay() {
+      const debugDiv = document.getElementById('debug-info');
+      if (debugDiv && debugDiv.style.display === 'block') {
+        debugDiv.textContent = debugLogs.join('\n\n');
       }
     }
     
-    // Fonction utilitaire pour obtenir la valeur d'une colonne
-    function getColumnValue(row, cols, possibleNames) {
+    function toggleDebug() {
+      const debugDiv = document.getElementById('debug-info');
+      const button = document.querySelector('.debug-toggle');
+      if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
+        debugDiv.style.display = 'block';
+        debugDiv.textContent = debugLogs.join('\n\n');
+        button.textContent = 'Masquer Debug';
+      } else {
+        debugDiv.style.display = 'none';
+        button.textContent = 'Afficher Debug';
+      }
+    }
+    
+    function getColumnValue(row, possibleNames) {
       for (let name of possibleNames) {
         const index = cols.indexOf(name);
-        if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null) {
-          // Si c'est une date et qu'il y a un format, utiliser le format
+        if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
           if (name === "Date" && row.c[index].f) {
             return row.c[index].f;
           }
-          return row.c[index].v;
+          let value = row.c[index].v;
+          if (typeof value === 'string') {
+            value = value.replace(/#+/g, "").trim();
+          }
+          return value;
         }
       }
       return null;
     }
     
-    // Fonction pour afficher les événements groupés
-    function displayEvents(groupedEvents) {
-      const wrapper = document.getElementById('eventsWrapper');
-      wrapper.innerHTML = '';
+    async function loadEventFromSheet() {
+      const container = document.getElementById('event-container');
       
-      // Pour chaque groupe de date
-      Object.keys(groupedEvents).forEach(dateKey => {
-        // Créer une section pour cette date
-        const dateSection = document.createElement('div');
-        dateSection.className = 'date-section';
+      try {
+        logDebug('🚀 Début du chargement de l\'événement', { eventId });
         
-        // Créer l'en-tête de date collant
-        const stickyDate = document.createElement('div');
-        stickyDate.className = 'sticky-date';
-        stickyDate.innerHTML = dateKey;
-        
-        // Ajouter un badge "Aujourd'hui" si c'est le cas
-        if (dateKey === "Aujourd'hui") {
-          stickyDate.innerHTML += '<span class="today-badge">NOUVEAU</span>';
+        // D'abord, essayer de récupérer depuis localStorage
+        const cachedEvents = localStorage.getItem('marseilleEvents');
+        if (cachedEvents) {
+          logDebug('📦 Données trouvées dans le cache local');
+          const events = JSON.parse(cachedEvents);
+          const event = events.find(e => e.id === eventId || e.id === parseInt(eventId));
+          if (event) {
+            logDebug('✅ Événement trouvé dans le cache', { event });
+            displayEvent(event);
+            return;
+          }
         }
         
-        // Créer la liste des événements pour cette date
-        const eventsList = document.createElement('div');
-        eventsList.className = 'events-list';
+        // Si pas dans le cache, charger depuis le Google Sheet
+        logDebug('📡 Chargement depuis Google Sheets...');
+        const response = await fetch(sheetURL);
         
-        // Ajouter chaque événement
-        groupedEvents[dateKey].forEach(event => {
-          const eventCard = document.createElement('a');
-          eventCard.href = `event-detail.html?id=${event.id}`;
-          eventCard.className = 'event-card';
-          
-          eventCard.innerHTML = `
-            <div class="event-header">
-              <div>
-                <h3 class="event-title">${event.title}</h3>
-                ${event.category ? `<span style="background: rgba(30, 136, 229, 0.1); color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-size: 0.75rem;">${event.category}</span>` : ''}
-              </div>
-              ${event.time ? `<span class="event-time">${event.time}</span>` : ''}
-            </div>
-            <div class="event-details">
-              ${event.location ? `
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span>${event.location}</span>
-                </div>
-              ` : ''}
-              ${event.description ? `
-                <p class="event-description">${event.description.substring(0, 150)}${event.description.length > 150 ? '...' : ''}</p>
-              ` : ''}
-              ${event.price ? `<span class="event-price">${event.price}</span>` : ''}
-            </div>
-          `;
-          
-          eventsList.appendChild(eventCard);
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        const jsonStart = text.indexOf('{');
+        const jsonEnd = text.lastIndexOf('}') + 1;
+        
+        if (jsonStart === -1 || jsonEnd === 0) {
+          throw new Error('Format de réponse invalide');
+        }
+        
+        const jsonText = text.substring(jsonStart, jsonEnd);
+        const json = JSON.parse(jsonText);
+        
+        if (!json.table || !json.table.rows || !json.table.cols) {
+          throw new Error('Structure de données invalide');
+        }
+        
+        cols = json.table.cols.map(col => col.label);
+        const rows = json.table.rows;
+        
+        logDebug('📊 Données reçues', {
+          colonnes: cols,
+          nombreLignes: rows.length
         });
         
-        // Assembler la section
-        dateSection.appendChild(stickyDate);
-        dateSection.appendChild(eventsList);
-        wrapper.appendChild(dateSection);
-      });
-      
-      // Si aucun événement
-      if (Object.keys(groupedEvents).length === 0) {
-        wrapper.innerHTML = `
-          <div style="text-align: center; padding: 3rem; color: #666;">
-            <i class="fas fa-calendar-times" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-            <p style="font-size: 1.2rem;">Aucun événement à venir</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Revenez bientôt pour découvrir nos prochains événements !</p>
+        // Chercher l'événement avec l'ID correspondant
+        let event = null;
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const rowEventId = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']);
+          
+          logDebug(`Vérification ligne ${i}`, { rowEventId, searchId: eventId });
+          
+          if (rowEventId && (rowEventId === eventId || rowEventId.toString() === eventId)) {
+            event = {
+              id: rowEventId,
+              title: getColumnValue(row, ['Titre', 'Title']) || 'Événement sans titre',
+              description: getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible',
+              price: getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé',
+              location: getColumnValue(row, ['Lieu', 'Location']) || 'Lieu non précisé',
+              address: getColumnValue(row, ['Adresse', 'Address']) || '',
+              thumbnail: getColumnValue(row, ['Thumbnail']) || '',
+              category: getColumnValue(row, ['Catégorie', 'Category']) || ''
+            };
+            
+            // Traitement de la date
+            const dateValue = getColumnValue(row, ['Date']);
+            if (dateValue) {
+              if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+                event.eventDate = new Date(dateValue + "T00:00:00");
+              } else {
+                event.eventDate = new Date(dateValue);
+              }
+              if (isNaN(event.eventDate.getTime())) {
+                event.eventDate = new Date();
+                event.formattedDate = "Date à confirmer";
+              } else {
+                event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                });
+              }
+            } else {
+              event.eventDate = new Date();
+              event.formattedDate = "Date à confirmer";
+            }
+            
+            logDebug('🎉 Événement trouvé !', { event });
+            break;
+          }
+        }
+        
+        if (event) {
+          displayEvent(event);
+        } else {
+          throw new Error(`Événement avec l'ID "${eventId}" introuvable`);
+        }
+        
+      } catch (error) {
+        logDebug('❌ Erreur:', error.message);
+        container.innerHTML = `
+          <div class="error-container">
+            <i class="fas fa-calendar-times error-icon"></i>
+            <h2 class="error-title">Événement introuvable</h2>
+            <p class="error-message">${error.message}</p>
+            <a href="agenda.html" class="action-button primary-button">
+              <i class="fas fa-arrow-left"></i>
+              Retour aux événements
+            </a>
           </div>
         `;
       }
     }
     
-    // Charger les événements au chargement de la page
-    document.addEventListener('DOMContentLoaded', loadEvents);
+    function displayEvent(event) {
+      const container = document.getElementById('event-container');
+      
+      // Mettre à jour le titre de la page
+      document.title = `${event.title} | Événements Marseille`;
+      
+      // Créer l'image ou le placeholder
+      const imageContent = event.thumbnail && event.thumbnail.trim() !== ''
+        ? `<img src="${event.thumbnail}" alt="${event.title}" onerror="this.parentNode.innerHTML='<div class=\\'event-hero-placeholder\\'><i class=\\'fas fa-calendar-alt\\'></i></div>'">`
+        : '<div class="event-hero-placeholder"><i class="fas fa-calendar-alt"></i></div>';
+      
+      // Créer le contenu de la page
+      container.innerHTML = `
+        <div class="event-detail-container">
+          <div class="event-hero">
+            ${imageContent}
+            <div class="event-hero-overlay">
+              <h1 style="font-size: 2rem; font-family: 'Playfair Display', serif;">${event.title}</h1>
+            </div>
+          </div>
+          
+          <div class="event-detail-content">
+            <div class="event-header">
+              <span class="event-date-badge">
+                <i class="fas fa-calendar"></i> ${event.formattedDate}
+              </span>
+              ${event.category ? `<span class="event-category-badge">${event.category}</span>` : ''}
+            </div>
+            
+            <h1 class="event-title">${event.title}</h1>
+            
+            <div class="event-info-grid">
+              ${event.location && event.location !== 'Lieu non précisé' ? `
+                <div class="info-card">
+                  <div class="info-card-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </div>
+                  <div class="info-card-title">Lieu</div>
+                  <div class="info-card-content">${event.location}</div>
+                  ${event.address ? `<div style="margin-top: 0.5rem; color: #888; font-size: 0.9rem;">${event.address}</div>` : ''}
+                </div>
+              ` : ''}
+              
+              ${event.price && event.price !== 'Prix non précisé' ? `
+                <div class="info-card">
+                  <div class="info-card-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                  </div>
+                  <div class="info-card-title">Tarif</div>
+                  <div class="info-card-content">
+                    <span class="price-tag">${event.price}</span>
+                  </div>
+                </div>
+              ` : ''}
+              
+              <div class="info-card">
+                <div class="info-card-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-card-title">Horaire</div>
+                <div class="info-card-content">À confirmer</div>
+              </div>
+            </div>
+            
+            <div class="event-description-section">
+              <h2 class="section-title">À propos de cet événement</h2>
+              <div class="event-description-text">
+                ${event.description}
+              </div>
+            </div>
+            
+            <div class="event-actions">
+              <a href="#" class="action-button primary-button" onclick="alert('Fonctionnalité de réservation à venir !'); return false;">
+                <i class="fas fa-ticket-alt"></i>
+                Réserver
+              </a>
+              <a href="#" class="action-button secondary-button" onclick="alert('Fonctionnalité d\'ajout au calendrier à venir !'); return false;">
+                <i class="fas fa-calendar-plus"></i>
+                Ajouter au calendrier
+              </a>
+            </div>
+            
+            <div class="share-section">
+              <h3 style="margin-bottom: 1rem; color: #666; font-size: 1.1rem;">Partager cet événement</h3>
+              <div class="share-buttons">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" 
+                   target="_blank" class="share-button share-facebook" title="Partager sur Facebook">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title + ' à Marseille')}&url=${encodeURIComponent(window.location.href)}" 
+                   target="_blank" class="share-button share-twitter" title="Partager sur Twitter">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://wa.me/?text=${encodeURIComponent(event.title + ' - ' + window.location.href)}" 
+                   target="_blank" class="share-button share-whatsapp" title="Partager sur WhatsApp">
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille : ' + window.location.href)}" 
+                   class="share-button share-email" title="Partager par email">
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+            
+            ${event.location && event.location !== 'Lieu non précisé' ? `
+              <div class="map-section">
+                <h2 class="section-title">Localisation</h2>
+                <div id="map-container">
+                  <div class="map-loading">
+                    <div>
+                      <i class="fas fa-map-marked-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                      <p>Chargement de la carte...</p>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top: 1rem; text-align: center; color: #666;">
+                  <i class="fas fa-map-marker-alt" style="color: var(--primary-color);"></i>
+                  <strong>${event.location}</strong>
+                  ${event.address ? `<br>${event.address}` : ''}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      logDebug('✨ Événement affiché avec succès');
+      
+      // Initialiser la carte après l'affichage du contenu
+      if (event.location && event.location !== 'Lieu non précisé') {
+        setTimeout(() => {
+          initMap(event.location, event.address);
+        }, 100);
+      }
+    }
+    
+    async function initMap(location, address) {
+      const mapContainer = document.getElementById('map-container');
+      
+      try {
+        logDebug('🗺️ Initialisation de la carte pour:', { location, address });
+        
+        // Stratégie de recherche multiple
+        const searchQueries = [];
+        
+        // Priorité 1: Adresse seule si elle existe (souvent plus précise)
+        if (address && address.trim() !== '') {
+          searchQueries.push(`${address}, Marseille, France`);
+        }
+        
+        // Priorité 2: Lieu seul
+        searchQueries.push(`${location}, Marseille, France`);
+        
+        // Priorité 3: Combinaison lieu + adresse
+        if (address && address.trim() !== '') {
+          searchQueries.push(`${location}, ${address}, Marseille, France`);
+        }
+        
+        // Priorité 4: Recherche plus générale
+        searchQueries.push(`${location} Marseille`);
+        
+        logDebug('📍 Stratégies de recherche:', searchQueries);
+        
+        let coordinates = null;
+        let foundAddress = '';
+        
+        // Essayer chaque stratégie de recherche
+        for (const query of searchQueries) {
+          logDebug(`🔍 Tentative avec: "${query}"`);
+          
+          const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=fr`;
+          
+          try {
+            const response = await fetch(geocodeUrl);
+            const data = await response.json();
+            
+            if (data && data.length > 0) {
+              // Filtrer pour privilégier les résultats à Marseille
+              const marseilleResults = data.filter(result => 
+                result.display_name && 
+                (result.display_name.includes('Marseille') || result.display_name.includes('13000'))
+              );
+              
+              const selectedResult = marseilleResults.length > 0 ? marseilleResults[0] : data[0];
+              
+              coordinates = {
+                lat: parseFloat(selectedResult.lat),
+                lon: parseFloat(selectedResult.lon),
+                display_name: selectedResult.display_name
+              };
+              
+              foundAddress = query;
+              logDebug('✅ Coordonnées trouvées:', coordinates);
+              break;
+            }
+          } catch (err) {
+            logDebug(`⚠️ Erreur pour "${query}":`, err.message);
+          }
+          
+          // Petite pause entre les requêtes pour respecter l'API
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
+        if (coordinates) {
+          logDebug('📌 Utilisation des coordonnées:', coordinates);
+          
+          // Créer le conteneur de la carte
+          mapContainer.innerHTML = '<div id="event-map"></div>';
+          
+          // Initialiser la carte Leaflet
+          const map = L.map('event-map').setView([coordinates.lat, coordinates.lon], 16);
+          
+          // Ajouter les tuiles OpenStreetMap
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
+            maxZoom: 19
+          }).addTo(map);
+          
+          // Créer une icône personnalisée
+          const customIcon = L.divIcon({
+            html: `
+              <div style="position: relative;">
+                <div style="
+                  background: linear-gradient(135deg, #1e88e5, #e91e63); 
+                  width: 30px; 
+                  height: 30px; 
+                  border-radius: 50% 50% 50% 0; 
+                  transform: rotate(-45deg); 
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                  border: 2px solid white;
+                "></div>
+                <div style="
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  color: white;
+                  font-size: 14px;
+                ">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+              </div>
+            `,
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30],
+            className: 'custom-marker'
+          });
+          
+          // Ajouter un marqueur
+          const marker = L.marker([coordinates.lat, coordinates.lon], { icon: customIcon }).addTo(map);
+          
+          // Construire le contenu du popup
+          let popupContent = `<div style="min-width: 180px;">`;
+          popupContent += `<strong style="color: #1e88e5; font-size: 13px;">${location}</strong>`;
+          if (address && address.trim() !== '') {
+            popupContent += `<br><span style="color: #666; font-size: 11px;">${address}</span>`;
+          }
+          popupContent += `<br><span style="color: #999; font-size: 10px; font-style: italic;">📍 ${coordinates.display_name.split(',').slice(0, 3).join(',')}</span>`;
+          popupContent += `</div>`;
+          
+          marker.bindPopup(popupContent).openPopup();
+          
+          logDebug('✅ Carte initialisée avec succès');
+          
+        } else {
+          // Si aucune coordonnée trouvée, afficher Marseille avec message
+          logDebug('⚠️ Aucune adresse trouvée, affichage du centre de Marseille');
+          
+          mapContainer.innerHTML = '<div id="event-map"></div>';
+          
+          // Coordonnées du Vieux-Port de Marseille (plus central)
+          const marseilleCenter = [43.2951, 5.3747];
+          
+          const map = L.map('event-map').setView(marseilleCenter, 13);
+          
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
+            maxZoom: 19
+          }).addTo(map);
+          
+          // Ajouter un cercle pour indiquer la zone approximative
+          L.circle(marseilleCenter, {
+            color: '#1e88e5',
+            fillColor: '#1e88e5',
+            fillOpacity: 0.1,
+            radius: 2000
+          }).addTo(map);
+          
+          // Message d'information
+          const popup = L.popup()
+            .setLatLng(marseilleCenter)
+            .setContent(`
+              <div style="text-align: center;">
+                <strong style="color: #ff6f00;">${location}</strong><br>
+                <em style="color: #666; font-size: 11px;">Position approximative</em><br>
+                <span style="color: #999; font-size: 10px;">Centre de Marseille</span>
+              </div>
+            `)
+            .openOn(map);
+        }
+        
+      } catch (error) {
+        logDebug('❌ Erreur lors de l\'initialisation de la carte:', error);
+        mapContainer.innerHTML = `
+          <div class="map-error">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 1rem;"></i>
+            <p><strong>Impossible de charger la carte</strong></p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+              ${location}
+              ${address ? `<br>${address}` : ''}
+            </p>
+          </div>
+        `;
+      }
+    }
+    
+    // Charger l'événement au chargement de la page
+    document.addEventListener('DOMContentLoaded', () => {
+      logDebug('🌟 Page chargée, début de l\'initialisation');
+      
+      if (!eventId) {
+        logDebug('❌ Aucun ID d\'événement fourni');
+        document.getElementById('event-container').innerHTML = `
+          <div class="error-container">
+            <i class="fas fa-exclamation-circle error-icon"></i>
+            <h2 class="error-title">Erreur</h2>
+            <p class="error-message">Aucun événement spécifié.</p>
+            <a href="agenda.html" class="action-button primary-button">
+              <i class="fas fa-home"></i>
+              Retour à l'agenda
+            </a>
+          </div>
+        `;
+      } else {
+        // Petit délai pour l'effet de chargement
+        setTimeout(() => {
+          loadEventFromSheet();
+        }, 500);
+      }
+    });
   </script>
 </body>
 </html>
