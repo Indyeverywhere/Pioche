@@ -23,6 +23,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   
+  <!-- Préchargement des polices critiques -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"></noscript>
+
+  <!-- Préconnexion aux CDN -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -202,22 +211,19 @@
       border-color: var(--primary-color);
     }
 
-    /* ========= NOUVEAU: Conteneur avec dates collantes ========= */
+    /* ======== CONTENEUR ÉVÉNEMENTS ======== */
     .events-wrapper {
       background: white;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      height: 800px;
+      max-height: 80vh; /* Plus fluide que height fixe */
       overflow-y: auto;
       position: relative;
+      padding-top: 10px; /* Espace en haut pour la première date */
+      scroll-behavior: smooth; /* Scroll doux */
     }
 
-    /* Section pour chaque groupe de date */
-    .date-section {
-      position: relative;
-    }
-
-    /* Date collante */
+    /* ======== DATE COLLANTE ======== */
     .sticky-date {
       position: sticky;
       top: 0;
@@ -231,7 +237,8 @@
       align-items: center;
       gap: 12px;
       border-bottom: 3px solid var(--primary-color);
-      transition: all 0.3s ease;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ombre subtile quand collé */
     }
 
     .sticky-date::before {
@@ -246,7 +253,7 @@
       background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
     }
 
-    /* Grille d'événements dans chaque section */
+    /* ======== GRILLE ÉVÉNEMENTS ======== */
     .events-list {
       padding: 20px 25px;
       display: grid;
@@ -254,24 +261,27 @@
       gap: 2rem;
     }
 
-    /* ========= STYLES EXISTANTS DES CARTES D'ÉVÉNEMENTS ========= */
+    /* ======== CARTE ÉVÉNEMENT ======== */
     .event {
       background-color: var(--card-color);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
       height: 100%;
       display: flex;
       flex-direction: column;
       cursor: pointer;
       text-decoration: none;
       color: inherit;
+      will-change: transform; /* Optimisation GPU */
+      contain: content; /* Isolation de rendu */
+      backface-visibility: hidden; /* Accélération matérielle */
     }
     
     .event:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px); /* Réduit le saut */
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Moins agressif */
     }
     
     .event-image {
@@ -290,11 +300,13 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+      decoding: "async";
     }
     
     .event:hover .event-image img {
-      transform: scale(1.05);
+      transform: scale(1.03); /* Plus subtil */
     }
     
     .event-content {
@@ -414,19 +426,20 @@
       font-size: 0.8rem;
     }
 
-    /* Scrollbar personnalisée pour le conteneur */
+    /* ======== SCROLLBAR ======== */
     .events-wrapper::-webkit-scrollbar {
-      width: 10px;
+      width: 8px;
     }
 
     .events-wrapper::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: #f8f9fa;
       border-radius: 10px;
     }
 
     .events-wrapper::-webkit-scrollbar-thumb {
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
       border-radius: 10px;
+      border: 2px solid #f8f9fa;
     }
 
     .events-wrapper::-webkit-scrollbar-thumb:hover {
@@ -491,7 +504,7 @@
       }
 
       .events-wrapper {
-        height: 600px;
+        max-height: 60vh;
       }
 
       .sticky-date {
@@ -669,6 +682,11 @@
       try {
         logDebug('🚀 Chargement des événements Pioche');
         
+        // Indicateur de chargement
+        const container = document.getElementById('events-container');
+        container.style.pointerEvents = 'none';
+        container.style.opacity = '0.7';
+        
         const response = await fetch(sheetURL);
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
@@ -746,6 +764,10 @@
         setupSearch();
         setupFilters();
         
+        // Fin de chargement
+        container.style.pointerEvents = 'auto';
+        container.style.opacity = '1';
+        
       } catch (error) {
         logDebug('Erreur:', error);
         document.getElementById('events-container').innerHTML = `
@@ -755,6 +777,9 @@
             <p>${error.message}</p>
           </div>
         `;
+        // Fin de chargement en cas d'erreur
+        document.getElementById('events-container').style.pointerEvents = 'auto';
+        document.getElementById('events-container').style.opacity = '1';
       }
     }
     
