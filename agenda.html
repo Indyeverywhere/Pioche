@@ -211,17 +211,15 @@
       border-color: var(--primary-color);
     }
 
-    /* ======== CONTENEUR ÉVÉNEMENTS ======== */
-    .events-wrapper {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      max-height: 80vh; /* Plus fluide que height fixe */
-      overflow-y: auto;
-      position: relative;
-      padding-top: 10px; /* Espace en haut pour la première date */
-      scroll-behavior: smooth; /* Scroll doux */
-    }
+/* ======== CONTENEUR ÉVÉNEMENTS - Scroll unique ======== */
+.events-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  /* Suppression de height/max-height et overflow */
+  padding-top: 10px;
+  scroll-behavior: smooth;
+}
 
     /* ======== DATE COLLANTE ======== */
     .sticky-date {
@@ -501,10 +499,6 @@
       
       .events-list {
         grid-template-columns: 1fr;
-      }
-
-      .events-wrapper {
-        max-height: 60vh;
       }
 
       .sticky-date {
@@ -936,3 +930,4 @@
   </script>
 </body>
 </html>
+
