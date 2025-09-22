@@ -168,6 +168,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      cursor: zoom-in;
     }
     
     .event-hero img {
@@ -175,6 +176,11 @@
       height: 100%;
       object-fit: cover;
       animation: zoomIn 0.8s ease;
+      transition: transform 0.3s ease;
+    }
+    
+    .event-hero:hover img {
+      transform: scale(1.05);
     }
     
     @keyframes zoomIn {
@@ -200,6 +206,130 @@
       background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
       padding: 2rem;
       color: white;
+      pointer-events: none;
+    }
+    
+    /* Styles pour le lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      animation: fadeInLightbox 0.3s ease;
+    }
+    
+    .lightbox.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    @keyframes fadeInLightbox {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    .lightbox-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90vh;
+      animation: zoomInLightbox 0.3s ease;
+    }
+    
+    @keyframes zoomInLightbox {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .lightbox-image {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    
+    .lightbox-close:hover {
+      transform: rotate(90deg);
+      color: var(--accent-color);
+    }
+    
+    /* Navigation du lightbox pour mobile */
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      font-size: 1.5rem;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+      display: none;
+    }
+    
+    .lightbox-nav:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .lightbox-nav.prev {
+      left: 20px;
+    }
+    
+    .lightbox-nav.next {
+      right: 20px;
+    }
+    
+    /* Indicateur de zoom */
+    .zoom-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     
     .event-detail-content {
@@ -599,6 +729,29 @@
         width: 100%;
         justify-content: center;
       }
+      
+      /* Adaptation du lightbox pour mobile */
+      .lightbox-content {
+        max-width: 95%;
+      }
+      
+      .lightbox-close {
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+      }
+      
+      .lightbox-image {
+        border-radius: 0;
+      }
+    }
+    
+    /* Support tactile pour mobile */
+    @media (pointer: coarse) {
+      .zoom-indicator {
+        display: flex;
+      }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -625,6 +778,16 @@
       </a>
     </div>
   </nav>
+
+  <!-- Lightbox pour l'image -->
+  <div id="lightbox" class="lightbox">
+    <div class="lightbox-content">
+      <button class="lightbox-close" onclick="closeLightbox()">
+        <i class="fas fa-times"></i>
+      </button>
+      <img id="lightbox-image" class="lightbox-image" src="" alt="">
+    </div>
+  </div>
 
   <main>
     <!-- Breadcrumb cohérent avec agenda.html -->
@@ -661,6 +824,50 @@
     const eventId = urlParams.get('id');
     let debugLogs = [];
     let cols = [];
+    
+    // Fonctions pour le lightbox
+    function openLightbox(imageSrc, imageAlt) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImage = document.getElementById('lightbox-image');
+      
+      lightboxImage.src = imageSrc;
+      lightboxImage.alt = imageAlt || 'Image agrandie';
+      lightbox.classList.add('active');
+      
+      // Empêcher le scroll du body
+      document.body.style.overflow = 'hidden';
+      
+      // Fermer avec la touche Escape
+      document.addEventListener('keydown', handleEscapeKey);
+      
+      // Fermer en cliquant sur le fond
+      lightbox.addEventListener('click', handleLightboxClick);
+    }
+    
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      
+      // Réactiver le scroll du body
+      document.body.style.overflow = '';
+      
+      // Retirer les event listeners
+      document.removeEventListener('keydown', handleEscapeKey);
+      lightbox.removeEventListener('click', handleLightboxClick);
+    }
+    
+    function handleEscapeKey(e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    }
+    
+    function handleLightboxClick(e) {
+      // Fermer seulement si on clique sur le fond, pas sur l'image
+      if (e.target.id === 'lightbox') {
+        closeLightbox();
+      }
+    }
     
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
@@ -837,15 +1044,27 @@
       // Mettre à jour le titre de la page
       document.title = `${event.title} | Événements Marseille`;
       
-      // Créer l'image ou le placeholder
-      const imageContent = event.thumbnail && event.thumbnail.trim() !== ''
-        ? `<img src="${event.thumbnail}" alt="${event.title}" onerror="this.parentNode.innerHTML='<div class=\\'event-hero-placeholder\\'><i class=\\'fas fa-calendar-alt\\'></i></div>'">`
-        : '<div class="event-hero-placeholder"><i class="fas fa-calendar-alt"></i></div>';
+      // Créer l'image ou le placeholder - MODIFIÉ POUR AJOUTER LE CLIC
+      let imageContent;
+      if (event.thumbnail && event.thumbnail.trim() !== '') {
+        imageContent = `
+          <img src="${event.thumbnail}" 
+               alt="${event.title}" 
+               onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39")}')"
+               onerror="this.parentNode.innerHTML='<div class=\\'event-hero-placeholder\\'><i class=\\'fas fa-calendar-alt\\'></i></div>'"
+               style="cursor: zoom-in;">
+          <div class="zoom-indicator">
+            <i class="fas fa-search-plus"></i>
+            <span>Cliquer pour agrandir</span>
+          </div>`;
+      } else {
+        imageContent = '<div class="event-hero-placeholder"><i class="fas fa-calendar-alt"></i></div>';
+      }
       
       // Créer le contenu de la page
       container.innerHTML = `
         <div class="event-detail-container">
-          <div class="event-hero">
+          <div class="event-hero" ${event.thumbnail ? `onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39")}')"` : ''}>
             ${imageContent}
             <div class="event-hero-overlay">
               <h1 style="font-size: 2rem; font-family: 'Playfair Display', serif;">${event.title}</h1>
@@ -907,7 +1126,7 @@
                 <i class="fas fa-ticket-alt"></i>
                 Réserver
               </a>
-              <a href="#" class="action-button secondary-button" onclick="alert('Fonctionnalité d\'ajout au calendrier à venir !'); return false;">
+              <a href="#" class="action-button secondary-button" onclick="alert('Fonctionnalité d\\'ajout au calendrier à venir !'); return false;">
                 <i class="fas fa-calendar-plus"></i>
                 Ajouter au calendrier
               </a>
@@ -1134,7 +1353,7 @@
         }
         
       } catch (error) {
-        logDebug('❌ Erreur lors de l\'initialisation de la carte:', error);
+        logDebug('❌ Erreur lors de l\\'initialisation de la carte:', error);
         mapContainer.innerHTML = `
           <div class="map-error">
             <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 1rem;"></i>
@@ -1150,10 +1369,10 @@
     
     // Charger l'événement au chargement de la page
     document.addEventListener('DOMContentLoaded', () => {
-      logDebug('🌟 Page chargée, début de l\'initialisation');
+      logDebug('🌟 Page chargée, début de l\\'initialisation');
       
       if (!eventId) {
-        logDebug('❌ Aucun ID d\'événement fourni');
+        logDebug('❌ Aucun ID d\\'événement fourni');
         document.getElementById('event-container').innerHTML = `
           <div class="error-container">
             <i class="fas fa-exclamation-circle error-icon"></i>
