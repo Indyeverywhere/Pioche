@@ -771,9 +771,6 @@
         <p class="loading-text">Chargement de l'événement...</p>
       </div>
     </div>
-    
-    <button class="debug-toggle" onclick="toggleDebug()">Afficher Debug</button>
-    <div id="debug-info" class="debug-info"></div>
   </main>
 
   <footer>
@@ -788,7 +785,6 @@
     const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('id');
-    let debugLogs = [];
     let cols = [];
     
     // Fonctions pour le lightbox
@@ -839,30 +835,9 @@
       const timestamp = new Date().toLocaleTimeString();
       let logEntry = `[${timestamp}] ${message}`;
       if (data) {
-        logEntry += "\n" + JSON.stringify(data, null, 2);
-      }
-      debugLogs.push(logEntry);
-      console.log(message, data);
-      updateDebugDisplay();
-    }
-    
-    function updateDebugDisplay() {
-      const debugDiv = document.getElementById('debug-info');
-      if (debugDiv && debugDiv.style.display === 'block') {
-        debugDiv.textContent = debugLogs.join('\n\n');
-      }
-    }
-    
-    function toggleDebug() {
-      const debugDiv = document.getElementById('debug-info');
-      const button = document.querySelector('.debug-toggle');
-      if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
-        debugDiv.style.display = 'block';
-        debugDiv.textContent = debugLogs.join('\n\n');
-        button.textContent = 'Masquer Debug';
+        console.log(message, data);
       } else {
-        debugDiv.style.display = 'none';
-        button.textContent = 'Afficher Debug';
+        console.log(message);
       }
     }
     
