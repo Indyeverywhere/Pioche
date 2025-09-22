@@ -4,6 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Détail de l'événement | Marseille</title>
+  
+  <!-- Open Graph meta tags pour Facebook, WhatsApp, etc. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Pioche - Événements Marseille">
+  <meta property="og:locale" content="fr_FR">
+  <!-- Les balises suivantes seront mises à jour dynamiquement -->
+  <meta property="og:title" content="Événements à Marseille">
+  <meta property="og:description" content="Découvrez les meilleurs événements à Marseille">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  
+  <!-- Twitter Card meta tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Événements à Marseille">
+  <meta name="twitter:description" content="Découvrez les meilleurs événements à Marseille">
+  <meta name="twitter:image" content="">
+  
+  <!-- Meta description standard -->
+  <meta name="description" content="Découvrez les meilleurs événements à Marseille">
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -15,6 +37,33 @@
       --card-color: #ffffff;
       --text-color: #333333;
       --accent-color: #e91e63;
+    }
+    
+    // Fonctions de partage social
+    function shareOnFacebook(event) {
+      // Facebook utilise les meta tags Open Graph, donc on ouvre juste le dialogue de partage
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnTwitter(event) {
+      const text = encodeURIComponent(`${window.currentEvent.title} - ${window.currentEvent.formattedDate} à ${window.currentEvent.location || 'Marseille'}`);
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnWhatsApp(event) {
+      const text = `*${window.currentEvent.title}*\n\n📅 ${window.currentEvent.formattedDate}\n📍 ${window.currentEvent.location || 'Marseille'}\n${window.currentEvent.price ? '💰 ' + window.currentEvent.price + '\n' : ''}\n${window.currentEvent.description ? window.currentEvent.description.substring(0, 200) + '...\n' : ''}\n🔗 ${window.location.href}`;
+      const encodedText = encodeURIComponent(text);
+      
+      // Détecter si on est sur mobile ou desktop
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Mobile : utiliser l'API WhatsApp
+        window.open(`whatsapp://send?text=${encodedText}`, '_blank');
+      } else {
+        // Desktop : utiliser WhatsApp Web
+        window.open(`https://web.whatsapp.com/send?text=${encodedText}`, '_blank');
+      }
     }
     
     * {
@@ -627,32 +676,6 @@
       font-size: 1.2rem;
     }
     
-    .debug-info {
-      background-color: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
-    }
-    
-    .debug-toggle {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin: 20px auto;
-      font-size: 12px;
-      display: block;
-    }
-    
     .price-tag {
       display: inline-block;
       background-color: var(--secondary-color);
@@ -831,6 +854,45 @@
       }
     }
     
+    // Fonction pour mettre à jour les meta tags
+    function updateMetaTags(event) {
+      // URL actuelle
+      const currentUrl = window.location.href;
+      
+      // Description de l'événement (limitée à 160 caractères)
+      const description = event.description ? 
+        (event.description.substring(0, 157) + (event.description.length > 157 ? '...' : '')) : 
+        `${event.title} - ${event.formattedDate} à ${event.location}`;
+      
+      // Mettre à jour ou créer les meta tags Open Graph
+      updateMetaTag('property', 'og:title', event.title);
+      updateMetaTag('property', 'og:description', description);
+      updateMetaTag('property', 'og:url', currentUrl);
+      if (event.thumbnail) {
+        updateMetaTag('property', 'og:image', event.thumbnail);
+      }
+      
+      // Mettre à jour ou créer les meta tags Twitter Card
+      updateMetaTag('name', 'twitter:title', event.title);
+      updateMetaTag('name', 'twitter:description', description);
+      if (event.thumbnail) {
+        updateMetaTag('name', 'twitter:image', event.thumbnail);
+      }
+      
+      // Mettre à jour la meta description standard
+      updateMetaTag('name', 'description', description);
+    }
+    
+    function updateMetaTag(attr, attrValue, content) {
+      let element = document.querySelector(`meta[${attr}="${attrValue}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attr, attrValue);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    }
+    
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
       let logEntry = `[${timestamp}] ${message}`;
@@ -982,8 +1044,11 @@
     function displayEvent(event) {
       const container = document.getElementById('event-container');
       
-      // Mettre à jour le titre de la page
+      // Mettre à jour le titre de la page et les meta tags pour le partage
       document.title = `${event.title} | Événements Marseille`;
+      
+      // Mettre à jour les meta tags Open Graph et Twitter Card
+      updateMetaTags(event);
       
       // Créer l'image ou le placeholder - MODIFIÉ POUR AJOUTER LE CLIC
       let imageContent;
@@ -1079,19 +1144,19 @@
             <div class="share-section">
               <h3 style="margin-bottom: 1rem; color: #666; font-size: 1.1rem;">Partager cet événement</h3>
               <div class="share-buttons">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" 
-                   target="_blank" class="share-button share-facebook" title="Partager sur Facebook">
+                <a href="#" onclick="shareOnFacebook(event); return false;" 
+                   class="share-button share-facebook" title="Partager sur Facebook">
                   <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title + ' à Marseille')}&url=${encodeURIComponent(window.location.href)}" 
-                   target="_blank" class="share-button share-twitter" title="Partager sur Twitter">
+                <a href="#" onclick="shareOnTwitter(event); return false;" 
+                   class="share-button share-twitter" title="Partager sur Twitter">
                   <i class="fab fa-twitter"></i>
                 </a>
-                <a href="https://wa.me/?text=${encodeURIComponent(event.title + ' - ' + window.location.href)}" 
-                   target="_blank" class="share-button share-whatsapp" title="Partager sur WhatsApp">
+                <a href="#" onclick="shareOnWhatsApp(event); return false;" 
+                   class="share-button share-whatsapp" title="Partager sur WhatsApp">
                   <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille : ' + window.location.href)}" 
+                <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille :\n\n' + event.title + '\n' + event.formattedDate + '\n' + (event.location || '') + '\n\n' + (event.description ? event.description.substring(0, 200) + '...\n\n' : '') + 'Plus d\'infos : ' + window.location.href)}" 
                    class="share-button share-email" title="Partager par email">
                   <i class="fas fa-envelope"></i>
                 </a>
@@ -1121,6 +1186,9 @@
       `;
       
       logDebug('✨ Événement affiché avec succès');
+      
+      // Stocker l'événement dans une variable globale pour les fonctions de partage
+      window.currentEvent = event;
       
       // Initialiser la carte après l'affichage du contenu
       if (event.location && event.location !== 'Lieu non précisé') {
