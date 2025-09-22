@@ -16,11 +16,13 @@
       --text-color: #333333;
       --accent-color: #e91e63;
     }
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+    
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: var(--background-color);
@@ -30,6 +32,7 @@
       display: flex;
       flex-direction: column;
     }
+    
     /* Navigation cohérente avec agenda.html */
     nav {
       background: white;
@@ -38,6 +41,7 @@
       top: 0;
       z-index: 100;
     }
+    
     .nav-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -46,6 +50,7 @@
       justify-content: space-between;
       align-items: center;
     }
+    
     .logo {
       font-family: 'Playfair Display', serif;
       font-size: 1.8rem;
@@ -53,24 +58,29 @@
       text-decoration: none;
       font-weight: 700;
     }
+    
     .nav-links {
       display: flex;
       gap: 2rem;
       list-style: none;
     }
+    
     .nav-links a {
       color: var(--text-color);
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s;
     }
+    
     .nav-links a:hover {
       color: var(--primary-color);
     }
+    
     .nav-links a.active {
       color: var(--primary-color);
       font-weight: 600;
     }
+    
     .back-button {
       background: rgba(30, 136, 229, 0.1);
       color: var(--primary-color);
@@ -85,11 +95,13 @@
       font-weight: 600;
       margin-left: 1rem;
     }
+    
     .back-button:hover {
       background: var(--primary-color);
       color: white;
       transform: translateX(-5px);
     }
+    
     main {
       flex: 1;
       max-width: 1200px;
@@ -97,31 +109,38 @@
       margin: 2rem auto;
       padding: 0 20px;
     }
+    
     /* Breadcrumb cohérent avec agenda.html */
     .breadcrumb {
       padding: 1rem 0;
       font-size: 0.9rem;
     }
+    
     .breadcrumb ol {
       display: flex;
       list-style: none;
       gap: 0.5rem;
     }
+    
     .breadcrumb li::after {
       content: "›";
       margin-left: 0.5rem;
       color: #999;
     }
+    
     .breadcrumb li:last-child::after {
       content: "";
     }
+    
     .breadcrumb a {
       color: var(--primary-color);
       text-decoration: none;
     }
+    
     .breadcrumb a:hover {
       text-decoration: underline;
     }
+    
     .event-detail-container {
       background: white;
       border-radius: 12px;
@@ -129,6 +148,7 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
       animation: fadeIn 0.5s ease;
     }
+    
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -139,6 +159,7 @@
         transform: translateY(0);
       }
     }
+    
     .event-hero {
       position: relative;
       height: 400px;
@@ -147,8 +168,12 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+    }
+    
+    .event-hero.clickable {
       cursor: zoom-in;
     }
+    
     .event-hero img {
       width: 100%;
       height: 100%;
@@ -156,9 +181,11 @@
       animation: zoomIn 0.8s ease;
       transition: transform 0.3s ease;
     }
-    .event-hero:hover img {
+    
+    .event-hero.clickable:hover img {
       transform: scale(1.05);
     }
+    
     @keyframes zoomIn {
       from {
         transform: scale(1.1);
@@ -167,11 +194,13 @@
         transform: scale(1);
       }
     }
+    
     .event-hero-placeholder {
       color: white;
       font-size: 6rem;
       opacity: 0.8;
     }
+    
     .event-hero-overlay {
       position: absolute;
       bottom: 0;
@@ -182,6 +211,7 @@
       color: white;
       pointer-events: none;
     }
+    
     /* Styles pour le lightbox */
     .lightbox {
       display: none;
@@ -194,11 +224,13 @@
       background-color: rgba(0, 0, 0, 0.95);
       animation: fadeInLightbox 0.3s ease;
     }
+    
     .lightbox.active {
       display: flex;
       justify-content: center;
       align-items: center;
     }
+    
     @keyframes fadeInLightbox {
       from {
         opacity: 0;
@@ -207,12 +239,14 @@
         opacity: 1;
       }
     }
+    
     .lightbox-content {
       position: relative;
       max-width: 90%;
       max-height: 90vh;
       animation: zoomInLightbox 0.3s ease;
     }
+    
     @keyframes zoomInLightbox {
       from {
         transform: scale(0.8);
@@ -223,6 +257,7 @@
         opacity: 1;
       }
     }
+    
     .lightbox-image {
       width: auto;
       height: auto;
@@ -232,6 +267,7 @@
       border-radius: 8px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     }
+    
     .lightbox-close {
       position: absolute;
       top: -40px;
@@ -249,34 +285,12 @@
       justify-content: center;
       transition: transform 0.3s ease, color 0.3s ease;
     }
+    
     .lightbox-close:hover {
       transform: rotate(90deg);
       color: var(--accent-color);
     }
-    /* Navigation du lightbox pour mobile */
-    .lightbox-nav {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      font-size: 1.5rem;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: background 0.3s ease;
-      display: none;
-    }
-    .lightbox-nav:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .lightbox-nav.prev {
-      left: 20px;
-    }
-    .lightbox-nav.next {
-      right: 20px;
-    }
+    
     /* Indicateur de zoom */
     .zoom-indicator {
       position: absolute;
@@ -292,12 +306,15 @@
       align-items: center;
       gap: 5px;
     }
+    
     .event-detail-content {
       padding: 2rem;
     }
+    
     .event-header {
       margin-bottom: 2rem;
     }
+    
     .event-date-badge {
       display: inline-block;
       background-color: var(--accent-color);
@@ -309,6 +326,7 @@
       font-weight: 600;
       animation: slideInLeft 0.6s ease;
     }
+    
     @keyframes slideInLeft {
       from {
         opacity: 0;
@@ -319,6 +337,7 @@
         transform: translateX(0);
       }
     }
+    
     .event-title {
       font-family: 'Playfair Display', serif;
       font-size: 2.5rem;
@@ -326,6 +345,7 @@
       margin-bottom: 1rem;
       animation: slideInRight 0.6s ease;
     }
+    
     @keyframes slideInRight {
       from {
         opacity: 0;
@@ -336,6 +356,7 @@
         transform: translateX(0);
       }
     }
+    
     .event-category-badge {
       display: inline-block;
       background-color: var(--primary-color);
@@ -345,12 +366,14 @@
       font-size: 0.9rem;
       margin-bottom: 2rem;
     }
+    
     .event-info-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
+    
     .info-card {
       background: var(--background-color);
       border-radius: 12px;
@@ -358,15 +381,18 @@
       transition: transform 0.3s, box-shadow 0.3s;
       border: 1px solid #e0e0e0;
     }
+    
     .info-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
+    
     .info-card-icon {
       font-size: 1.5rem;
       color: var(--primary-color);
       margin-bottom: 0.8rem;
     }
+    
     .info-card-title {
       font-size: 0.9rem;
       color: #666;
@@ -375,20 +401,24 @@
       margin-bottom: 0.5rem;
       font-weight: 600;
     }
+    
     .info-card-content {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-color);
     }
+    
     .event-description-section {
       margin-bottom: 2rem;
     }
+    
     .section-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.8rem;
       color: var(--primary-color);
       margin-bottom: 1rem;
     }
+    
     .event-description-text {
       font-size: 1rem;
       line-height: 1.6;
@@ -398,12 +428,14 @@
       border-radius: 12px;
       border-left: 4px solid var(--primary-color);
     }
+    
     .event-actions {
       display: flex;
       gap: 1rem;
       margin-top: 2rem;
       flex-wrap: wrap;
     }
+    
     .action-button {
       padding: 12px 25px;
       border-radius: 25px;
@@ -416,34 +448,41 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
+    
     .primary-button {
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
       color: white;
       border: none;
     }
+    
     .primary-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
     }
+    
     .secondary-button {
       background: white;
       color: var(--primary-color);
       border: 2px solid var(--primary-color);
     }
+    
     .secondary-button:hover {
       background: var(--primary-color);
       color: white;
     }
+    
     .share-section {
       margin-top: 2rem;
       padding-top: 2rem;
       border-top: 1px solid #e0e0e0;
     }
+    
     .share-buttons {
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
     }
+    
     .share-button {
       width: 40px;
       height: 40px;
@@ -455,33 +494,41 @@
       color: white;
       transition: transform 0.3s;
     }
+    
     .share-button:hover {
       transform: scale(1.1);
     }
+    
     .share-facebook {
       background: #1877f2;
     }
+    
     .share-twitter {
       background: #1da1f2;
     }
+    
     .share-whatsapp {
       background: #25d366;
     }
+    
     .share-email {
       background: var(--secondary-color);
     }
+    
     .map-section {
       margin-top: 2rem;
       background: var(--background-color);
       padding: 1.5rem;
       border-radius: 12px;
     }
+    
     #event-map {
       height: 300px;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+    
     .map-loading {
       height: 300px;
       background: linear-gradient(135deg, #e3f2fd, #bbdefb);
@@ -492,6 +539,7 @@
       color: var(--primary-color);
       font-size: 1rem;
     }
+    
     .map-error {
       padding: 1.5rem;
       background: #fff3cd;
@@ -500,6 +548,7 @@
       color: #856404;
       text-align: center;
     }
+    
     footer {
       background: #2c3e50;
       color: white;
@@ -507,17 +556,20 @@
       padding: 2rem 0;
       margin-top: 4rem;
     }
+    
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
+    
     .footer-brand {
       font-family: 'Playfair Display', serif;
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
       color: var(--secondary-color);
     }
+    
     .error-container {
       background: white;
       border-radius: 12px;
@@ -525,20 +577,24 @@
       text-align: center;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
+    
     .error-icon {
       font-size: 4rem;
       color: var(--accent-color);
       margin-bottom: 1rem;
     }
+    
     .error-title {
       font-size: 2rem;
       color: var(--primary-color);
       margin-bottom: 1rem;
     }
+    
     .error-message {
       color: #666;
       margin-bottom: 2rem;
     }
+    
     .loading-container {
       display: flex;
       flex-direction: column;
@@ -549,11 +605,13 @@
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
+    
     .loading-spinner {
       font-size: 3rem;
       color: var(--primary-color);
       animation: spin 1s linear infinite;
     }
+    
     @keyframes spin {
       from {
         transform: rotate(0deg);
@@ -562,11 +620,13 @@
         transform: rotate(360deg);
       }
     }
+    
     .loading-text {
       margin-top: 1rem;
       color: #666;
       font-size: 1.2rem;
     }
+    
     .debug-info {
       background-color: #f8f9fa;
       border: 1px solid #ddd;
@@ -580,6 +640,7 @@
       overflow-y: auto;
       display: none;
     }
+    
     .debug-toggle {
       background: #6c757d;
       color: white;
@@ -591,6 +652,7 @@
       font-size: 12px;
       display: block;
     }
+    
     .price-tag {
       display: inline-block;
       background-color: var(--secondary-color);
@@ -599,54 +661,67 @@
       border-radius: 20px;
       font-size: 0.8rem;
     }
+    
     @media (max-width: 768px) {
       .nav-links {
         gap: 1rem;
         font-size: 0.9rem;
       }
+      
       .event-title {
         font-size: 2rem;
       }
+      
       .event-detail-content {
         padding: 1.5rem;
       }
+      
       .event-hero {
         height: 250px;
       }
+      
       .info-card {
         padding: 1rem;
       }
+      
       .nav-container {
         flex-wrap: wrap;
         gap: 1rem;
       }
+      
       .back-button {
         margin-left: 0;
         order: -1;
         width: 100%;
         justify-content: center;
       }
+      
       .event-actions {
         flex-direction: column;
       }
+      
       .action-button {
         width: 100%;
         justify-content: center;
       }
+      
       /* Adaptation du lightbox pour mobile */
       .lightbox-content {
         max-width: 95%;
       }
+      
       .lightbox-close {
         top: 10px;
         right: 10px;
         background: rgba(0, 0, 0, 0.5);
         border-radius: 50%;
       }
+      
       .lightbox-image {
         border-radius: 0;
       }
     }
+    
     /* Support tactile pour mobile */
     @media (pointer: coarse) {
       .zoom-indicator {
@@ -678,6 +753,7 @@
       </a>
     </div>
   </nav>
+
   <!-- Lightbox pour l'image -->
   <div id="lightbox" class="lightbox">
     <div class="lightbox-content">
@@ -687,6 +763,7 @@
       <img id="lightbox-image" class="lightbox-image" src="" alt="">
     </div>
   </div>
+
   <main>
     <!-- Breadcrumb cohérent avec agenda.html -->
     <nav class="breadcrumb" aria-label="Fil d'Ariane">
@@ -696,21 +773,25 @@
         <li>Détail événement</li>
       </ol>
     </nav>
+    
     <div id="event-container">
       <div class="loading-container">
         <i class="fas fa-spinner loading-spinner"></i>
         <p class="loading-text">Chargement de l'événement...</p>
       </div>
     </div>
+    
     <button class="debug-toggle" onclick="toggleDebug()">Afficher Debug</button>
     <div id="debug-info" class="debug-info"></div>
   </main>
+
   <footer>
     <div class="footer-content">
       <div class="footer-brand">Pioche</div>
       <p>© 2025 Pioche - Votre guide pour sortir à Marseille</p>
     </div>
   </footer>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
@@ -718,71 +799,82 @@
     const eventId = urlParams.get('id');
     let debugLogs = [];
     let cols = [];
+    
     // Fonctions pour le lightbox
     function openLightbox(imageSrc, imageAlt) {
       const lightbox = document.getElementById('lightbox');
       const lightboxImage = document.getElementById('lightbox-image');
+      
       lightboxImage.src = imageSrc;
       lightboxImage.alt = imageAlt || 'Image agrandie';
       lightbox.classList.add('active');
+      
       // Empêcher le scroll du body
       document.body.style.overflow = 'hidden';
+      
       // Fermer avec la touche Escape
       document.addEventListener('keydown', handleEscapeKey);
+      
       // Fermer en cliquant sur le fond
       lightbox.addEventListener('click', handleLightboxClick);
     }
+    
     function closeLightbox() {
       const lightbox = document.getElementById('lightbox');
       lightbox.classList.remove('active');
+      
       // Réactiver le scroll du body
       document.body.style.overflow = '';
+      
       // Retirer les event listeners
       document.removeEventListener('keydown', handleEscapeKey);
       lightbox.removeEventListener('click', handleLightboxClick);
     }
+    
     function handleEscapeKey(e) {
       if (e.key === 'Escape') {
         closeLightbox();
       }
     }
+    
     function handleLightboxClick(e) {
       // Fermer seulement si on clique sur le fond, pas sur l'image
       if (e.target.id === 'lightbox') {
         closeLightbox();
       }
     }
+    
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
       let logEntry = `[${timestamp}] ${message}`;
       if (data) {
-        logEntry += "
-" + JSON.stringify(data, null, 2);
+        logEntry += "\n" + JSON.stringify(data, null, 2);
       }
       debugLogs.push(logEntry);
       console.log(message, data);
       updateDebugDisplay();
     }
+    
     function updateDebugDisplay() {
       const debugDiv = document.getElementById('debug-info');
       if (debugDiv && debugDiv.style.display === 'block') {
-        debugDiv.textContent = debugLogs.join('
-');
+        debugDiv.textContent = debugLogs.join('\n\n');
       }
     }
+    
     function toggleDebug() {
       const debugDiv = document.getElementById('debug-info');
       const button = document.querySelector('.debug-toggle');
       if (debugDiv.style.display === 'none' || debugDiv.style.display === '') {
         debugDiv.style.display = 'block';
-        debugDiv.textContent = debugLogs.join('
-');
+        debugDiv.textContent = debugLogs.join('\n\n');
         button.textContent = 'Masquer Debug';
       } else {
         debugDiv.style.display = 'none';
         button.textContent = 'Afficher Debug';
       }
     }
+    
     function getColumnValue(row, possibleNames) {
       for (let name of possibleNames) {
         const index = cols.indexOf(name);
@@ -799,10 +891,13 @@
       }
       return null;
     }
+    
     async function loadEventFromSheet() {
       const container = document.getElementById('event-container');
+      
       try {
         logDebug('🚀 Début du chargement de l\'événement', { eventId });
+        
         // D'abord, essayer de récupérer depuis localStorage
         const cachedEvents = localStorage.getItem('marseilleEvents');
         if (cachedEvents) {
@@ -815,35 +910,46 @@
             return;
           }
         }
+        
         // Si pas dans le cache, charger depuis le Google Sheet
         logDebug('📡 Chargement depuis Google Sheets...');
         const response = await fetch(sheetURL);
+        
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
         }
+        
         const text = await response.text();
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}') + 1;
+        
         if (jsonStart === -1 || jsonEnd === 0) {
           throw new Error('Format de réponse invalide');
         }
+        
         const jsonText = text.substring(jsonStart, jsonEnd);
         const json = JSON.parse(jsonText);
+        
         if (!json.table || !json.table.rows || !json.table.cols) {
           throw new Error('Structure de données invalide');
         }
+        
         cols = json.table.cols.map(col => col.label);
         const rows = json.table.rows;
+        
         logDebug('📊 Données reçues', {
           colonnes: cols,
           nombreLignes: rows.length
         });
+        
         // Chercher l'événement avec l'ID correspondant
         let event = null;
         for (let i = 0; i < rows.length; i++) {
           const row = rows[i];
           const rowEventId = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']);
+          
           logDebug(`Vérification ligne ${i}`, { rowEventId, searchId: eventId });
+          
           if (rowEventId && (rowEventId === eventId || rowEventId.toString() === eventId)) {
             event = {
               id: rowEventId,
@@ -855,6 +961,7 @@
               thumbnail: getColumnValue(row, ['Thumbnail']) || '',
               category: getColumnValue(row, ['Catégorie', 'Category']) || ''
             };
+            
             // Traitement de la date
             const dateValue = getColumnValue(row, ['Date']);
             if (dateValue) {
@@ -878,15 +985,18 @@
               event.eventDate = new Date();
               event.formattedDate = "Date à confirmer";
             }
+            
             logDebug('🎉 Événement trouvé !', { event });
             break;
           }
         }
+        
         if (event) {
           displayEvent(event);
         } else {
           throw new Error(`Événement avec l'ID "${eventId}" introuvable`);
         }
+        
       } catch (error) {
         logDebug('❌ Erreur:', error.message);
         container.innerHTML = `
@@ -902,6 +1012,7 @@
         `;
       }
     }
+    
     function displayEvent(event) {
       const container = document.getElementById('event-container');
       
@@ -910,15 +1021,16 @@
       
       // Créer l'image ou le placeholder - MODIFIÉ POUR AJOUTER LE CLIC
       let imageContent;
+      let heroClass = 'event-hero';
+      let heroOnclick = '';
+      
       if (event.thumbnail && event.thumbnail.trim() !== '') {
-        // Échapper les apostrophes dans le titre pour le JavaScript
-        const escapedTitle = event.title.replace(/'/g, "\\'");
+        heroClass = 'event-hero clickable';
+        heroOnclick = `onclick="openLightbox('${event.thumbnail.replace(/'/g, "\\'")}', '${event.title.replace(/'/g, "\\'")}')"`;
         imageContent = `
           <img src="${event.thumbnail}" 
                alt="${event.title}" 
-               onclick="openLightbox('${event.thumbnail}', '${escapedTitle}')"
-               onerror="this.parentNode.innerHTML='<div class=\\'event-hero-placeholder\\'><i class=\\'fas fa-calendar-alt\\'></i></div>'"
-               style="cursor: zoom-in;">
+               onerror="this.parentNode.innerHTML='<div class=\\'event-hero-placeholder\\'><i class=\\'fas fa-calendar-alt\\'></i></div>'">
           <div class="zoom-indicator">
             <i class="fas fa-search-plus"></i>
             <span>Cliquer pour agrandir</span>
@@ -927,23 +1039,16 @@
         imageContent = '<div class="event-hero-placeholder"><i class="fas fa-calendar-alt"></i></div>';
       }
       
-      // Construire le contenu de la page
-      let htmlContent = `
+      // Créer le contenu de la page
+      container.innerHTML = `
         <div class="event-detail-container">
-          <div class="event-hero"`;
-          
-      // Ajouter l'attribut onclick au conteneur si une image existe
-      if (event.thumbnail) {
-        const escapedTitle = event.title.replace(/'/g, "\\'");
-        htmlContent += ` onclick="openLightbox('${event.thumbnail}', '${escapedTitle}')"`
-      }
-      
-      htmlContent += `>
+          <div class="${heroClass}" ${heroOnclick}>
             ${imageContent}
             <div class="event-hero-overlay">
               <h1 style="font-size: 2rem; font-family: 'Playfair Display', serif;">${event.title}</h1>
             </div>
           </div>
+          
           <div class="event-detail-content">
             <div class="event-header">
               <span class="event-date-badge">
@@ -951,7 +1056,9 @@
               </span>
               ${event.category ? `<span class="event-category-badge">${event.category}</span>` : ''}
             </div>
+            
             <h1 class="event-title">${event.title}</h1>
+            
             <div class="event-info-grid">
               ${event.location && event.location !== 'Lieu non précisé' ? `
                 <div class="info-card">
@@ -963,6 +1070,7 @@
                   ${event.address ? `<div style="margin-top: 0.5rem; color: #888; font-size: 0.9rem;">${event.address}</div>` : ''}
                 </div>
               ` : ''}
+              
               ${event.price && event.price !== 'Prix non précisé' ? `
                 <div class="info-card">
                   <div class="info-card-icon">
@@ -974,6 +1082,7 @@
                   </div>
                 </div>
               ` : ''}
+              
               <div class="info-card">
                 <div class="info-card-icon">
                   <i class="fas fa-clock"></i>
@@ -982,12 +1091,14 @@
                 <div class="info-card-content">À confirmer</div>
               </div>
             </div>
+            
             <div class="event-description-section">
               <h2 class="section-title">À propos de cet événement</h2>
               <div class="event-description-text">
                 ${event.description}
               </div>
             </div>
+            
             <div class="event-actions">
               <a href="#" class="action-button primary-button" onclick="alert('Fonctionnalité de réservation à venir !'); return false;">
                 <i class="fas fa-ticket-alt"></i>
@@ -998,6 +1109,7 @@
                 Ajouter au calendrier
               </a>
             </div>
+            
             <div class="share-section">
               <h3 style="margin-bottom: 1rem; color: #666; font-size: 1.1rem;">Partager cet événement</h3>
               <div class="share-buttons">
@@ -1019,6 +1131,7 @@
                 </a>
               </div>
             </div>
+            
             ${event.location && event.location !== 'Lieu non précisé' ? `
               <div class="map-section">
                 <h2 class="section-title">Localisation</h2>
@@ -1041,8 +1154,6 @@
         </div>
       `;
       
-      container.innerHTML = htmlContent;
-      
       logDebug('✨ Événement affiché avec succès');
       
       // Initialiser la carte après l'affichage du contenu
@@ -1052,46 +1163,62 @@
         }, 100);
       }
     }
+    
     async function initMap(location, address) {
       const mapContainer = document.getElementById('map-container');
+      
       try {
         logDebug('🗺️ Initialisation de la carte pour:', { location, address });
+        
         // Stratégie de recherche multiple
         const searchQueries = [];
+        
         // Priorité 1: Adresse seule si elle existe (souvent plus précise)
         if (address && address.trim() !== '') {
           searchQueries.push(`${address}, Marseille, France`);
         }
+        
         // Priorité 2: Lieu seul
         searchQueries.push(`${location}, Marseille, France`);
+        
         // Priorité 3: Combinaison lieu + adresse
         if (address && address.trim() !== '') {
           searchQueries.push(`${location}, ${address}, Marseille, France`);
         }
+        
         // Priorité 4: Recherche plus générale
         searchQueries.push(`${location} Marseille`);
+        
         logDebug('📍 Stratégies de recherche:', searchQueries);
+        
         let coordinates = null;
         let foundAddress = '';
+        
         // Essayer chaque stratégie de recherche
         for (const query of searchQueries) {
           logDebug(`🔍 Tentative avec: "${query}"`);
+          
           const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=fr`;
+          
           try {
             const response = await fetch(geocodeUrl);
             const data = await response.json();
+            
             if (data && data.length > 0) {
               // Filtrer pour privilégier les résultats à Marseille
               const marseilleResults = data.filter(result => 
                 result.display_name && 
                 (result.display_name.includes('Marseille') || result.display_name.includes('13000'))
               );
+              
               const selectedResult = marseilleResults.length > 0 ? marseilleResults[0] : data[0];
+              
               coordinates = {
                 lat: parseFloat(selectedResult.lat),
                 lon: parseFloat(selectedResult.lon),
                 display_name: selectedResult.display_name
               };
+              
               foundAddress = query;
               logDebug('✅ Coordonnées trouvées:', coordinates);
               break;
@@ -1099,20 +1226,26 @@
           } catch (err) {
             logDebug(`⚠️ Erreur pour "${query}":`, err.message);
           }
+          
           // Petite pause entre les requêtes pour respecter l'API
           await new Promise(resolve => setTimeout(resolve, 200));
         }
+        
         if (coordinates) {
           logDebug('📌 Utilisation des coordonnées:', coordinates);
+          
           // Créer le conteneur de la carte
           mapContainer.innerHTML = '<div id="event-map"></div>';
+          
           // Initialiser la carte Leaflet
           const map = L.map('event-map').setView([coordinates.lat, coordinates.lon], 16);
+          
           // Ajouter les tuiles OpenStreetMap
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
             maxZoom: 19
           }).addTo(map);
+          
           // Créer une icône personnalisée
           const customIcon = L.divIcon({
             html: `
@@ -1143,8 +1276,10 @@
             popupAnchor: [0, -30],
             className: 'custom-marker'
           });
+          
           // Ajouter un marqueur
           const marker = L.marker([coordinates.lat, coordinates.lon], { icon: customIcon }).addTo(map);
+          
           // Construire le contenu du popup
           let popupContent = `<div style="min-width: 180px;">`;
           popupContent += `<strong style="color: #1e88e5; font-size: 13px;">${location}</strong>`;
@@ -1153,19 +1288,27 @@
           }
           popupContent += `<br><span style="color: #999; font-size: 10px; font-style: italic;">📍 ${coordinates.display_name.split(',').slice(0, 3).join(',')}</span>`;
           popupContent += `</div>`;
+          
           marker.bindPopup(popupContent).openPopup();
+          
           logDebug('✅ Carte initialisée avec succès');
+          
         } else {
           // Si aucune coordonnée trouvée, afficher Marseille avec message
           logDebug('⚠️ Aucune adresse trouvée, affichage du centre de Marseille');
+          
           mapContainer.innerHTML = '<div id="event-map"></div>';
+          
           // Coordonnées du Vieux-Port de Marseille (plus central)
           const marseilleCenter = [43.2951, 5.3747];
+          
           const map = L.map('event-map').setView(marseilleCenter, 13);
+          
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
             maxZoom: 19
           }).addTo(map);
+          
           // Ajouter un cercle pour indiquer la zone approximative
           L.circle(marseilleCenter, {
             color: '#1e88e5',
@@ -1173,6 +1316,7 @@
             fillOpacity: 0.1,
             radius: 2000
           }).addTo(map);
+          
           // Message d'information
           const popup = L.popup()
             .setLatLng(marseilleCenter)
@@ -1185,6 +1329,7 @@
             `)
             .openOn(map);
         }
+        
       } catch (error) {
         logDebug('❌ Erreur lors de l\'initialisation de la carte:', error);
         mapContainer.innerHTML = `
@@ -1199,9 +1344,11 @@
         `;
       }
     }
+    
     // Charger l'événement au chargement de la page
     document.addEventListener('DOMContentLoaded', () => {
       logDebug('🌟 Page chargée, début de l\'initialisation');
+      
       if (!eventId) {
         logDebug('❌ Aucun ID d\'événement fourni');
         document.getElementById('event-container').innerHTML = `
