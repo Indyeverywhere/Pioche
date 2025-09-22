@@ -39,33 +39,6 @@
       --accent-color: #e91e63;
     }
     
-    // Fonctions de partage social
-    function shareOnFacebook(event) {
-      // Facebook utilise les meta tags Open Graph, donc on ouvre juste le dialogue de partage
-      const url = encodeURIComponent(window.location.href);
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
-    }
-    
-    function shareOnTwitter(event) {
-      const text = encodeURIComponent(`${window.currentEvent.title} - ${window.currentEvent.formattedDate} à ${window.currentEvent.location || 'Marseille'}`);
-      const url = encodeURIComponent(window.location.href);
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
-    }
-    
-    function shareOnWhatsApp(event) {
-      const text = `*${window.currentEvent.title}*\n\n📅 ${window.currentEvent.formattedDate}\n📍 ${window.currentEvent.location || 'Marseille'}\n${window.currentEvent.price ? '💰 ' + window.currentEvent.price + '\n' : ''}\n${window.currentEvent.description ? window.currentEvent.description.substring(0, 200) + '...\n' : ''}\n🔗 ${window.location.href}`;
-      const encodedText = encodeURIComponent(text);
-      
-      // Détecter si on est sur mobile ou desktop
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        // Mobile : utiliser l'API WhatsApp
-        window.open(`whatsapp://send?text=${encodedText}`, '_blank');
-      } else {
-        // Desktop : utiliser WhatsApp Web
-        window.open(`https://web.whatsapp.com/send?text=${encodedText}`, '_blank');
-      }
-    }
-    
     * {
       margin: 0;
       padding: 0;
@@ -919,6 +892,32 @@
       }
       return null;
     }
+    // Fonctions de partage social
+    function shareOnFacebook(event) {
+      // Facebook utilise les meta tags Open Graph, donc on ouvre juste le dialogue de partage
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnTwitter(event) {
+      const text = encodeURIComponent(`${window.currentEvent.title} - ${window.currentEvent.formattedDate} à ${window.currentEvent.location || 'Marseille'}`);
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnWhatsApp(event) {
+      const text = `*${window.currentEvent.title}*\n\n📅 ${window.currentEvent.formattedDate}\n📍 ${window.currentEvent.location || 'Marseille'}\n${window.currentEvent.price ? '💰 ' + window.currentEvent.price + '\n' : ''}\n${window.currentEvent.description ? window.currentEvent.description.substring(0, 200) + '...\n' : ''}\n🔗 ${window.location.href}`;
+      const encodedText = encodeURIComponent(text);
+      
+      // Détecter si on est sur mobile ou desktop
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Mobile : utiliser l'API WhatsApp
+        window.open(`whatsapp://send?text=${encodedText}`, '_blank');
+      } else {
+        // Desktop : utiliser WhatsApp Web
+        window.open(`https://web.whatsapp.com/send?text=${encodedText}`, '_blank');
+      }
+    }
     
     async function loadEventFromSheet() {
       const container = document.getElementById('event-container');
@@ -1141,27 +1140,27 @@
               </a>
             </div>
             
-            <div class="share-section">
-              <h3 style="margin-bottom: 1rem; color: #666; font-size: 1.1rem;">Partager cet événement</h3>
-              <div class="share-buttons">
-                <a href="#" onclick="shareOnFacebook(event); return false;" 
-                   class="share-button share-facebook" title="Partager sur Facebook">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" onclick="shareOnTwitter(event); return false;" 
-                   class="share-button share-twitter" title="Partager sur Twitter">
-                  <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" onclick="shareOnWhatsApp(event); return false;" 
-                   class="share-button share-whatsapp" title="Partager sur WhatsApp">
-                  <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille :\n\n' + event.title + '\n' + event.formattedDate + '\n' + (event.location || '') + '\n\n' + (event.description ? event.description.substring(0, 200) + '...\n\n' : '') + 'Plus d\'infos : ' + window.location.href)}" 
-                   class="share-button share-email" title="Partager par email">
-                  <i class="fas fa-envelope"></i>
-                </a>
-              </div>
-            </div>
+<div class="share-section">
+  <h3 style="margin-bottom: 1rem; color: #666; font-size: 1.1rem;">Partager cet événement</h3>
+  <div class="share-buttons">
+    <a href="#" onclick="shareOnFacebook(); return false;" 
+       class="share-button share-facebook" title="Partager sur Facebook">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="#" onclick="shareOnTwitter(); return false;" 
+       class="share-button share-twitter" title="Partager sur Twitter">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="#" onclick="shareOnWhatsApp(); return false;" 
+       class="share-button share-whatsapp" title="Partager sur WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille :\n' + event.title + '\n' + event.formattedDate + '\n' + (event.location || '') + '\n' + (event.description ? event.description.substring(0, 200) + '...\n' : '') + 'Plus d\'infos : ' + window.location.href)}" 
+       class="share-button share-email" title="Partager par email">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</div>
             
             ${event.location && event.location !== 'Lieu non précisé' ? `
               <div class="map-section">
@@ -1406,3 +1405,4 @@
   </script>
 </body>
 </html>
+
