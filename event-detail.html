@@ -1064,7 +1064,7 @@
       // Créer le contenu de la page
       container.innerHTML = `
         <div class="event-detail-container">
-          <div class="event-hero" ${event.thumbnail ? `onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39;")}')"` : ''}>
+          <div class="event-hero" ${event.thumbnail ? 'onclick="openLightbox(\'' + event.thumbnail + '\', \'' + event.title.replace(/'/g, "&#39;") + '\')"' : ''}>
             ${imageContent}
             <div class="event-hero-overlay">
               <h1 style="font-size: 2rem; font-family: 'Playfair Display', serif;">${event.title}</h1>
@@ -1394,4 +1394,5 @@
   </script>
 </body>
 </html>
+
 
