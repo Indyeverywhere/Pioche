@@ -1050,7 +1050,7 @@
         imageContent = `
           <img src="${event.thumbnail}" 
                alt="${event.title}" 
-               onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39")}')"
+               onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39;")}')"
                onerror="this.parentNode.innerHTML='<div class=\\'event-hero-placeholder\\'><i class=\\'fas fa-calendar-alt\\'></i></div>'"
                style="cursor: zoom-in;">
           <div class="zoom-indicator">
@@ -1064,7 +1064,7 @@
       // Créer le contenu de la page
       container.innerHTML = `
         <div class="event-detail-container">
-          <div class="event-hero" ${event.thumbnail ? `onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39")}')"` : ''}>
+          <div class="event-hero" ${event.thumbnail ? `onclick="openLightbox('${event.thumbnail}', '${event.title.replace(/'/g, "&#39;")}')"` : ''}>
             ${imageContent}
             <div class="event-hero-overlay">
               <h1 style="font-size: 2rem; font-family: 'Playfair Display', serif;">${event.title}</h1>
@@ -1394,3 +1394,4 @@
   </script>
 </body>
 </html>
+
