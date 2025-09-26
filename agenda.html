@@ -32,6 +32,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -211,17 +214,14 @@
       border-color: var(--primary-color);
     }
 
-/* ======== CONTENEUR ÉVÉNEMENTS - Scroll unique ======== */
-.events-wrapper {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  /* Suppression de height/max-height et overflow */
-  padding-top: 10px;
-  scroll-behavior: smooth;
-}
+    .events-wrapper {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding-top: 10px;
+      scroll-behavior: smooth;
+    }
 
-    /* ======== DATE COLLANTE ======== */
     .sticky-date {
       position: sticky;
       top: 0;
@@ -236,7 +236,7 @@
       gap: 12px;
       border-bottom: 3px solid var(--primary-color);
       transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ombre subtile quand collé */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .sticky-date::before {
@@ -251,7 +251,6 @@
       background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
     }
 
-    /* ======== GRILLE ÉVÉNEMENTS ======== */
     .events-list {
       padding: 20px 25px;
       display: grid;
@@ -259,7 +258,6 @@
       gap: 2rem;
     }
 
-    /* ======== CARTE ÉVÉNEMENT ======== */
     .event {
       background-color: var(--card-color);
       border-radius: 12px;
@@ -272,14 +270,14 @@
       cursor: pointer;
       text-decoration: none;
       color: inherit;
-      will-change: transform; /* Optimisation GPU */
-      contain: content; /* Isolation de rendu */
-      backface-visibility: hidden; /* Accélération matérielle */
+      will-change: transform;
+      contain: content;
+      backface-visibility: hidden;
     }
     
     .event:hover {
-      transform: translateY(-4px); /* Réduit le saut */
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Moins agressif */
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
     
     .event-image {
@@ -304,7 +302,7 @@
     }
     
     .event:hover .event-image img {
-      transform: scale(1.03); /* Plus subtil */
+      transform: scale(1.03);
     }
     
     .event-content {
@@ -424,7 +422,6 @@
       font-size: 0.8rem;
     }
 
-    /* ======== SCROLLBAR ======== */
     .events-wrapper::-webkit-scrollbar {
       width: 8px;
     }
@@ -582,7 +579,13 @@
   </footer>
 
   <script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/1FGkH2h9VvGw-jmrqRP0_Gr5gJJ10aplNhSPV1yyI5_U/gviz/tq?tqx=out:json&gid=0";
+    // Configuration Supabase
+    const SUPABASE_URL = 'https://umrozxtgxwjfkzudlmmf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcm96eHRneHdqZmt6dWRsbW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MzczOTEsImV4cCI6MjA3NDIxMzM5MX0.T139ua0oJKZTn3Kn8HPRh-KFWl4oOP5dacVP_zXfbFs';
+    
+    // Initialiser Supabase Client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
     let allEvents = [];
     let debugLogs = [];
 
@@ -607,23 +610,6 @@
         debugDiv.style.display = 'none';
         button.textContent = 'Debug';
       }
-    }
-    
-    function getColumnValue(row, possibleNames) {
-      for (let name of possibleNames) {
-        const index = cols.indexOf(name);
-        if (index !== -1 && row.c && row.c[index] && row.c[index].v !== null && row.c[index].v !== undefined) {
-          if (name === "Date" && row.c[index].f) {
-            return row.c[index].f;
-          }
-          let value = row.c[index].v;
-          if (typeof value === 'string') {
-            value = value.replace(/#+/g, "").trim();
-          }
-          return value;
-        }
-      }
-      return null;
     }
 
     // Fonction pour formater la date d'affichage
@@ -669,63 +655,53 @@
       
       return grouped;
     }
-    
-    let cols = [];
 
     async function fetchEvents() {
       try {
-        logDebug('🚀 Chargement des événements Pioche');
+        logDebug('🚀 Chargement des événements depuis Supabase');
         
         // Indicateur de chargement
         const container = document.getElementById('events-container');
         container.style.pointerEvents = 'none';
         container.style.opacity = '0.7';
         
-        const response = await fetch(sheetURL);
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status}`);
+        // Récupérer tous les événements depuis Supabase
+        const { data, error } = await supabase
+          .from('Pioche_events')
+          .select('*')
+          .order('Date', { ascending: true });
+        
+        if (error) {
+          throw new Error(`Erreur Supabase: ${error.message}`);
         }
         
-        const text = await response.text();
-        const jsonStart = text.indexOf('{');
-        const jsonEnd = text.lastIndexOf('}') + 1;
-        
-        if (jsonStart === -1 || jsonEnd === 0) {
-          throw new Error('Format de réponse invalide');
-        }
-        
-        const jsonText = text.substring(jsonStart, jsonEnd);
-        const json = JSON.parse(jsonText);
-        
-        if (!json.table || !json.table.rows || !json.table.cols) {
-          throw new Error('Structure de données invalide');
-        }
-        
-        cols = json.table.cols.map(col => col.label);
-        const rows = json.table.rows;
+        logDebug('📊 Données reçues de Supabase', {
+          nombreEvents: data.length,
+          premiersEvents: data.slice(0, 3)
+        });
         
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        allEvents = rows.map((row, index) => {
+        // Mapper les données Supabase vers notre format d'événements
+        allEvents = data.map((row, index) => {
           const event = {};
           try {
-            event.id = getColumnValue(row, ['ID de l\'evenement', 'ID de l\'événement', 'Event ID', 'ID']) || `event-${index}`;
-            event.title = getColumnValue(row, ['Titre', 'Title']) || `Événement ${index + 1}`;
-            event.description = getColumnValue(row, ['Description', 'Description courte']) || 'Description non disponible';
-            event.price = getColumnValue(row, ['Prix', 'Price']) || 'Prix non précisé';
-            event.location = getColumnValue(row, ['Lieu', 'Location']) || 'Lieu non précisé';
-            event.address = getColumnValue(row, ['Adresse', 'Address']) || '';
-            event.thumbnail = getColumnValue(row, ['Thumbnail']) || '';
-            event.category = getColumnValue(row, ['Catégorie', 'Category']) || '';
+            // Mapper les colonnes - utilisation des noms exacts avec les accents
+            event.id = row["ID de l'evenement"] || row["ID de l'événement"] || `event-${index}`;
+            event.title = row.Titre || `Événement ${index + 1}`;
+            event.description = row.Description || row["Description courte"] || 'Description non disponible';
+            event.price = row.Prix || 'Prix non précisé';
+            event.location = row.Lieu || 'Lieu non précisé';
+            event.address = row.Adresse || '';
+            event.thumbnail = row.Thumbnail || '';
+            event.category = row.Catégorie || row.Category || '';
             
-            const dateValue = getColumnValue(row, ['Date']);
+            // Traitement de la date
+            const dateValue = row.Date;
             if (dateValue) {
-              if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-                event.eventDate = new Date(dateValue + "T00:00:00");
-              } else {
-                event.eventDate = new Date(dateValue);
-              }
+              // Format text YYYY-MM-DD
+              event.eventDate = new Date(dateValue + "T00:00:00");
               if (isNaN(event.eventDate.getTime())) {
                 event.eventDate = new Date();
                 event.eventDate.setDate(event.eventDate.getDate() + 7);
@@ -750,9 +726,13 @@
           }
         }).filter(event => event && event.title && event.title.trim() !== '');
         
+        // Sauvegarder dans localStorage pour le cache
         localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
         
+        // Filtrer les événements à venir et les trier
         const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
+        
+        logDebug(`✅ ${upcomingEvents.length} événements à venir chargés`);
         
         displayEventsWithStickyDates(upcomingEvents);
         setupSearch();
@@ -763,7 +743,7 @@
         container.style.opacity = '1';
         
       } catch (error) {
-        logDebug('Erreur:', error);
+        logDebug('❌ Erreur:', error);
         document.getElementById('events-container').innerHTML = `
           <div class="no-events">
             <i class="fas fa-exclamation-circle"></i>
@@ -777,7 +757,7 @@
       }
     }
     
-    // Nouvelle fonction pour afficher avec dates collantes
+    // Fonction pour afficher avec dates collantes
     function displayEventsWithStickyDates(events) {
       const container = document.getElementById('events-container');
       
@@ -924,10 +904,9 @@
     }
     
     document.addEventListener('DOMContentLoaded', () => {
-      logDebug('Initialisation Pioche Agenda');
+      logDebug('Initialisation Pioche Agenda avec Supabase');
       fetchEvents();
     });
   </script>
 </body>
 </html>
-
