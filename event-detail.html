@@ -34,9 +34,6 @@
   <!-- Supabase Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
-  <!-- Add to Calendar Button -->
-  <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2" async defer></script>
-  
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -497,34 +494,6 @@
       color: white;
     }
     
-    /* Styles personnalisés pour le bouton Add to Calendar */
-    .calendar-button-container {
-      display: inline-block;
-    }
-    
-    .calendar-button-container add-to-calendar-button {
-      --btn-background: linear-gradient(135deg, #1e88e5, #e91e63);
-      --btn-text: #ffffff;
-      --btn-border: none;
-      --btn-border-radius: 25px;
-      --btn-padding-x: 25px;
-      --btn-padding-y: 12px;
-      --btn-font-weight: 600;
-      --btn-font-size: 0.9rem;
-      --btn-shadow: 0 2px 10px rgba(30, 136, 229, 0.2);
-      --btn-shadow-hover: 0 5px 15px rgba(30, 136, 229, 0.3);
-      --list-background: #ffffff;
-      --list-text: #333333;
-      --list-border: 1px solid #e0e0e0;
-      --list-border-radius: 12px;
-      --list-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      --font: 'Montserrat', sans-serif;
-    }
-    
-    .calendar-button-container add-to-calendar-button:hover {
-      transform: translateY(-2px);
-    }
-    
     .share-section {
       margin-top: 2rem;
       padding-top: 2rem;
@@ -733,14 +702,6 @@
         justify-content: center;
       }
       
-      .calendar-button-container {
-        width: 100%;
-      }
-      
-      .calendar-button-container add-to-calendar-button {
-        width: 100%;
-      }
-      
       .lightbox-content {
         max-width: 95%;
       }
@@ -919,59 +880,6 @@
       }
     }
     
-    // Fonction pour formater la date pour le calendrier
-    function formatDateForCalendar(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-    
-    // Fonction pour créer le bouton Add to Calendar
-    function createCalendarButton(event) {
-      const currentUrl = window.location.href;
-      
-      // Déterminer les heures (par défaut 19h-22h si non spécifiées)
-      const startTime = event.startTime || "19:00";
-      const endTime = event.endTime || "22:00";
-      
-      // Si on a une heure de début mais pas de fin, ajouter 2 heures
-      let calculatedEndTime = endTime;
-      if (event.startTime && !event.endTime) {
-        const [hours, minutes] = event.startTime.split(':').map(Number);
-        const endHours = hours + 2;
-        calculatedEndTime = `${String(endHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-      }
-      
-      // Formater la date
-      const eventDateStr = formatDateForCalendar(event.eventDate);
-      
-      // Créer la description avec l'URL de l'événement
-      const calendarDescription = `${event.description}\n\nPlus d'informations : ${currentUrl}`;
-      
-      // Créer le bouton Add to Calendar
-      const calendarButton = document.createElement('add-to-calendar-button');
-      calendarButton.setAttribute('name', event.title);
-      calendarButton.setAttribute('description', calendarDescription);
-      calendarButton.setAttribute('startDate', eventDateStr);
-      calendarButton.setAttribute('endDate', eventDateStr);
-      calendarButton.setAttribute('startTime', startTime);
-      calendarButton.setAttribute('endTime', calculatedEndTime);
-      calendarButton.setAttribute('timeZone', 'Europe/Paris');
-      calendarButton.setAttribute('location', `${event.location}${event.address ? ', ' + event.address : ''}, Marseille, France`);
-      calendarButton.setAttribute('options', "['Apple','Google','iCal','Microsoft365','Outlook.com','Yahoo']");
-      calendarButton.setAttribute('trigger', 'click');
-      calendarButton.setAttribute('label', 'Ajouter au calendrier');
-      calendarButton.setAttribute('listStyle', 'dropdown');
-      calendarButton.setAttribute('lightMode', 'light');
-      calendarButton.setAttribute('language', 'fr');
-      calendarButton.setAttribute('size', '5|5|5');
-      calendarButton.setAttribute('hideIconButton', 'false');
-      calendarButton.setAttribute('styleLight', '--btn-background: linear-gradient(135deg, #1e88e5, #e91e63); --btn-text: #ffffff; --btn-border: none; --btn-border-radius: 25px; --btn-padding-x: 25px; --btn-padding-y: 12px; --btn-font-weight: 600; --btn-shadow: 0 2px 10px rgba(30, 136, 229, 0.2); --btn-shadow-hover: 0 5px 15px rgba(30, 136, 229, 0.3); --list-background: #ffffff; --list-text: #333333; --font: "Montserrat", sans-serif;');
-      
-      return calendarButton;
-    }
-    
     // Fonctions de partage social
     function shareOnFacebook(event) {
       const url = encodeURIComponent(window.location.href);
@@ -1045,9 +953,7 @@
           location: data.Lieu || 'Lieu non précisé',
           address: data.Adresse || '',
           thumbnail: data.Thumbnail || '',
-          category: data.Catégorie || data.Category || '',
-          startTime: data.Heure || null, // Récupérer l'heure si disponible
-          endTime: null // Sera calculée si nécessaire
+          category: data.Catégorie || data.Category || ''
         };
         
         // Traitement de la date
@@ -1168,7 +1074,7 @@
                   <i class="fas fa-clock"></i>
                 </div>
                 <div class="info-card-title">Horaire</div>
-                <div class="info-card-content">${event.startTime || '19h00'}</div>
+                <div class="info-card-content">À confirmer</div>
               </div>
             </div>
             
@@ -1184,9 +1090,10 @@
                 <i class="fas fa-ticket-alt"></i>
                 Réserver
               </a>
-              <div class="calendar-button-container" id="calendar-button-container">
-                <!-- Le bouton Add to Calendar sera inséré ici -->
-              </div>
+              <a href="#" class="action-button secondary-button" onclick="alert('Fonctionnalité d\\'ajout au calendrier à venir !'); return false;">
+                <i class="fas fa-calendar-plus"></i>
+                Ajouter au calendrier
+              </a>
             </div>
             
             <div class="share-section">
@@ -1237,13 +1144,6 @@
       
       // Stocker l'événement dans une variable globale pour les fonctions de partage
       window.currentEvent = event;
-      
-      // Créer et insérer le bouton Add to Calendar
-      const calendarButtonContainer = document.getElementById('calendar-button-container');
-      if (calendarButtonContainer) {
-        const calendarButton = createCalendarButton(event);
-        calendarButtonContainer.appendChild(calendarButton);
-      }
       
       // Initialiser la carte après l'affichage du contenu
       if (event.location && event.location !== 'Lieu non précisé') {
