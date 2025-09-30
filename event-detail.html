@@ -954,6 +954,7 @@
           address: data.Adresse || '',
           thumbnail: data.Thumbnail || '',
           category: data.Catégorie || data.Category || ''
+          time: data.Heure || ''
         };
         
         // Traitement de la date
@@ -1074,7 +1075,7 @@
                   <i class="fas fa-clock"></i>
                 </div>
                 <div class="info-card-title">Horaire</div>
-                <div class="info-card-content">À confirmer</div>
+                <div class="info-card-content">${event.time || 'À confirmer'}</div>
               </div>
             </div>
             
@@ -1361,3 +1362,4 @@
   </script>
 </body>
 </html>
+
