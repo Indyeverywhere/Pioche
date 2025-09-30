@@ -815,6 +815,12 @@
                     <span>${event.location}${event.address ? ', ' + event.address : ''}</span>
                   </div>
                 ` : ''}
+                  ${event.time ? `
+    <div class="event-detail">
+      <i class="fas fa-clock"></i>
+      <span>${event.time}</span>
+    </div>
+  ` : ''}
                 ${event.price !== 'Prix non précisé' ? `
                   <div class="event-detail">
                     <i class="fas fa-tag"></i>
@@ -911,4 +917,5 @@
   </script>
 </body>
 </html>
+
 
