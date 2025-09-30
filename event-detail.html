@@ -930,10 +930,10 @@
         
         // Rechercher l'événement avec l'ID correspondant
         const { data, error } = await supabase
-          .from('Pioche_events')
-          .select('*')
-          .or(`ID de l'evenement.eq.${eventId},ID de l'événement.eq.${eventId}`)
-          .single();
+  .from('Pioche_events')
+  .select('*')
+  .or(`"ID de l'evenement".eq.${eventId},"ID de l'événement".eq.${eventId}`)
+  .single();
         
         if (error) {
           if (error.code === 'PGRST116') {
@@ -1362,5 +1362,6 @@
   </script>
 </body>
 </html>
+
 
 
