@@ -61,10 +61,10 @@ User-agent: CCBot
 Disallow: /
 
 User-agent: anthropic-ai
-Disallow: /
+Allow: /
 
 User-agent: Claude-Web
-Disallow: /
+Allow: /
 
 # Blocage des outils de scraping
 User-agent: wget
@@ -92,4 +92,5 @@ Disallow: /*?page=*&page=
 Disallow: /*?id=*&id=
 Disallow: /*.php$
 Disallow: /event-detail.html?id=*
+
 Allow: /event-detail.html
