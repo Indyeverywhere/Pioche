@@ -907,95 +907,94 @@
     }
     
     async function loadEventFromSupabase() {
-      const container = document.getElementById('event-container');
-      
-      try {
-        logDebug('🚀 Début du chargement de l\'événement depuis Supabase', { eventId });
-        
-        // D'abord, essayer de récupérer depuis localStorage (cache)
-        const cachedEvents = localStorage.getItem('marseilleEvents');
-        if (cachedEvents) {
-          logDebug('📦 Données trouvées dans le cache local');
-          const events = JSON.parse(cachedEvents);
-          const event = events.find(e => e.id === eventId || e.id === parseInt(eventId));
-          if (event) {
-            logDebug('✅ Événement trouvé dans le cache', { event });
-            displayEvent(event);
-            return;
-          }
-        }
-        
-        // Si pas dans le cache, charger depuis Supabase
-        logDebug('📡 Chargement depuis Supabase...');
-        
-        // Rechercher l'événement avec l'ID correspondant
-        const { data, error } = await supabase
-  .from('Pioche_events')
-  .select('*')
-  .eq(`ID de l'evenement`, eventId)
-  .single();
-        
-        if (error) {
-          if (error.code === 'PGRST116') {
-            throw new Error(`Événement avec l'ID "${eventId}" introuvable`);
-          }
-          throw new Error(`Erreur Supabase: ${error.message}`);
-        }
-        
-        logDebug('📊 Données reçues de Supabase', { data });
-        
-        // Mapper les données vers notre format d'événement
-        const event = {
-          id: data["ID de l'evenement"] || data["ID de l'événement"] || eventId,
-          title: data.Titre || 'Événement sans titre',
-          description: data.Description || data["Description courte"] || 'Description non disponible',
-          price: data.Prix || 'Prix non précisé',
-          location: data.Lieu || 'Lieu non précisé',
-          address: data.Adresse || '',
-          thumbnail: data.Thumbnail || '',
-          category: data.Catégorie || data.Category || '',
-          time: data.Heure || ''
-        };
-        
-        // Traitement de la date
-        const dateValue = data.Date;
-        if (dateValue) {
-          // Format text YYYY-MM-DD
-          event.eventDate = new Date(dateValue + "T00:00:00");
-          if (isNaN(event.eventDate.getTime())) {
-            event.eventDate = new Date();
-            event.formattedDate = "Date à confirmer";
-          } else {
-            event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
-            });
-          }
-        } else {
-          event.eventDate = new Date();
-          event.formattedDate = "Date à confirmer";
-        }
-        
-        logDebug('🎉 Événement trouvé et formaté !', { event });
+  const container = document.getElementById('event-container');
+  
+  try {
+    logDebug('🚀 Début chargement', { eventId });
+    
+    // D'abord essayer le cache
+    const cachedEvents = localStorage.getItem('marseilleEvents');
+    if (cachedEvents) {
+      logDebug('📦 Cache trouvé');
+      const events = JSON.parse(cachedEvents);
+      const event = events.find(e => e.id === eventId || e.id === parseInt(eventId));
+      if (event) {
+        logDebug('✅ Événement dans cache');
         displayEvent(event);
-        
-      } catch (error) {
-        logDebug('❌ Erreur:', error.message);
-        container.innerHTML = `
-          <div class="error-container">
-            <i class="fas fa-calendar-times error-icon"></i>
-            <h2 class="error-title">Événement introuvable</h2>
-            <p class="error-message">${error.message}</p>
-            <a href="agenda.html" class="action-button primary-button">
-              <i class="fas fa-arrow-left"></i>
-              Retour aux événements
-            </a>
-          </div>
-        `;
+        return;
       }
     }
+    
+    // Si pas dans le cache, charger tous les événements depuis Supabase
+    logDebug('📡 Chargement depuis Supabase...');
+    
+    const { data: allEvents, error } = await supabase
+      .from('Pioche_events')
+      .select('*');
+    
+    if (error) throw new Error(`Erreur Supabase: ${error.message}`);
+    
+    logDebug('📊 Données reçues');
+    
+    // Trouver l'événement correspondant
+    const rawEvent = allEvents.find(e => 
+      (e["ID de l'evenement"] && e["ID de l'evenement"] === eventId) ||
+      (e["ID de l'evenement"] && e["ID de l'evenement"] === parseInt(eventId))
+    );
+    
+    if (!rawEvent) {
+      throw new Error(`Événement avec l'ID "${eventId}" introuvable`);
+    }
+    
+    const event = {
+      id: rawEvent["ID de l'evenement"] || eventId,
+      title: rawEvent.Titre || 'Événement sans titre',
+      description: rawEvent.Description || rawEvent["Description courte"] || 'Description non disponible',
+      price: rawEvent.Prix || 'Prix non précisé',
+      location: rawEvent.Lieu || 'Lieu non précisé',
+      address: rawEvent.Adresse || '',
+      thumbnail: rawEvent.Thumbnail || '',
+      category: rawEvent.Catégorie || rawEvent.Category || '',
+      time: rawEvent.Heure || ''
+    };
+    
+    const dateValue = rawEvent.Date;
+    if (dateValue) {
+      event.eventDate = new Date(dateValue + "T00:00:00");
+      if (isNaN(event.eventDate.getTime())) {
+        event.eventDate = new Date();
+        event.formattedDate = "Date à confirmer";
+      } else {
+        event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+      }
+    } else {
+      event.eventDate = new Date();
+      event.formattedDate = "Date à confirmer";
+    }
+    
+    logDebug('🎉 Événement formaté');
+    displayEvent(event);
+    
+  } catch (error) {
+    logDebug('❌ Erreur:', error.message);
+    container.innerHTML = `
+      <div class="error-container">
+        <i class="fas fa-calendar-times error-icon"></i>
+        <h2 class="error-title">Événement introuvable</h2>
+        <p class="error-message">${error.message}</p>
+        <a href="agenda.html" class="action-button primary-button">
+          <i class="fas fa-arrow-left"></i>
+          Retour aux événements
+        </a>
+      </div>
+    `;
+  }
+}
     
     function displayEvent(event) {
       const container = document.getElementById('event-container');
@@ -1362,6 +1361,7 @@
   </script>
 </body>
 </html>
+
 
 
 
