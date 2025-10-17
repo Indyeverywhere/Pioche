@@ -542,6 +542,14 @@
     </div>
   </nav>
 
+    <script>
+    // Detect if running in Flutter WebView and hide navigation
+    if (navigator.userAgent.includes('Flutter') || 
+        navigator.userAgent.includes('wv') || 
+        window.flutter_inappwebview) {
+      document.querySelector('nav').style.display = 'none';
+    }
+  </script>
   <main>
     
     <!-- Filtres et recherche -->
@@ -917,5 +925,6 @@
   </script>
 </body>
 </html>
+
 
 
