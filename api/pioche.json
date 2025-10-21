@@ -21,8 +21,8 @@
         "disable_header": "true",
         "disable_footer": "false",
         "disable_left_icon": "false",
-        "app_logo": "https:\/\/localhost\/admin\/upload\/app_logo.png",
-        "floating_button": "https:\/\/localhost\/admin\/upload\/floating_button.png"
+        "app_logo": "https:\/\/pioche.me\/upload\/app_logo.png",
+        "floating_button": "https:\/\/pioche.me\/upload\/floating_button.png"
     },
     "admob": {
         "ads_type": "none",
@@ -71,15 +71,15 @@
         "title_color": "#ffffff",
         "enable_logo": "true",
         "enable_background": "false",
-        "splash_logo_url": "http:\/\/localhost\/pioche-admin\/upload\/splash_logo.png",
-        "splash_background_url": "http:\/\/localhost\/pioche-admin\/upload\/splash_background.png"
+        "splash_logo_url": "http:\/\/pioche.me\/upload\/splash_logo.png",
+        "splash_background_url": "http:\/\/pioche.me\/upload\/splash_background.png"
     },
     "exitpopup_configuration": {
         "title": "Do you want to exit at this moment? ",
         "positive_text": "Yes",
         "negative_text": "No",
         "enable_image": "true",
-        "exit_image_url": "https:\/\/apps.meetmighty.com\/mightyweb\/upload\/cancel.png"
+        "exit_image_url": "https:\/\/pioche.me\/upload\/cancel.png"
     },
     "share_content": {
         "share": "share conntentt https:\/\/pioche.me\/agenda"
@@ -89,7 +89,7 @@
             "id": "1",
             "title": "Google",
             "type": "sidedrawer",
-            "image": "https:\/\/localhost\/admin\/upload\/menu\/default.png",
+            "image": "https:\/\/pioche.me\/upload\/menu\/default.png",
             "url": "https:\/\/www.google.com",
             "status": "1",
             "parent_id": "0",
