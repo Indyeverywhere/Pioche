@@ -6,7 +6,7 @@
         "isJavascriptEnable": "true",
         "isSplashScreen": "true",
         "isZoomFunctionality": "false",
-        "navigationStyle": "sidedrawer",
+        "navigationStyle": "fullscreen",
         "header_style": "left",
         "is_walkthrough": "false",
         "is_webrtc": "false",
@@ -84,18 +84,7 @@
     "share_content": {
         "share": "share conntentt https:\/\/pioche.me\/agenda"
     },
-    "menu_style": [
-        {
-            "id": "2",
-            "title": "Dons",
-            "type": "sidedrawer",
-            "image": "https:\/\/pioche.me\/upload\/menu\/default.png",
-            "url": "",
-            "status": "1",
-            "parent_id": "0",
-            "children": []
-        }
-    ],
+
     "header_icon": {
         "lefticon": [
             {
