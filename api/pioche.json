@@ -55,7 +55,7 @@
         "skype": "",
         "messenger": "https:\/\/www.messenger.com\/",
         "youtube": "https:\/\/www.youtube.com\/",
-        "isShowAbout": "true",
+        "isShowAbout": "false",
         "copyright": "",
         "description": ""
     },
@@ -86,11 +86,11 @@
     },
     "menu_style": [
         {
-            "id": "1",
-            "title": "Google",
+            "id": "2",
+            "title": "Dons",
             "type": "sidedrawer",
             "image": "https:\/\/pioche.me\/upload\/menu\/default.png",
-            "url": "https:\/\/www.google.com",
+            "url": "",
             "status": "1",
             "parent_id": "0",
             "children": []
@@ -355,22 +355,6 @@
             }
         ]
     },
-    "walkthrough": [
-        {
-            "id": "1",
-            "title": "Mighty Web",
-            "subtitle": "MightyWeb app is used to convert your Website to Application Mobile",
-            "image": "https:\/\/localhost\/admin\/upload\/walkthrough\/default.png",
-            "status": "1"
-        },
-        {
-            "id": "2",
-            "title": "Theme Style",
-            "subtitle": "Mighty Web holds stunning options of Theme styles that you can apply to your mobile app to define your app better.",
-            "image": "https:\/\/localhost\/admin\/upload\/walkthrough\/default.png",
-            "status": "1"
-        }
-    ],
     "floating_button": [
         {
             "id": "1",
