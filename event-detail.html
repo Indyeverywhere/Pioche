@@ -837,13 +837,145 @@
 
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
-      let logEntry = `[${timestamp}] ${message}`;
       if (data) {
-        console.log(message, data);
+        console.log(`[${timestamp}] ${message}`, data);
       } else {
-        console.log(message);
+        console.log(`[${timestamp}] ${message}`);
       }
     }
+
+    // ====== Ajout: utilitaires pour le rappel local via l'app ======
+    const DEFAULT_REMINDER_HOUR = 10; // 10h le jour J si l'heure n'est pas précisée
+    const DEFAULT_REMINDER_MINUTE = 0;
+
+    function isInAppWebView() {
+      return !!(window.Pioche && typeof window.Pioche.postMessage === 'function');
+    }
+
+    // Parse des formats "20:30", "20h30", "20h", "20"
+    function parseTimeToHM(raw) {
+      if (!raw) return null;
+      const s = String(raw).trim().toLowerCase();
+      if (!s || s.includes('confirm')) return null; // "À confirmer", etc.
+
+      const m = s.match(/(\d{1,2})(?:[:hH\.](\d{1,2}))?/);
+      if (!m) return null;
+
+      let h = parseInt(m[1], 10);
+      let min = m[2] ? parseInt(m[2], 10) : 0;
+      if (isNaN(h) || isNaN(min) || h > 23 || min > 59) return null;
+      return { h, min };
+    }
+
+    // ISO local avec offset (+01:00)
+    function toISOWithOffset(d) {
+      const pad = n => String(n).padStart(2, '0');
+      const tzMin = -d.getTimezoneOffset(); // ex: 60 pour +01:00
+      const sign = tzMin >= 0 ? '+' : '-';
+      const abs = Math.abs(tzMin);
+      const offH = pad(Math.floor(abs / 60));
+      const offM = pad(abs % 60);
+      return (
+        d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' +
+        pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) +
+        sign + offH + ':' + offM
+      );
+    }
+
+    // Construit la charge utile envoyée à l'app
+    function buildReminderPayload(ev) {
+      const id = String(ev.id);
+      const baseDate = ev.eventDate instanceof Date ? ev.eventDate : new Date();
+      const hm = parseTimeToHM(ev.time);
+      const h = hm ? hm.h : DEFAULT_REMINDER_HOUR;
+      const m = hm ? hm.min : DEFAULT_REMINDER_MINUTE;
+
+      // Date/heure locale du début d’événement
+      const startLocal = new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        h, m, 0, 0
+      );
+
+      return {
+        action: 'addReminder',
+        id,
+        title: ev.title,
+        startISO: toISOWithOffset(startLocal),
+        venue: ev.location || null,
+        url: window.location.href,
+        address: ev.address || null,
+        image: ev.thumbnail || null
+      };
+    }
+
+    function sendToApp(payload) {
+      try {
+        window.Pioche.postMessage(JSON.stringify(payload));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // État UI (miroir local pour l’icône/boutons)
+    function setFavoriteLocally(id, on) {
+      try { localStorage.setItem('pioche_fav_' + String(id), on ? '1' : '0'); } catch (_) {}
+    }
+    function isFavoriteLocally(id) {
+      try { return localStorage.getItem('pioche_fav_' + String(id)) === '1'; } catch (_) { return false; }
+    }
+
+    // Handlers boutons
+    function addReminderFromUI() {
+      if (!window.currentEvent) return false;
+      if (!isInAppWebView()) {
+        alert("Pour ajouter un rappel, ouvrez cette page dans l’application Pioche.");
+        return false;
+      }
+      const ok = sendToApp(buildReminderPayload(window.currentEvent));
+      if (ok) {
+        setFavoriteLocally(window.currentEvent.id, true);
+        updateReminderButtons();
+      }
+      return false; // empêcher la navigation
+    }
+
+    function removeReminderFromUI() {
+      if (!window.currentEvent) return false;
+      if (!isInAppWebView()) {
+        alert("Cette action est disponible dans l’application Pioche.");
+        return false;
+      }
+      const ok = sendToApp({ action: 'removeReminder', id: String(window.currentEvent.id) });
+      if (ok) {
+        setFavoriteLocally(window.currentEvent.id, false);
+        updateReminderButtons();
+      }
+      return false;
+    }
+
+    function updateReminderButtons() {
+      const addBtn = document.getElementById('btn-add-reminder');
+      const remBtn = document.getElementById('btn-remove-reminder');
+
+      if (!addBtn || !remBtn || !window.currentEvent) return;
+      const inApp = isInAppWebView();
+      const isFav = isFavoriteLocally(window.currentEvent.id);
+
+      // Cacher les boutons si hors app
+      if (!inApp) {
+        addBtn.style.display = 'none';
+        remBtn.style.display = 'none';
+        return;
+      }
+
+      // Afficher l'état
+      addBtn.style.display = isFav ? 'none' : '';
+      remBtn.style.display = isFav ? '' : 'none';
+    }
+    // ====== Fin utilitaires rappel ======
 
     // Fonctions de partage social
     function shareOnFacebook(event) {
@@ -872,94 +1004,94 @@
     }
 
     async function loadEventFromSupabase() {
-  const container = document.getElementById('event-container');
+      const container = document.getElementById('event-container');
 
-  try {
-    logDebug('🚀 Début chargement', { eventId });
+      try {
+        logDebug('🚀 Début chargement', { eventId });
 
-    // D'abord essayer le cache
-    const cachedEvents = localStorage.getItem('marseilleEvents');
-    if (cachedEvents) {
-      logDebug('📦 Cache trouvé');
-      const events = JSON.parse(cachedEvents);
-      const event = events.find(e => e.id === eventId || e.id === parseInt(eventId));
-      if (event) {
-        logDebug('✅ Événement dans cache');
+        // D'abord essayer le cache
+        const cachedEvents = localStorage.getItem('marseilleEvents');
+        if (cachedEvents) {
+          logDebug('📦 Cache trouvé');
+          const events = JSON.parse(cachedEvents);
+          const event = events.find(e => e.id === eventId || e.id === parseInt(eventId));
+          if (event) {
+            logDebug('✅ Événement dans cache');
+            displayEvent(event);
+            return;
+          }
+        }
+
+        // Si pas dans le cache, charger tous les événements depuis Supabase
+        logDebug('📡 Chargement depuis Supabase...');
+
+        const { data: allEvents, error } = await supabase
+          .from('Pioche_events')
+          .select('*');
+
+        if (error) throw new Error(`Erreur Supabase: ${error.message}`);
+
+        logDebug('📊 Données reçues');
+
+        // Trouver l'événement correspondant
+        const rawEvent = allEvents.find(e =>
+          (e["ID de l'evenement"] && e["ID de l'evenement"] === eventId) ||
+          (e["ID de l'evenement"] && e["ID de l'evenement"] === parseInt(eventId))
+        );
+
+        if (!rawEvent) {
+          throw new Error(`Événement avec l'ID "${eventId}" introuvable`);
+        }
+
+        const event = {
+          id: rawEvent["ID de l'evenement"] || eventId,
+          title: rawEvent.Titre || 'Événement sans titre',
+          description: rawEvent.Description || rawEvent["Description courte"] || 'Description non disponible',
+          price: rawEvent.Prix || 'Prix non précisé',
+          location: rawEvent.Lieu || 'Lieu non précisé',
+          address: rawEvent.Adresse || '',
+          thumbnail: rawEvent.Thumbnail || '',
+          category: rawEvent.Catégorie || rawEvent.Category || '',
+          time: rawEvent.Heure || ''
+        };
+
+        const dateValue = rawEvent.Date;
+        if (dateValue) {
+          event.eventDate = new Date(dateValue + "T00:00:00");
+          if (isNaN(event.eventDate.getTime())) {
+            event.eventDate = new Date();
+            event.formattedDate = "Date à confirmer";
+          } else {
+            event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            });
+          }
+        } else {
+          event.eventDate = new Date();
+          event.formattedDate = "Date à confirmer";
+        }
+
+        logDebug('🎉 Événement formaté');
         displayEvent(event);
-        return;
+
+      } catch (error) {
+        logDebug('❌ Erreur:', error.message);
+        container.innerHTML = `
+          <div class="error-container">
+            <i class="fas fa-calendar-times error-icon"></i>
+            <h2 class="error-title">Événement introuvable</h2>
+            <p class="error-message">${error.message}</p>
+            <a href="agenda.html" class="action-button primary-button">
+              <i class="fas fa-arrow-left"></i>
+              Retour aux événements
+            </a>
+          </div>
+        `;
       }
     }
-
-    // Si pas dans le cache, charger tous les événements depuis Supabase
-    logDebug('📡 Chargement depuis Supabase...');
-
-    const { data: allEvents, error } = await supabase
-      .from('Pioche_events')
-      .select('*');
-
-    if (error) throw new Error(`Erreur Supabase: ${error.message}`);
-
-    logDebug('📊 Données reçues');
-
-    // Trouver l'événement correspondant
-    const rawEvent = allEvents.find(e =>
-      (e["ID de l'evenement"] && e["ID de l'evenement"] === eventId) ||
-      (e["ID de l'evenement"] && e["ID de l'evenement"] === parseInt(eventId))
-    );
-
-    if (!rawEvent) {
-      throw new Error(`Événement avec l'ID "${eventId}" introuvable`);
-    }
-
-    const event = {
-      id: rawEvent["ID de l'evenement"] || eventId,
-      title: rawEvent.Titre || 'Événement sans titre',
-      description: rawEvent.Description || rawEvent["Description courte"] || 'Description non disponible',
-      price: rawEvent.Prix || 'Prix non précisé',
-      location: rawEvent.Lieu || 'Lieu non précisé',
-      address: rawEvent.Adresse || '',
-      thumbnail: rawEvent.Thumbnail || '',
-      category: rawEvent.Catégorie || rawEvent.Category || '',
-      time: rawEvent.Heure || ''
-    };
-
-    const dateValue = rawEvent.Date;
-    if (dateValue) {
-      event.eventDate = new Date(dateValue + "T00:00:00");
-      if (isNaN(event.eventDate.getTime())) {
-        event.eventDate = new Date();
-        event.formattedDate = "Date à confirmer";
-      } else {
-        event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        });
-      }
-    } else {
-      event.eventDate = new Date();
-      event.formattedDate = "Date à confirmer";
-    }
-
-    logDebug('🎉 Événement formaté');
-    displayEvent(event);
-
-  } catch (error) {
-    logDebug('❌ Erreur:', error.message);
-    container.innerHTML = `
-      <div class="error-container">
-        <i class="fas fa-calendar-times error-icon"></i>
-        <h2 class="error-title">Événement introuvable</h2>
-        <p class="error-message">${error.message}</p>
-        <a href="agenda.html" class="action-button primary-button">
-          <i class="fas fa-arrow-left"></i>
-          Retour aux événements
-        </a>
-      </div>
-    `;
-  }
-}
 
     function displayEvent(event) {
       const container = document.getElementById('event-container');
@@ -1059,6 +1191,17 @@
                 <i class="fas fa-calendar-plus"></i>
                 Ajouter au calendrier
               </a>
+
+              <!-- Nouveaux boutons Rappel (visibles uniquement dans l’app) -->
+              <a href="#" id="btn-add-reminder" class="action-button secondary-button" style="display:none" onclick="return addReminderFromUI();">
+                <i class="fas fa-bell"></i>
+                Ajouter un rappel
+              </a>
+
+              <a href="#" id="btn-remove-reminder" class="action-button secondary-button" style="display:none" onclick="return removeReminderFromUI();">
+                <i class="fas fa-bell-slash"></i>
+                Retirer le rappel
+              </a>
             </div>
 
             <div class="share-section">
@@ -1107,8 +1250,11 @@
 
       logDebug('✨ Événement affiché avec succès');
 
-      // Stocker l'événement dans une variable globale pour les fonctions de partage
+      // Stocker l'événement dans une variable globale pour les fonctions de partage et de rappel
       window.currentEvent = event;
+
+      // Mettre à jour l’état des boutons de rappel selon le contexte (app ou web) et le cache local
+      updateReminderButtons();
 
       // Initialiser la carte après l'affichage du contenu
       if (event.location && event.location !== 'Lieu non précisé') {
@@ -1326,4 +1472,3 @@
   </script>
 </body>
 </html>
-
