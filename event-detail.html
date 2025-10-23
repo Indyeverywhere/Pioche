@@ -44,11 +44,7 @@
       --accent-color: #e91e63;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Montserrat', sans-serif;
@@ -92,11 +88,7 @@
       margin-left: 1rem;
     }
 
-    .back-button:hover {
-      background: var(--primary-color);
-      color: white;
-      transform: translateX(-5px);
-    }
+    .back-button:hover { background: var(--primary-color); color: white; transform: translateX(-5px); }
 
     main {
       flex: 1;
@@ -106,35 +98,12 @@
       padding: 0 20px;
     }
 
-    .breadcrumb {
-      padding: 1rem 0;
-      font-size: 0.9rem;
-    }
-
-    .breadcrumb ol {
-      display: flex;
-      list-style: none;
-      gap: 0.5rem;
-    }
-
-    .breadcrumb li::after {
-      content: "›";
-      margin-left: 0.5rem;
-      color: #999;
-    }
-
-    .breadcrumb li:last-child::after {
-      content: "";
-    }
-
-    .breadcrumb a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-
-    .breadcrumb a:hover {
-      text-decoration: underline;
-    }
+    .breadcrumb { padding: 1rem 0; font-size: 0.9rem; }
+    .breadcrumb ol { display: flex; list-style: none; gap: 0.5rem; }
+    .breadcrumb li::after { content: "›"; margin-left: 0.5rem; color: #999; }
+    .breadcrumb li:last-child::after { content: ""; }
+    .breadcrumb a { color: var(--primary-color); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
 
     .event-detail-container {
       background: white;
@@ -144,16 +113,7 @@
       animation: fadeIn 0.5s ease;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
 
     .event-hero {
       position: relative;
@@ -164,10 +124,7 @@
       justify-content: center;
       overflow: hidden;
     }
-
-    .event-hero.clickable {
-      cursor: zoom-in;
-    }
+    .event-hero.clickable { cursor: zoom-in; }
 
     .event-hero img {
       width: 100%;
@@ -176,522 +133,115 @@
       animation: zoomIn 0.8s ease;
       transition: transform 0.3s ease;
     }
+    .event-hero.clickable:hover img { transform: scale(1.05); }
 
-    .event-hero.clickable:hover img {
-      transform: scale(1.05);
-    }
+    @keyframes zoomIn { from { transform: scale(1.1);} to { transform: scale(1);} }
 
-    @keyframes zoomIn {
-      from {
-        transform: scale(1.1);
-      }
-      to {
-        transform: scale(1);
-      }
-    }
-
-    .event-hero-placeholder {
-      color: white;
-      font-size: 6rem;
-      opacity: 0.8;
-    }
+    .event-hero-placeholder { color: white; font-size: 6rem; opacity: 0.8; }
 
     .event-hero-overlay {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
       padding: 2rem;
       color: white;
       pointer-events: none;
     }
 
-    .lightbox {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.95);
-      animation: fadeInLightbox 0.3s ease;
-    }
-
-    .lightbox.active {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    @keyframes fadeInLightbox {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    .lightbox-content {
-      position: relative;
-      max-width: 90%;
-      max-height: 90vh;
-      animation: zoomInLightbox 0.3s ease;
-    }
-
-    @keyframes zoomInLightbox {
-      from {
-        transform: scale(0.8);
-        opacity: 0;
-      }
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    .lightbox-image {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .lightbox-close {
-      position: absolute;
-      top: -40px;
-      right: 0;
-      color: white;
-      font-size: 2rem;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 0;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-
-    .lightbox-close:hover {
-      transform: rotate(90deg);
-      color: var(--accent-color);
-    }
+    .lightbox { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); animation: fadeInLightbox 0.3s ease; }
+    .lightbox.active { display: flex; justify-content: center; align-items: center; }
+    @keyframes fadeInLightbox { from { opacity: 0; } to { opacity: 1; } }
+    .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; animation: zoomInLightbox 0.3s ease; }
+    @keyframes zoomInLightbox { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .lightbox-image { width: auto; height: auto; max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); }
+    .lightbox-close { position: absolute; top: -40px; right: 0; color: white; font-size: 2rem; cursor: pointer; background: none; border: none; padding: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease, color 0.3s ease; }
+    .lightbox-close:hover { transform: rotate(90deg); color: var(--accent-color); }
 
     .zoom-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0, 0, 0, 0.5); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem;
+      pointer-events: none; display: flex; align-items: center; gap: 5px;
     }
 
-    .event-detail-content {
-      padding: 2rem;
-    }
-
-    .event-header {
-      margin-bottom: 2rem;
-    }
+    .event-detail-content { padding: 2rem; }
+    .event-header { margin-bottom: 2rem; }
 
     .event-date-badge {
-      display: inline-block;
-      background-color: var(--accent-color);
-      color: white;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
+      display: inline-block; background-color: var(--accent-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem; font-weight: 600;
       animation: slideInLeft 0.6s ease;
     }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px);} to { opacity: 1; transform: translateX(0);} }
 
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
+    .event-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; animation: slideInRight 0.6s ease; }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(30px);} to { opacity: 1; transform: translateX(0);} }
 
-    .event-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-      animation: slideInRight 0.6s ease;
-    }
+    .event-category-badge { display: inline-block; background-color: var(--primary-color); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 2rem; }
 
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
+    .event-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .info-card { background: var(--background-color); border-radius: 12px; padding: 1.5rem; transition: transform 0.3s, box-shadow 0.3s; border: 1px solid #e0e0e0; }
+    .info-card:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+    .info-card-icon { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.8rem; }
+    .info-card-title { font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; font-weight: 600; }
+    .info-card-content { font-size: 1.1rem; font-weight: 600; color: var(--text-color); }
 
-    .event-category-badge {
-      display: inline-block;
-      background-color: var(--primary-color);
-      color: white;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      margin-bottom: 2rem;
-    }
+    .event-description-section { margin-bottom: 2rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-color); margin-bottom: 1rem; }
+    .event-description-text { font-size: 1rem; line-height: 1.6; color: #555; background: var(--background-color); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary-color); }
 
-    .event-info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
+    .event-actions { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .action-button { padding: 12px 25px; border-radius: 25px; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; }
+    .primary-button { background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; border: none; }
+    .primary-button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3); }
+    .secondary-button { background: white; color: var(--primary-color); border: 2px solid var(--primary-color); }
+    .secondary-button:hover { background: var(--primary-color); color: white; }
 
-    .info-card {
-      background: var(--background-color);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: transform 0.3s, box-shadow 0.3s;
-      border: 1px solid #e0e0e0;
-    }
+    .share-section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0; }
+    .share-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
+    .share-button { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; transition: transform 0.3s; }
+    .share-button:hover { transform: scale(1.1); }
+    .share-facebook { background: #1877f2; }
+    .share-twitter { background: #1da1f2; }
+    .share-whatsapp { background: #25d366; }
+    .share-email { background: var(--secondary-color); }
 
-    .info-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
+    .map-section { margin-top: 2rem; background: var(--background-color); padding: 1.5rem; border-radius: 12px; }
+    #event-map { height: 300px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+    .map-loading { height: 300px; background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 1rem; }
+    .map-error { padding: 1.5rem; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; color: #856404; text-align: center; }
 
-    .info-card-icon {
-      font-size: 1.5rem;
-      color: var(--primary-color);
-      margin-bottom: 0.8rem;
-    }
+    footer { background: #2c3e50; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem; }
+    .footer-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--secondary-color); }
 
-    .info-card-title {
-      font-size: 0.9rem;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
+    .error-container { background: white; border-radius: 12px; padding: 3rem; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+    .error-icon { font-size: 4rem; color: var(--accent-color); margin-bottom: 1rem; }
+    .error-title { font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem; }
+    .error-message { color: #666; margin-bottom: 2rem; }
 
-    .info-card-content {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-color);
-    }
+    .loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+    .loading-spinner { font-size: 3rem; color: var(--primary-color); animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+    .loading-text { margin-top: 1rem; color: #666; font-size: 1.2rem; }
 
-    .event-description-section {
-      margin-bottom: 2rem;
-    }
-
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-    }
-
-    .event-description-text {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #555;
-      background: var(--background-color);
-      padding: 1.5rem;
-      border-radius: 12px;
-      border-left: 4px solid var(--primary-color);
-    }
-
-    .event-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .action-button {
-      padding: 12px 25px;
-      border-radius: 25px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .primary-button {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      color: white;
-      border: none;
-    }
-
-    .primary-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
-    }
-
-    .secondary-button {
-      background: white;
-      color: var(--primary-color);
-      border: 2px solid var(--primary-color);
-    }
-
-    .secondary-button:hover {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .share-section {
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid #e0e0e0;
-    }
-
-    .share-buttons {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .share-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      color: white;
-      transition: transform 0.3s;
-    }
-
-    .share-button:hover {
-      transform: scale(1.1);
-    }
-
-    .share-facebook {
-      background: #1877f2;
-    }
-
-    .share-twitter {
-      background: #1da1f2;
-    }
-
-    .share-whatsapp {
-      background: #25d366;
-    }
-
-    .share-email {
-      background: var(--secondary-color);
-    }
-
-    .map-section {
-      margin-top: 2rem;
-      background: var(--background-color);
-      padding: 1.5rem;
-      border-radius: 12px;
-    }
-
-    #event-map {
-      height: 300px;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .map-loading {
-      height: 300px;
-      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary-color);
-      font-size: 1rem;
-    }
-
-    .map-error {
-      padding: 1.5rem;
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      border-radius: 8px;
-      color: #856404;
-      text-align: center;
-    }
-
-    footer {
-      background: #2c3e50;
-      color: white;
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 4rem;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .footer-brand {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: var(--secondary-color);
-    }
-
-    .error-container {
-      background: white;
-      border-radius: 12px;
-      padding: 3rem;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .error-icon {
-      font-size: 4rem;
-      color: var(--accent-color);
-      margin-bottom: 1rem;
-    }
-
-    .error-title {
-      font-size: 2rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-    }
-
-    .error-message {
-      color: #666;
-      margin-bottom: 2rem;
-    }
-
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 400px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .loading-spinner {
-      font-size: 3rem;
-      color: var(--primary-color);
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-text {
-      margin-top: 1rem;
-      color: #666;
-      font-size: 1.2rem;
-    }
-
-    .price-tag {
-      display: inline-block;
-      background-color: var(--secondary-color);
-      color: white;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-    }
+    .price-tag { display: inline-block; background-color: var(--secondary-color); color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; }
 
     @media (max-width: 768px) {
-      .nav-links {
-        gap: 1rem;
-        font-size: 0.9rem;
-      }
-
-      .event-title {
-        font-size: 2rem;
-      }
-
-      .event-detail-content {
-        padding: 1.5rem;
-      }
-
-      .event-hero {
-        height: 250px;
-      }
-
-      .info-card {
-        padding: 1rem;
-      }
-
-      .nav-container {
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
-
-      .back-button {
-        margin-left: 0;
-        order: -1;
-        width: 100%;
-        justify-content: center;
-      }
-
-      .event-actions {
-        flex-direction: column;
-      }
-
-      .action-button {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .lightbox-content {
-        max-width: 95%;
-      }
-
-      .lightbox-close {
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
-      }
-
-      .lightbox-image {
-        border-radius: 0;
-      }
+      .nav-links { gap: 1rem; font-size: 0.9rem; }
+      .event-title { font-size: 2rem; }
+      .event-detail-content { padding: 1.5rem; }
+      .event-hero { height: 250px; }
+      .info-card { padding: 1rem; }
+      .nav-container { flex-wrap: wrap; gap: 1rem; }
+      .back-button { margin-left: 0; order: -1; width: 100%; justify-content: center; }
+      .event-actions { flex-direction: column; }
+      .action-button { width: 100%; justify-content: center; }
+      .lightbox-content { max-width: 95%; }
+      .lightbox-close { top: 10px; right: 10px; background: rgba(0, 0, 0, 0.5); border-radius: 50%; }
+      .lightbox-image { border-radius: 0; }
     }
 
     @media (pointer: coarse) {
-      .zoom-indicator {
-        display: flex;
-      }
+      .zoom-indicator { display: flex; }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -761,67 +311,38 @@
       lightboxImage.alt = imageAlt || 'Image agrandie';
       lightbox.classList.add('active');
 
-      // Empêcher le scroll du body
       document.body.style.overflow = 'hidden';
-
-      // Fermer avec la touche Escape
       document.addEventListener('keydown', handleEscapeKey);
-
-      // Fermer en cliquant sur le fond
       lightbox.addEventListener('click', handleLightboxClick);
     }
 
     function closeLightbox() {
       const lightbox = document.getElementById('lightbox');
       lightbox.classList.remove('active');
-
-      // Réactiver le scroll du body
       document.body.style.overflow = '';
-
-      // Retirer les event listeners
       document.removeEventListener('keydown', handleEscapeKey);
       lightbox.removeEventListener('click', handleLightboxClick);
     }
 
-    function handleEscapeKey(e) {
-      if (e.key === 'Escape') {
-        closeLightbox();
-      }
-    }
-
-    function handleLightboxClick(e) {
-      // Fermer seulement si on clique sur le fond, pas sur l'image
-      if (e.target.id === 'lightbox') {
-        closeLightbox();
-      }
-    }
+    function handleEscapeKey(e) { if (e.key === 'Escape') closeLightbox(); }
+    function handleLightboxClick(e) { if (e.target.id === 'lightbox') closeLightbox(); }
 
     // Fonction pour mettre à jour les meta tags
     function updateMetaTags(event) {
-      // URL actuelle
       const currentUrl = window.location.href;
+      const description = event.description
+        ? (event.description.substring(0, 157) + (event.description.length > 157 ? '...' : ''))
+        : `${event.title} - ${event.formattedDate} à ${event.location}`;
 
-      // Description de l'événement (limitée à 160 caractères)
-      const description = event.description ?
-        (event.description.substring(0, 157) + (event.description.length > 157 ? '...' : '')) :
-        `${event.title} - ${event.formattedDate} à ${event.location}`;
-
-      // Mettre à jour ou créer les meta tags Open Graph
       updateMetaTag('property', 'og:title', event.title);
       updateMetaTag('property', 'og:description', description);
       updateMetaTag('property', 'og:url', currentUrl);
-      if (event.thumbnail) {
-        updateMetaTag('property', 'og:image', event.thumbnail);
-      }
+      if (event.thumbnail) updateMetaTag('property', 'og:image', event.thumbnail);
 
-      // Mettre à jour ou créer les meta tags Twitter Card
       updateMetaTag('name', 'twitter:title', event.title);
       updateMetaTag('name', 'twitter:description', description);
-      if (event.thumbnail) {
-        updateMetaTag('name', 'twitter:image', event.thumbnail);
-      }
+      if (event.thumbnail) updateMetaTag('name', 'twitter:image', event.thumbnail);
 
-      // Mettre à jour la meta description standard
       updateMetaTag('name', 'description', description);
     }
 
@@ -837,32 +358,30 @@
 
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
-      if (data) {
-        console.log(`[${timestamp}] ${message}`, data);
-      } else {
-        console.log(`[${timestamp}] ${message}`);
-      }
+      if (data) console.log(`[${timestamp}] ${message}`, data);
+      else console.log(`[${timestamp}] ${message}`);
     }
 
-    // ====== Ajout: utilitaires pour le rappel local via l'app ======
-    const DEFAULT_REMINDER_HOUR = 10; // 10h le jour J si l'heure n'est pas précisée
-    const DEFAULT_REMINDER_MINUTE = 0;
+    // ====== Rappels via l’app (bridge) ======
+    // Heures fallback quand l’heure est inconnue:
+    // On met 00:00 local ici. L’app planifiera à 14:00 le jour J (logique côté Flutter).
+    const FALLBACK_UNKNOWN_TIME_H = 0;
+    const FALLBACK_UNKNOWN_TIME_M = 0;
 
     function isInAppWebView() {
       return !!(window.Pioche && typeof window.Pioche.postMessage === 'function');
     }
 
-    // Parse des formats "20:30", "20h30", "20h", "20"
+    // Parse "20:30", "20h30", "20 h 30", "20h", "20"
     function parseTimeToHM(raw) {
       if (!raw) return null;
       const s = String(raw).trim().toLowerCase();
-      if (!s || s.includes('confirm')) return null; // "À confirmer", etc.
-
-      const m = s.match(/(\d{1,2})(?:[:hH\.](\d{1,2}))?/);
+      if (!s || /confirm|tbd|à définir|a definir|a définir/.test(s)) return null;
+      const compact = s.replace(/\s+/g, ''); // enlève les espaces éventuels
+      const m = compact.match(/(\d{1,2})(?:[:hH\.](\d{1,2}))?/);
       if (!m) return null;
-
-      let h = parseInt(m[1], 10);
-      let min = m[2] ? parseInt(m[2], 10) : 0;
+      const h = parseInt(m[1], 10);
+      const min = m[2] ? parseInt(m[2], 10) : 0;
       if (isNaN(h) || isNaN(min) || h > 23 || min > 59) return null;
       return { h, min };
     }
@@ -870,7 +389,7 @@
     // ISO local avec offset (+01:00)
     function toISOWithOffset(d) {
       const pad = n => String(n).padStart(2, '0');
-      const tzMin = -d.getTimezoneOffset(); // ex: 60 pour +01:00
+      const tzMin = -d.getTimezoneOffset();
       const sign = tzMin >= 0 ? '+' : '-';
       const abs = Math.abs(tzMin);
       const offH = pad(Math.floor(abs / 60));
@@ -882,15 +401,17 @@
       );
     }
 
-    // Construit la charge utile envoyée à l'app
+    // Construit le payload envoyé à l’app, avec timeKnown
     function buildReminderPayload(ev) {
       const id = String(ev.id);
       const baseDate = ev.eventDate instanceof Date ? ev.eventDate : new Date();
       const hm = parseTimeToHM(ev.time);
-      const h = hm ? hm.h : DEFAULT_REMINDER_HOUR;
-      const m = hm ? hm.min : DEFAULT_REMINDER_MINUTE;
+      const timeKnown = !!hm;
 
-      // Date/heure locale du début d’événement
+      const h = timeKnown ? hm.h : FALLBACK_UNKNOWN_TIME_H;
+      const m = timeKnown ? hm.min : FALLBACK_UNKNOWN_TIME_M;
+
+      // Date/heure locale du début d’événement (si heure inconnue -> 00:00)
       const startLocal = new Date(
         baseDate.getFullYear(),
         baseDate.getMonth(),
@@ -903,10 +424,9 @@
         id,
         title: ev.title,
         startISO: toISOWithOffset(startLocal),
+        timeKnown,                   // Indique à l’app quelle règle appliquer
         venue: ev.location || null,
-        url: window.location.href,
-        address: ev.address || null,
-        image: ev.thumbnail || null
+        url: window.location.href
       };
     }
 
@@ -919,7 +439,7 @@
       }
     }
 
-    // État UI (miroir local pour l’icône/boutons)
+    // Miroir local UI
     function setFavoriteLocally(id, on) {
       try { localStorage.setItem('pioche_fav_' + String(id), on ? '1' : '0'); } catch (_) {}
     }
@@ -927,7 +447,7 @@
       try { return localStorage.getItem('pioche_fav_' + String(id)) === '1'; } catch (_) { return false; }
     }
 
-    // Handlers boutons
+    // Boutons
     function addReminderFromUI() {
       if (!window.currentEvent) return false;
       if (!isInAppWebView()) {
@@ -935,11 +455,8 @@
         return false;
       }
       const ok = sendToApp(buildReminderPayload(window.currentEvent));
-      if (ok) {
-        setFavoriteLocally(window.currentEvent.id, true);
-        updateReminderButtons();
-      }
-      return false; // empêcher la navigation
+      // On attend la confirmation de l’app via PiocheCallback
+      return false;
     }
 
     function removeReminderFromUI() {
@@ -949,10 +466,7 @@
         return false;
       }
       const ok = sendToApp({ action: 'removeReminder', id: String(window.currentEvent.id) });
-      if (ok) {
-        setFavoriteLocally(window.currentEvent.id, false);
-        updateReminderButtons();
-      }
+      // On attend la confirmation de l’app via PiocheCallback
       return false;
     }
 
@@ -962,20 +476,35 @@
 
       if (!addBtn || !remBtn || !window.currentEvent) return;
       const inApp = isInAppWebView();
-      const isFav = isFavoriteLocally(window.currentEvent.id);
 
-      // Cacher les boutons si hors app
       if (!inApp) {
         addBtn.style.display = 'none';
         remBtn.style.display = 'none';
         return;
       }
 
-      // Afficher l'état
+      const isFav = isFavoriteLocally(window.currentEvent.id);
       addBtn.style.display = isFav ? 'none' : '';
       remBtn.style.display = isFav ? '' : 'none';
     }
-    // ====== Fin utilitaires rappel ======
+
+    // Callback de confirmation renvoyé par l’app
+    window.PiocheCallback = function (msgStr) {
+      try {
+        const msg = typeof msgStr === 'string' ? JSON.parse(msgStr) : msgStr;
+        if (!msg || !msg.type) return;
+
+        if (msg.type === 'reminderAdded' && msg.id) {
+          setFavoriteLocally(msg.id, true);
+        } else if (msg.type === 'reminderRemoved' && msg.id) {
+          setFavoriteLocally(msg.id, false);
+        }
+        updateReminderButtons();
+      } catch (e) {
+        console.log('PiocheCallback parse error:', e);
+      }
+    };
+    // ====== Fin bridge/app ======
 
     // Fonctions de partage social
     function shareOnFacebook(event) {
@@ -993,12 +522,9 @@
       const text = `*${window.currentEvent.title}*\n\n📅 ${window.currentEvent.formattedDate}\n📍 ${window.currentEvent.location || 'Marseille'}\n${window.currentEvent.price ? '💰 ' + window.currentEvent.price + '\n' : ''}\n${window.currentEvent.description ? window.currentEvent.description.substring(0, 200) + '...\n' : ''}\n🔗 ${window.location.href}`;
       const encodedText = encodeURIComponent(text);
 
-      // Détecter si on est sur mobile ou desktop
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        // Mobile : utiliser l'API WhatsApp
         window.open(`whatsapp://send?text=${encodedText}`, '_blank');
       } else {
-        // Desktop : utiliser WhatsApp Web
         window.open(`https://web.whatsapp.com/send?text=${encodedText}`, '_blank');
       }
     }
@@ -1009,7 +535,7 @@
       try {
         logDebug('🚀 Début chargement', { eventId });
 
-        // D'abord essayer le cache
+        // Cache local
         const cachedEvents = localStorage.getItem('marseilleEvents');
         if (cachedEvents) {
           logDebug('📦 Cache trouvé');
@@ -1022,7 +548,7 @@
           }
         }
 
-        // Si pas dans le cache, charger tous les événements depuis Supabase
+        // Supabase
         logDebug('📡 Chargement depuis Supabase...');
 
         const { data: allEvents, error } = await supabase
@@ -1030,10 +556,8 @@
           .select('*');
 
         if (error) throw new Error(`Erreur Supabase: ${error.message}`);
-
         logDebug('📊 Données reçues');
 
-        // Trouver l'événement correspondant
         const rawEvent = allEvents.find(e =>
           (e["ID de l'evenement"] && e["ID de l'evenement"] === eventId) ||
           (e["ID de l'evenement"] && e["ID de l'evenement"] === parseInt(eventId))
@@ -1096,13 +620,11 @@
     function displayEvent(event) {
       const container = document.getElementById('event-container');
 
-      // Mettre à jour le titre de la page et les meta tags pour le partage
+      // Titre + meta
       document.title = `${event.title} | Événements Marseille`;
-
-      // Mettre à jour les meta tags Open Graph et Twitter Card
       updateMetaTags(event);
 
-      // Créer l'image ou le placeholder
+      // Image/placeholder
       let imageContent;
       let heroClass = 'event-hero';
       let heroOnclick = '';
@@ -1122,7 +644,7 @@
         imageContent = '<div class="event-hero-placeholder"><i class="fas fa-calendar-alt"></i></div>';
       }
 
-      // Créer le contenu de la page
+      // Contenu
       container.innerHTML = `
         <div class="event-detail-container">
           <div class="${heroClass}" ${heroOnclick}>
@@ -1145,9 +667,7 @@
             <div class="event-info-grid">
               ${event.location && event.location !== 'Lieu non précisé' ? `
                 <div class="info-card">
-                  <div class="info-card-icon">
-                    <i class="fas fa-map-marker-alt"></i>
-                  </div>
+                  <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
                   <div class="info-card-title">Lieu</div>
                   <div class="info-card-content">${event.location}</div>
                   ${event.address ? `<div style="margin-top: 0.5rem; color: #888; font-size: 0.9rem;">${event.address}</div>` : ''}
@@ -1156,20 +676,14 @@
 
               ${event.price && event.price !== 'Prix non précisé' ? `
                 <div class="info-card">
-                  <div class="info-card-icon">
-                    <i class="fas fa-ticket-alt"></i>
-                  </div>
+                  <div class="info-card-icon"><i class="fas fa-ticket-alt"></i></div>
                   <div class="info-card-title">Tarif</div>
-                  <div class="info-card-content">
-                    <span class="price-tag">${event.price}</span>
-                  </div>
+                  <div class="info-card-content"><span class="price-tag">${event.price}</span></div>
                 </div>
               ` : ''}
 
               <div class="info-card">
-                <div class="info-card-icon">
-                  <i class="fas fa-clock"></i>
-                </div>
+                <div class="info-card-icon"><i class="fas fa-clock"></i></div>
                 <div class="info-card-title">Horaire</div>
                 <div class="info-card-content">${event.time || 'À confirmer'}</div>
               </div>
@@ -1192,7 +706,7 @@
                 Ajouter au calendrier
               </a>
 
-              <!-- Nouveaux boutons Rappel (visibles uniquement dans l’app) -->
+              <!-- Boutons Rappel (visibles uniquement dans l’app) -->
               <a href="#" id="btn-add-reminder" class="action-button secondary-button" style="display:none" onclick="return addReminderFromUI();">
                 <i class="fas fa-bell"></i>
                 Ajouter un rappel
@@ -1207,20 +721,16 @@
             <div class="share-section">
               <h3 style="margin-bottom: 1rem; color: #666; font-size: 1.1rem;">Partager cet événement</h3>
               <div class="share-buttons">
-                <a href="#" onclick="shareOnFacebook(); return false;"
-                   class="share-button share-facebook" title="Partager sur Facebook">
+                <a href="#" onclick="shareOnFacebook(); return false;" class="share-button share-facebook" title="Partager sur Facebook">
                   <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#" onclick="shareOnTwitter(); return false;"
-                   class="share-button share-twitter" title="Partager sur Twitter">
+                <a href="#" onclick="shareOnTwitter(); return false;" class="share-button share-twitter" title="Partager sur Twitter">
                   <i class="fab fa-twitter"></i>
                 </a>
-                <a href="#" onclick="shareOnWhatsApp(); return false;"
-                   class="share-button share-whatsapp" title="Partager sur WhatsApp">
+                <a href="#" onclick="shareOnWhatsApp(); return false;" class="share-button share-whatsapp" title="Partager sur WhatsApp">
                   <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille :\n' + event.title + '\n' + event.formattedDate + '\n' + (event.location || '') + '\n' + (event.description ? event.description.substring(0, 200) + '...\n' : '') + 'Plus d\'infos : ' + window.location.href)}"
-                   class="share-button share-email" title="Partager par email">
+                <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent('Je te recommande cet événement à Marseille :\n' + event.title + '\n' + event.formattedDate + '\n' + (event.location || '') + '\n' + (event.description ? event.description.substring(0, 200) + '...\n' : '') + 'Plus d\'infos : ' + window.location.href)}" class="share-button share-email" title="Partager par email">
                   <i class="fas fa-envelope"></i>
                 </a>
               </div>
@@ -1250,17 +760,15 @@
 
       logDebug('✨ Événement affiché avec succès');
 
-      // Stocker l'événement dans une variable globale pour les fonctions de partage et de rappel
+      // Stocker l'événement globalement (partage, rappels)
       window.currentEvent = event;
 
-      // Mettre à jour l’état des boutons de rappel selon le contexte (app ou web) et le cache local
+      // Rafraîchir l’état des boutons (in-app + favori local)
       updateReminderButtons();
 
-      // Initialiser la carte après l'affichage du contenu
+      // Initialiser la carte
       if (event.location && event.location !== 'Lieu non précisé') {
-        setTimeout(() => {
-          initMap(event.location, event.address);
-        }, 100);
+        setTimeout(() => { initMap(event.location, event.address); }, 100);
       }
     }
 
@@ -1270,31 +778,16 @@
       try {
         logDebug('🗺️ Initialisation de la carte pour:', { location, address });
 
-        // Stratégie de recherche multiple
         const searchQueries = [];
-
-        // Priorité 1: Adresse seule si elle existe (souvent plus précise)
-        if (address && address.trim() !== '') {
-          searchQueries.push(`${address}, Marseille, France`);
-        }
-
-        // Priorité 2: Lieu seul
+        if (address && address.trim() !== '') searchQueries.push(`${address}, Marseille, France`);
         searchQueries.push(`${location}, Marseille, France`);
-
-        // Priorité 3: Combinaison lieu + adresse
-        if (address && address.trim() !== '') {
-          searchQueries.push(`${location}, ${address}, Marseille, France`);
-        }
-
-        // Priorité 4: Recherche plus générale
+        if (address && address.trim() !== '') searchQueries.push(`${location}, ${address}, Marseille, France`);
         searchQueries.push(`${location} Marseille`);
 
         logDebug('📍 Stratégies de recherche:', searchQueries);
 
         let coordinates = null;
-        let foundAddress = '';
 
-        // Essayer chaque stratégie de recherche
         for (const query of searchQueries) {
           logDebug(`🔍 Tentative avec: "${query}"`);
 
@@ -1305,7 +798,6 @@
             const data = await response.json();
 
             if (data && data.length > 0) {
-              // Filtrer pour privilégier les résultats à Marseille
               const marseilleResults = data.filter(result =>
                 result.display_name &&
                 (result.display_name.includes('Marseille') || result.display_name.includes('13000'))
@@ -1318,8 +810,6 @@
                 lon: parseFloat(selectedResult.lon),
                 display_name: selectedResult.display_name
               };
-
-              foundAddress = query;
               logDebug('✅ Coordonnées trouvées:', coordinates);
               break;
             }
@@ -1327,26 +817,19 @@
             logDebug(`⚠️ Erreur pour "${query}":`, err.message);
           }
 
-          // Petite pause entre les requêtes pour respecter l'API
           await new Promise(resolve => setTimeout(resolve, 200));
         }
 
         if (coordinates) {
-          logDebug('📌 Utilisation des coordonnées:', coordinates);
-
-          // Créer le conteneur de la carte
           mapContainer.innerHTML = '<div id="event-map"></div>';
 
-          // Initialiser la carte Leaflet
           const map = L.map('event-map').setView([coordinates.lat, coordinates.lon], 16);
 
-          // Ajouter les tuiles OpenStreetMap
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
             maxZoom: 19
           }).addTo(map);
 
-          // Créer une icône personnalisée
           const customIcon = L.divIcon({
             html: `
               <div style="position: relative;">
@@ -1377,10 +860,8 @@
             className: 'custom-marker'
           });
 
-          // Ajouter un marqueur
           const marker = L.marker([coordinates.lat, coordinates.lon], { icon: customIcon }).addTo(map);
 
-          // Construire le contenu du popup
           let popupContent = `<div style="min-width: 180px;">`;
           popupContent += `<strong style="color: #1e88e5; font-size: 13px;">${location}</strong>`;
           if (address && address.trim() !== '') {
@@ -1394,12 +875,8 @@
           logDebug('✅ Carte initialisée avec succès');
 
         } else {
-          // Si aucune coordonnée trouvée, afficher Marseille avec message
-          logDebug('⚠️ Aucune adresse trouvée, affichage du centre de Marseille');
-
           mapContainer.innerHTML = '<div id="event-map"></div>';
 
-          // Coordonnées du Vieux-Port de Marseille (plus central)
           const marseilleCenter = [43.2951, 5.3747];
 
           const map = L.map('event-map').setView(marseilleCenter, 13);
@@ -1409,7 +886,6 @@
             maxZoom: 19
           }).addTo(map);
 
-          // Ajouter un cercle pour indiquer la zone approximative
           L.circle(marseilleCenter, {
             color: '#1e88e5',
             fillColor: '#1e88e5',
@@ -1417,8 +893,7 @@
             radius: 2000
           }).addTo(map);
 
-          // Message d'information
-          const popup = L.popup()
+          L.popup()
             .setLatLng(marseilleCenter)
             .setContent(`
               <div style="text-align: center;">
@@ -1445,7 +920,7 @@
       }
     }
 
-    // Charger l'événement au chargement de la page
+    // Chargement initial
     document.addEventListener('DOMContentLoaded', () => {
       logDebug('🌟 Page chargée, début de l\'initialisation avec Supabase');
 
@@ -1463,10 +938,7 @@
           </div>
         `;
       } else {
-        // Petit délai pour l'effet de chargement
-        setTimeout(() => {
-          loadEventFromSupabase();
-        }, 500);
+        setTimeout(() => { loadEventFromSupabase(); }, 500);
       }
     });
   </script>
