@@ -43,13 +43,10 @@
       --card-color: #ffffff;
       --text-color: #333333;
       --accent-color: #e91e63;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
       font-family: 'Montserrat', sans-serif;
@@ -84,27 +81,10 @@
       font-weight: 700;
     }
     
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-    
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-    
-    .nav-links a:hover {
-      color: var(--secondary-color);
-    }
-    
-    .nav-links a.active {
-      color: var(--secondary-color);
-      font-weight: 600;
-    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--secondary-color); }
+    .nav-links a.active { color: var(--secondary-color); font-weight: 600; }
     
     header {
       background: linear-gradient(135deg, var(--primary-color), #0d47a1);
@@ -114,411 +94,136 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+    .header-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem; }
+    .marseille-icon { font-size: 2rem; margin-bottom: 1rem; color: var(--secondary-color); }
     
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      margin-bottom: 1rem;
-    }
-    
-    .marseille-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--secondary-color);
-    }
-    
-    main {
-      max-width: 1200px;
-      margin: 1rem auto;
-      padding: 0 20px;
-    }
+    main { max-width: 1200px; margin: 1rem auto; padding: 0 20px; }
     
     .filters {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;
+      background: white; padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);
     }
     
-    .search-box {
-      flex-grow: 1;
-      max-width: 500px;
-      position: relative;
-    }
-    
+    .search-box { flex-grow: 1; max-width: 500px; position: relative; }
     .search-box input {
-      width: 100%;
-      padding: 12px 20px;
-      border: 2px solid #e0e0e0;
-      border-radius: 30px;
-      font-size: 1rem;
-      outline: none;
-      transition: all 0.3s;
+      width: 100%; padding: 12px 20px; border: 2px solid #e0e0e0; border-radius: 30px;
+      font-size: 1rem; outline: none; transition: all 0.3s;
     }
+    .search-box input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
+    .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #888; }
     
-    .search-box input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-    }
-    
-    .search-icon {
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #888;
-    }
-    
-    .filter-buttons {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    
+    .filter-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .filter-btn {
-      padding: 8px 16px;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      background: white;
-      color: var(--text-color);
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 0.9rem;
+      padding: 8px 16px; border: 1px solid #ddd; border-radius: 20px; background: white;
+      color: var(--text-color); cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
     }
-    
-    .filter-btn:hover {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-    }
-    
-    .filter-btn.active {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-    }
+    .filter-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+    .filter-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
 
     .events-wrapper {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      padding-top: 10px;
-      scroll-behavior: smooth;
+      background: white; border-radius: 12px; box-shadow: var(--shadow);
+      padding-top: 10px; scroll-behavior: smooth;
     }
 
     .sticky-date {
-      position: sticky;
-      top: 0;
+      position: sticky; top: 0;
       background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-      color: white;
-      padding: 15px 25px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      color: white; padding: 15px 25px; font-weight: 600; font-size: 1.1rem;
+      z-index: 50; display: flex; align-items: center; gap: 12px;
       border-bottom: 3px solid var(--primary-color);
-      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
-    .sticky-date::before {
-      content: '\f073';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      font-size: 1.2rem;
-      opacity: 0.8;
-    }
-
-    .sticky-date:hover {
-      background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-    }
+    .sticky-date::before { content: '\f073'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 1.2rem; opacity: 0.8; }
+    .sticky-date:hover { background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); }
 
     .events-list {
       padding: 20px 25px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem;
     }
 
     .event {
-      background-color: var(--card-color);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      will-change: transform;
-      contain: content;
-      backface-visibility: hidden;
+      position: relative; /* Pour positionner la cloche en absolu */
+      background-color: var(--card-color); border-radius: 12px; overflow: hidden;
+      box-shadow: var(--shadow); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+      height: 100%; display: flex; flex-direction: column; cursor: pointer; text-decoration: none; color: inherit;
+      will-change: transform; contain: content; backface-visibility: hidden;
     }
-    
-    .event:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
+    .event:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
     
     .event-image {
-      height: 200px;
-      overflow: hidden;
-      position: relative;
+      height: 200px; overflow: hidden; position: relative;
       background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 3rem;
+      display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;
     }
+    .event-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; decoding: "async"; }
+    .event:hover .event-image img { transform: scale(1.03); }
     
-    .event-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform;
-      decoding: "async";
-    }
-    
-    .event:hover .event-image img {
-      transform: scale(1.03);
-    }
-    
-    .event-content {
-      padding: 1.5rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .event-date {
-      display: inline-block;
-      background-color: var(--accent-color);
-      color: white;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-    
-    .event h2 {
-      font-size: 1.4rem;
-      margin-bottom: 0.8rem;
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-    
-    .event-description {
-      margin-bottom: 1.2rem;
-      color: #555;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      flex-grow: 1;
-      line-height: 1.5;
-    }
-    
-    .event-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      font-size: 0.95rem;
-      margin-top: auto;
-    }
-    
-    .event-detail {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    
-    .event-detail i {
-      color: var(--primary-color);
-      min-width: 20px;
-      margin-top: 4px;
-    }
+    .event-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+    .event-date { display: inline-block; background-color: var(--accent-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem; font-weight: 600; }
+    .event h2 { font-size: 1.4rem; margin-bottom: 0.8rem; color: var(--primary-color); font-weight: 600; }
+    .event-description { margin-bottom: 1.2rem; color: #555; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; line-height: 1.5; }
+    .event-details { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem; margin-top: auto; }
+    .event-detail { display: flex; align-items: flex-start; gap: 0.5rem; }
+    .event-detail i { color: var(--primary-color); min-width: 20px; margin-top: 4px; }
     
     .view-more-btn {
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 1rem;
-      text-align: center;
-      display: inline-block;
-      text-decoration: none;
-      font-weight: 600;
+      color: white; border: none; padding: 10px 20px; border-radius: 25px; font-size: 0.9rem;
+      cursor: pointer; transition: all 0.3s; margin-top: 1rem; text-align: center; display: inline-block; text-decoration: none; font-weight: 600;
     }
-    
-    .view-more-btn:hover {
-      transform: translateX(5px);
-      box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
-    }
+    .view-more-btn:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3); }
     
     .no-events {
-      text-align: center;
-      padding: 4rem 2rem;
-      background-color: var(--card-color);
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      text-align: center; padding: 4rem 2rem; background-color: var(--card-color); border-radius: 12px; box-shadow: var(--shadow);
     }
+    .no-events i { font-size: 4rem; color: #ddd; margin-bottom: 1rem; }
+    .no-events h2 { color: #666; margin-bottom: 1rem; }
     
-    .no-events i {
-      font-size: 4rem;
-      color: #ddd;
-      margin-bottom: 1rem;
-    }
+    .loading { text-align: center; padding: 3rem; font-size: 1.2rem; color: #666; }
+    .loading i { font-size: 2rem; margin-bottom: 1rem; }
     
-    .no-events h2 {
-      color: #666;
-      margin-bottom: 1rem;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      font-size: 1.2rem;
-      color: #666;
-    }
-    
-    .loading i {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    
-    .price-tag {
-      display: inline-block;
-      background-color: var(--secondary-color);
-      color: white;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-    }
+    .price-tag { display: inline-block; background-color: var(--secondary-color); color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; }
 
-    .events-wrapper::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .events-wrapper::-webkit-scrollbar-track {
-      background: #f8f9fa;
-      border-radius: 10px;
-    }
-
-    .events-wrapper::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border-radius: 10px;
-      border: 2px solid #f8f9fa;
-    }
-
-    .events-wrapper::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-    }
+    .events-wrapper::-webkit-scrollbar { width: 8px; }
+    .events-wrapper::-webkit-scrollbar-track { background: #f8f9fa; border-radius: 10px; }
+    .events-wrapper::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 10px; border: 2px solid #f8f9fa; }
+    .events-wrapper::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, var(--accent-color), var(--primary-color)); }
     
-    footer {
-      background: #2c3e50;
-      color: white;
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 4rem;
-    }
-    
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    
-    .footer-brand {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: var(--secondary-color);
-    }
+    footer { background: #2c3e50; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem; }
+    .footer-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--secondary-color); }
     
     .debug-info {
-      background-color: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
+      background-color: #f8f9fa; border: 1px solid #ddd; padding: 10px; margin-top: 20px; border-radius: 5px; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; display: none;
     }
-    
-    .debug-toggle {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin: 20px auto;
-      font-size: 12px;
-      display: block;
+    .debug-toggle { background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin: 20px auto; font-size: 12px; display: block; }
+
+    /* Bouton rappel dans la liste */
+    .reminder-toggle {
+      position: absolute; top: 12px; right: 12px;
+      display: none; /* affiché seulement dans l’app */
+      padding: 8px 10px; border-radius: 999px; border: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.95); color: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 2;
+    }
+    .reminder-toggle i { pointer-events: none; }
+    .reminder-toggle.active {
+      background: var(--primary-color); color: #fff; border-color: var(--primary-color);
+      box-shadow: 0 4px 14px rgba(30, 136, 229, 0.35);
     }
     
     @media (max-width: 768px) {
-      .nav-links {
-        gap: 1rem;
-        font-size: 0.9rem;
-      }
-      
-      .events-list {
-        grid-template-columns: 1fr;
-      }
-
-      .sticky-date {
-        padding: 12px 20px;
-        font-size: 1rem;
-      }
-      
-      .filters {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .search-box {
-        max-width: 100%;
-      }
-      
-      .filter-buttons {
-        justify-content: center;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
+      .nav-links { gap: 1rem; font-size: 0.9rem; }
+      .events-list { grid-template-columns: 1fr; }
+      .sticky-date { padding: 12px 20px; font-size: 1rem; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .search-box { max-width: 100%; }
+      .filter-buttons { justify-content: center; }
+      h1 { font-size: 2rem; }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -542,7 +247,7 @@
     </div>
   </nav>
 
-    <script>
+  <script>
     // Detect if running in Flutter WebView and hide navigation
     if (navigator.userAgent.includes('Flutter') || 
         navigator.userAgent.includes('wv') || 
@@ -550,8 +255,8 @@
       document.querySelector('nav').style.display = 'none';
     }
   </script>
+
   <main>
-    
     <!-- Filtres et recherche -->
     <div class="filters">
       <div class="search-box">
@@ -596,13 +301,13 @@
     
     let allEvents = [];
     let debugLogs = [];
+    // Map des événements visibles (clé = id)
+    window.eventsById = {};
 
     function logDebug(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
       let logEntry = `[${timestamp}] ${message}`;
-      if (data) {
-        logEntry += "\n" + JSON.stringify(data, null, 2);
-      }
+      if (data) { logEntry += "\n" + JSON.stringify(data, null, 2); }
       debugLogs.push(logEntry);
       console.log(message, data);
     }
@@ -620,47 +325,151 @@
       }
     }
 
-    // Fonction pour formater la date d'affichage
+    // ====== Bridge / Rappel (liste) ======
+    function isInAppWebView() {
+      return !!(window.Pioche && typeof window.Pioche.postMessage === 'function');
+    }
+
+    // Parse "20:30", "20h30", "20h", "20"
+    function parseTimeToHM(raw) {
+      if (!raw) return null;
+      const s = String(raw).trim().toLowerCase();
+      if (!s || /confirm|tbd|à définir|a definir|a définir/.test(s)) return null;
+      const compact = s.replace(/\s+/g, '');
+      const m = compact.match(/(\d{1,2})(?:[:hH\.](\d{1,2}))?/);
+      if (!m) return null;
+      const h = parseInt(m[1], 10);
+      const min = m[2] ? parseInt(m[2], 10) : 0;
+      if (isNaN(h) || isNaN(min) || h > 23 || min > 59) return null;
+      return { h, min };
+    }
+
+    // ISO local avec offset (+01:00)
+    function toISOWithOffset(d) {
+      const pad = n => String(n).padStart(2, '0');
+      const tzMin = -d.getTimezoneOffset();
+      const sign = tzMin >= 0 ? '+' : '-';
+      const abs = Math.abs(tzMin);
+      const offH = pad(Math.floor(abs / 60));
+      const offM = pad(abs % 60);
+      return (
+        d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' +
+        pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) +
+        sign + offH + ':' + offM
+      );
+    }
+
+    // Construit le payload pour l’app depuis un objet event de la liste
+    function buildReminderPayloadFromList(ev) {
+      const id = String(ev.id);
+      const baseDate = ev.eventDate instanceof Date ? ev.eventDate : new Date();
+      const hm = parseTimeToHM(ev.time);
+      const timeKnown = !!hm;
+
+      const h = timeKnown ? hm.h : 0;     // 00:00 si inconnu (l’app mettra 14:00)
+      const m = timeKnown ? hm.min : 0;
+
+      const startLocal = new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        h, m, 0, 0
+      );
+
+      return {
+        action: 'addReminder',
+        id,
+        title: ev.title,
+        startISO: toISOWithOffset(startLocal),
+        timeKnown,
+        venue: ev.location || null,
+        url: `https://pioche.me/event-detail.html?id=${encodeURIComponent(id)}`
+      };
+    }
+
+    function setFavoriteLocally(id, on) {
+      try { localStorage.setItem('pioche_fav_' + String(id), on ? '1' : '0'); } catch (_) {}
+    }
+    function isFavoriteLocally(id) {
+      try { return localStorage.getItem('pioche_fav_' + String(id)) === '1'; } catch (_) { return false; }
+    }
+
+    function initRemindersUIForList() {
+      const inApp = isInAppWebView();
+      const buttons = document.querySelectorAll('.reminder-toggle');
+      buttons.forEach(btn => {
+        // Affichage uniquement dans l’app
+        btn.style.display = inApp ? 'inline-flex' : 'none';
+        const id = btn.dataset.id;
+        // État visuel
+        if (isFavoriteLocally(id)) btn.classList.add('active'); else btn.classList.remove('active');
+
+        // Listener (évite la navigation)
+        btn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!isInAppWebView()) return false;
+          
+          const isFav = isFavoriteLocally(id);
+          const ev = window.eventsById[id];
+          if (!ev) return false;
+
+          if (isFav) {
+            // Demande de suppression
+            try { window.Pioche.postMessage(JSON.stringify({ action: 'removeReminder', id: String(id) })); } catch(_) {}
+          } else {
+            // Demande d’ajout
+            const payload = buildReminderPayloadFromList(ev);
+            try { window.Pioche.postMessage(JSON.stringify(payload)); } catch(_) {}
+          }
+          // On attend la confirmation via PiocheCallback pour changer l’état local et le visuel
+          return false;
+        };
+      });
+    }
+
+    // Callback de confirmation depuis l’app
+    window.PiocheCallback = function(msgStr) {
+      try {
+        const msg = typeof msgStr === 'string' ? JSON.parse(msgStr) : msgStr;
+        if (!msg || !msg.type) return;
+
+        if (msg.type === 'reminderAdded' && msg.id) {
+          setFavoriteLocally(msg.id, true);
+        } else if (msg.type === 'reminderRemoved' && msg.id) {
+          setFavoriteLocally(msg.id, false);
+        }
+
+        // Rafraîchir l’état des boutons dans la liste
+        const btn = document.querySelector(`.reminder-toggle[data-id="${CSS.escape(String(msg.id))}"]`);
+        if (btn) {
+          if (isFavoriteLocally(msg.id)) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      } catch (e) {
+        console.log('PiocheCallback parse error:', e);
+      }
+    };
+    // ====== Fin bridge / Rappel (liste) ======
+    
     function formatDateForDisplay(date) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      
-      const eventDate = new Date(date);
-      eventDate.setHours(0, 0, 0, 0);
-      
-      // Vérifier si c'est aujourd'hui
-      if (eventDate.getTime() === today.getTime()) {
-        return "Aujourd'hui";
-      }
-      
-      // Vérifier si c'est demain
-      if (eventDate.getTime() === tomorrow.getTime()) {
-        return "Demain";
-      }
-      
-      // Sinon, retourner la date formatée
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
+      const eventDate = new Date(date); eventDate.setHours(0, 0, 0, 0);
+      if (eventDate.getTime() === today.getTime()) return "Aujourd'hui";
+      if (eventDate.getTime() === tomorrow.getTime()) return "Demain";
       const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
       const formattedDate = eventDate.toLocaleDateString('fr-FR', options);
-      
-      // Capitaliser la première lettre
       return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
     }
 
-    // Fonction pour grouper les événements par date
     function groupEventsByDate(events) {
       const grouped = {};
-      
       events.forEach(event => {
         const dateKey = formatDateForDisplay(event.eventDate);
-        if (!grouped[dateKey]) {
-          grouped[dateKey] = [];
-        }
+        if (!grouped[dateKey]) grouped[dateKey] = [];
         grouped[dateKey].push(event);
       });
-      
       return grouped;
     }
 
@@ -668,20 +477,16 @@
       try {
         logDebug('🚀 Chargement des événements depuis Supabase');
         
-        // Indicateur de chargement
         const container = document.getElementById('events-container');
         container.style.pointerEvents = 'none';
         container.style.opacity = '0.7';
         
-        // Récupérer tous les événements depuis Supabase
         const { data, error } = await supabase
           .from('Pioche_events')
           .select('*')
           .order('Date', { ascending: true });
         
-        if (error) {
-          throw new Error(`Erreur Supabase: ${error.message}`);
-        }
+        if (error) { throw new Error(`Erreur Supabase: ${error.message}`); }
         
         logDebug('📊 Données reçues de Supabase', {
           nombreEvents: data.length,
@@ -691,11 +496,9 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        // Mapper les données Supabase vers notre format d'événements
         allEvents = data.map((row, index) => {
           const event = {};
           try {
-            // Mapper les colonnes - utilisation des noms exacts avec les accents
             event.id = row["ID de l'evenement"] || row["ID de l'événement"] || `event-${index}`;
             event.title = row.Titre || `Événement ${index + 1}`;
             event.description = row.Description || row["Description courte"] || 'Description non disponible';
@@ -706,26 +509,19 @@
             event.category = row.Catégorie || row.Category || '';
             event.time = row.Heure || '';
             
-            // Traitement de la date
             const dateValue = row.Date;
             if (dateValue) {
-              // Format text YYYY-MM-DD
               event.eventDate = new Date(dateValue + "T00:00:00");
               if (isNaN(event.eventDate.getTime())) {
-                event.eventDate = new Date();
-                event.eventDate.setDate(event.eventDate.getDate() + 7);
+                event.eventDate = new Date(); event.eventDate.setDate(event.eventDate.getDate() + 7);
                 event.formattedDate = "Date à confirmer";
               } else {
                 event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
+                  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
                 });
               }
             } else {
-              event.eventDate = new Date();
-              event.eventDate.setDate(event.eventDate.getDate() + 7);
+              event.eventDate = new Date(); event.eventDate.setDate(event.eventDate.getDate() + 7);
               event.formattedDate = "Date à confirmer";
             }
             return event;
@@ -735,10 +531,8 @@
           }
         }).filter(event => event && event.title && event.title.trim() !== '');
         
-        // Sauvegarder dans localStorage pour le cache
         localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
         
-        // Filtrer les événements à venir et les trier
         const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
         
         logDebug(`✅ ${upcomingEvents.length} événements à venir chargés`);
@@ -746,8 +540,10 @@
         displayEventsWithStickyDates(upcomingEvents);
         setupSearch();
         setupFilters();
+
+        // Init des boutons rappel après affichage
+        initRemindersUIForList();
         
-        // Fin de chargement
         container.style.pointerEvents = 'auto';
         container.style.opacity = '1';
         
@@ -760,13 +556,12 @@
             <p>${error.message}</p>
           </div>
         `;
-        // Fin de chargement en cas d'erreur
-        document.getElementById('events-container').style.pointerEvents = 'auto';
-        document.getElementById('events-container').style.opacity = '1';
+        const container = document.getElementById('events-container');
+        container.style.pointerEvents = 'auto';
+        container.style.opacity = '1';
       }
     }
     
-    // Fonction pour afficher avec dates collantes
     function displayEventsWithStickyDates(events) {
       const container = document.getElementById('events-container');
       
@@ -781,27 +576,24 @@
         return;
       }
       
-      // Grouper les événements par date
+      // Map des événements visibles pour le bridge
+      window.eventsById = {};
+      events.forEach(ev => { window.eventsById[String(ev.id)] = ev; });
+
       const groupedEvents = groupEventsByDate(events);
-      
-      // Créer le HTML
       container.innerHTML = '';
       
       Object.keys(groupedEvents).forEach(dateKey => {
-        // Créer une section pour cette date
         const dateSection = document.createElement('div');
         dateSection.className = 'date-section';
         
-        // Créer l'en-tête de date collant
         const stickyDate = document.createElement('div');
         stickyDate.className = 'sticky-date';
         stickyDate.innerHTML = dateKey;
         
-        // Créer la grille des événements pour cette date
         const eventsList = document.createElement('div');
         eventsList.className = 'events-list';
         
-        // Ajouter chaque événement
         groupedEvents[dateKey].forEach(event => {
           const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
             ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
@@ -811,6 +603,9 @@
           eventCard.href = `event-detail.html?id=${event.id}`;
           eventCard.className = 'event';
           eventCard.innerHTML = `
+            <button type="button" class="reminder-toggle" data-id="${String(event.id)}" title="Ajouter un rappel">
+              <i class="fas fa-bell"></i>
+            </button>
             <div class="event-image">${imageHTML}</div>
             <div class="event-content">
               <span class="event-date">${event.formattedDate}</span>
@@ -823,12 +618,12 @@
                     <span>${event.location}${event.address ? ', ' + event.address : ''}</span>
                   </div>
                 ` : ''}
-                  ${event.time ? `
-    <div class="event-detail">
-      <i class="fas fa-clock"></i>
-      <span>${event.time}</span>
-    </div>
-  ` : ''}
+                ${event.time ? `
+                  <div class="event-detail">
+                    <i class="fas fa-clock"></i>
+                    <span>${event.time}</span>
+                  </div>
+                ` : ''}
                 ${event.price !== 'Prix non précisé' ? `
                   <div class="event-detail">
                     <i class="fas fa-tag"></i>
@@ -849,7 +644,6 @@
           eventsList.appendChild(eventCard);
         });
         
-        // Assembler la section
         dateSection.appendChild(stickyDate);
         dateSection.appendChild(eventsList);
         container.appendChild(dateSection);
@@ -875,27 +669,20 @@
     }
     
     function filterEvents(searchTerm) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
       
       let filtered = allEvents.filter(e => e.eventDate >= today);
       
-      // Appliquer le filtre de catégorie
       const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
       if (activeFilter === 'today') {
-        const todayEnd = new Date(today);
-        todayEnd.setHours(23, 59, 59, 999);
+        const todayEnd = new Date(today); todayEnd.setHours(23, 59, 59, 999);
         filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
       } else if (activeFilter === 'tomorrow') {
-        const tomorrowEnd = new Date(tomorrow);
-        tomorrowEnd.setHours(23, 59, 59, 999);
+        const tomorrowEnd = new Date(tomorrow); tomorrowEnd.setHours(23, 59, 59, 999);
         filtered = filtered.filter(e => e.eventDate >= tomorrow && e.eventDate <= tomorrowEnd);
       } else if (activeFilter === 'weekend') {
-        const friday = new Date();
-        const sunday = new Date();
+        const friday = new Date(); const sunday = new Date();
         const dayOfWeek = today.getDay();
         const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
         const daysUntilSunday = daysUntilFriday + 2;
@@ -906,7 +693,6 @@
         filtered = filtered.filter(e => e.price && (e.price.toLowerCase().includes('gratuit') || e.price === '0'));
       }
       
-      // Appliquer la recherche textuelle
       if (searchTerm) {
         filtered = filtered.filter(event => {
           const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
@@ -916,6 +702,9 @@
       
       filtered.sort((a, b) => a.eventDate - b.eventDate);
       displayEventsWithStickyDates(filtered);
+
+      // Réinitialiser les boutons rappel après réaffichage
+      initRemindersUIForList();
     }
     
     document.addEventListener('DOMContentLoaded', () => {
@@ -925,6 +714,3 @@
   </script>
 </body>
 </html>
-
-
-
