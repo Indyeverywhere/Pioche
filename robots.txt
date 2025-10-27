@@ -92,11 +92,10 @@ Sitemap: https://pioche.me/sitemap.xml
 # Les vrais visiteurs ne devraient pas accéder à ces patterns
 User-agent: *
 Disallow: /*?page=*&page=
-Disallow: /*?id=*&id=
 Disallow: /*.php$
-Disallow: /event-detail.html?id=*
 
 Allow: /event-detail.html
+
 
 
 
