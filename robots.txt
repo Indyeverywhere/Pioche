@@ -85,6 +85,9 @@ Disallow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: FacebookBot
+Allow: /
+
 # Indication du sitemap
 Sitemap: https://pioche.me/sitemap.xml
 
@@ -95,6 +98,7 @@ Disallow: /*?page=*&page=
 Disallow: /*.php$
 
 Allow: /event-detail.html
+
 
 
 
