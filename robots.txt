@@ -82,6 +82,9 @@ Disallow: /
 User-agent: WebStripper
 Disallow: /
 
+User-agent: facebookexternalhit
+Allow: /
+
 # Indication du sitemap
 Sitemap: https://pioche.me/sitemap.xml
 
@@ -94,5 +97,6 @@ Disallow: /*.php$
 Disallow: /event-detail.html?id=*
 
 Allow: /event-detail.html
+
 
 
