@@ -484,7 +484,7 @@
         const { data, error } = await supabase
           .from('Pioche_events')
           .select('*')
-          .order('Date', { ascending: true });
+
         
         if (error) { throw new Error(`Erreur Supabase: ${error.message}`); }
         
@@ -714,4 +714,5 @@
   </script>
 </body>
 </html>
+
 
