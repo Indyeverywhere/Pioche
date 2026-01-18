@@ -297,10 +297,11 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcm96eHRneHdqZmt6dWRsbW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MzczOTEsImV4cCI6MjA3NDIxMzM5MX0.T139ua0oJKZTn3Kn8HPRh-KFWl4oOP5dacVP_zXfbFs';
     
     // Initialiser Supabase Client
-    if (!window.supabaseClient) {
-    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let supabase;
+if (typeof window.supabaseClientInstance === 'undefined') {
+    window.supabaseClientInstance = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
-const supabase = window.supabaseClient;
+supabase = window.supabaseClientInstance;
     
     let allEvents = [];
     let debugLogs = [];
@@ -717,4 +718,5 @@ const supabase = window.supabaseClient;
   </script>
 </body>
 </html>
+
 
