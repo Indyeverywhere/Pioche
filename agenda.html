@@ -473,7 +473,7 @@
       return grouped;
     }
 
-    async function fetchEvents() {
+   async function fetchEvents() {
       try {
         logDebug('🚀 Chargement des événements depuis Supabase');
         
@@ -481,12 +481,15 @@
         container.style.pointerEvents = 'none';
         container.style.opacity = '0.7';
         
-        const { data, error } = await supabase
+        // Récupération SANS tri (on triera en JavaScript après)
+        const { data, error } = await sbClient
           .from('Pioche_events')
-          .select('*')
-          .order('Date', { ascending: true });
+          .select('*');
         
-        if (error) { throw new Error(`Erreur Supabase: ${error.message}`); }
+        if (error) { 
+          console.error('Erreur Supabase complète:', error);
+          throw new Error(`Erreur Supabase: ${error.message}`); 
+        }
         
         logDebug('📊 Données reçues de Supabase', {
           nombreEvents: data.length,
@@ -714,6 +717,7 @@
   </script>
 </body>
 </html>
+
 
 
 
