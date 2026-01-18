@@ -297,7 +297,10 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcm96eHRneHdqZmt6dWRsbW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MzczOTEsImV4cCI6MjA3NDIxMzM5MX0.T139ua0oJKZTn3Kn8HPRh-KFWl4oOP5dacVP_zXfbFs';
     
     // Initialiser Supabase Client
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    if (!window.supabaseClient) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+const supabase = window.supabaseClient;
     
     let allEvents = [];
     let debugLogs = [];
@@ -473,63 +476,20 @@
       return grouped;
     }
 
-   async function fetchEvents() {
-      const container = document.getElementById('events-container');
-      
+    async function fetchEvents() {
       try {
-        console.log('🚀 TEST 1: Début de fetchEvents()');
+        logDebug('🚀 Chargement des événements depuis Supabase');
         
-        // TEST 2: Vérifier que sbClient existe
-        if (!window.sbClient) {
-          throw new Error('❌ window.sbClient est undefined !');
-        }
-        console.log('✅ TEST 2: sbClient existe');
+        const container = document.getElementById('events-container');
+        container.style.pointerEvents = 'none';
+        container.style.opacity = '0.7';
         
-        container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Connexion à Supabase...</p></div>';
-        
-        // TEST 3: Appel Supabase
-        console.log('🚀 TEST 3: Appel à Supabase...');
-        const { data, error, count } = await window.sbClient
+        const { data, error } = await supabase
           .from('Pioche_events')
-          .select('*', { count: 'exact' });
+          .select('*')
+          .order('Date', { ascending: true });
         
-        console.log('📊 TEST 4: Réponse Supabase:', {
-          hasData: !!data,
-          dataLength: data?.length,
-          hasError: !!error,
-          errorMessage: error?.message,
-          errorCode: error?.code,
-          errorDetails: error?.details,
-          count: count
-        });
-        
-        if (error) {
-          container.innerHTML = `
-            <div class="no-events">
-              <i class="fas fa-exclamation-circle"></i>
-              <h2>❌ Erreur Supabase</h2>
-              <p><strong>Message:</strong> ${error.message || 'Inconnu'}</p>
-              <p><strong>Code:</strong> ${error.code || 'Inconnu'}</p>
-              <p><strong>Details:</strong> ${error.details || 'Aucun'}</p>
-              <p><strong>Hint:</strong> ${error.hint || 'Aucun'}</p>
-            </div>
-          `;
-          throw error;
-        }
-        
-        if (!data || data.length === 0) {
-          container.innerHTML = `
-            <div class="no-events">
-              <i class="fas fa-calendar-times"></i>
-              <h2>⚠️ Aucune donnée</h2>
-              <p>La table est vide ou inaccessible. Count: ${count}</p>
-            </div>
-          `;
-          return;
-        }
-        
-        console.log('✅ TEST 5: Données reçues:', data.length, 'événements');
-        console.log('Premier événement:', data[0]);
+        if (error) { throw new Error(`Erreur Supabase: ${error.message}`); }
         
         logDebug('📊 Données reçues de Supabase', {
           nombreEvents: data.length,
@@ -757,8 +717,4 @@
   </script>
 </body>
 </html>
-
-
-
-
 
