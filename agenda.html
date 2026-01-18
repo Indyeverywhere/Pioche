@@ -474,22 +474,62 @@
     }
 
    async function fetchEvents() {
+      const container = document.getElementById('events-container');
+      
       try {
-        logDebug('🚀 Chargement des événements depuis Supabase');
+        console.log('🚀 TEST 1: Début de fetchEvents()');
         
-        const container = document.getElementById('events-container');
-        container.style.pointerEvents = 'none';
-        container.style.opacity = '0.7';
-        
-        // Récupération SANS tri (on triera en JavaScript après)
-        const { data, error } = await sbClient
-          .from('Pioche_events')
-          .select('*');
-        
-        if (error) { 
-          console.error('Erreur Supabase complète:', error);
-          throw new Error(`Erreur Supabase: ${error.message}`); 
+        // TEST 2: Vérifier que sbClient existe
+        if (!window.sbClient) {
+          throw new Error('❌ window.sbClient est undefined !');
         }
+        console.log('✅ TEST 2: sbClient existe');
+        
+        container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Connexion à Supabase...</p></div>';
+        
+        // TEST 3: Appel Supabase
+        console.log('🚀 TEST 3: Appel à Supabase...');
+        const { data, error, count } = await window.sbClient
+          .from('Pioche_events')
+          .select('*', { count: 'exact' });
+        
+        console.log('📊 TEST 4: Réponse Supabase:', {
+          hasData: !!data,
+          dataLength: data?.length,
+          hasError: !!error,
+          errorMessage: error?.message,
+          errorCode: error?.code,
+          errorDetails: error?.details,
+          count: count
+        });
+        
+        if (error) {
+          container.innerHTML = `
+            <div class="no-events">
+              <i class="fas fa-exclamation-circle"></i>
+              <h2>❌ Erreur Supabase</h2>
+              <p><strong>Message:</strong> ${error.message || 'Inconnu'}</p>
+              <p><strong>Code:</strong> ${error.code || 'Inconnu'}</p>
+              <p><strong>Details:</strong> ${error.details || 'Aucun'}</p>
+              <p><strong>Hint:</strong> ${error.hint || 'Aucun'}</p>
+            </div>
+          `;
+          throw error;
+        }
+        
+        if (!data || data.length === 0) {
+          container.innerHTML = `
+            <div class="no-events">
+              <i class="fas fa-calendar-times"></i>
+              <h2>⚠️ Aucune donnée</h2>
+              <p>La table est vide ou inaccessible. Count: ${count}</p>
+            </div>
+          `;
+          return;
+        }
+        
+        console.log('✅ TEST 5: Données reçues:', data.length, 'événements');
+        console.log('Premier événement:', data[0]);
         
         logDebug('📊 Données reçues de Supabase', {
           nombreEvents: data.length,
@@ -717,6 +757,7 @@
   </script>
 </body>
 </html>
+
 
 
 
