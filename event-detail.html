@@ -569,8 +569,8 @@
         logDebug('📊 Données reçues');
 
         const rawEvent = allEvents.find(e =>
-          (e["ID de l'evenement"] && e["ID de l'evenement"] === eventId) ||
-          (e["ID de l'evenement"] && e["ID de l'evenement"] === parseInt(eventId))
+          (e["eventID"] === eventId) ||
+          (e["eventID"] === parseInt(eventId))
         );
 
         if (!rawEvent) {
@@ -578,7 +578,7 @@
         }
 
         const event = {
-          id: rawEvent["ID de l'evenement"] || eventId,
+          id: rawEvent["eventID"] || eventId,
           title: rawEvent.Titre || 'Événement sans titre',
           description: rawEvent.Description || rawEvent["Description courte"] || 'Description non disponible',
           price: rawEvent.Prix || 'Prix non précisé',
@@ -969,3 +969,4 @@
   </script>
 </body>
 </html>
+
