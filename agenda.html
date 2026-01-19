@@ -519,22 +519,46 @@
         if (cached) {
           allEvents = JSON.parse(cached);
           processAndDisplayEvents();
+        } else {
+          // Si pas de cache, afficher un message d'erreur
+          showErrorMessage("Impossible de charger les événements. Veuillez vérifier votre connexion Internet.");
         }
       }
 
       async function fetchFromSupabase() {
-        const { data, error } = await supabase
-          .from('Pioche_events')
-          .select('*')
-          .order('Date', { ascending: true });
+        try {
+          const { data, error } = await supabase
+            .from('Pioche_events')
+            .select('*')
+            .order('Date', { ascending: true });
 
-        if (!error && data) {
+          if (error) throw error;
+
+          if (!data || data.length === 0) {
+            showErrorMessage("Aucun événement trouvé dans la base de données.");
+            return;
+          }
+
           allEvents = processEvents(data);
           localStorage.setItem(cacheKey, JSON.stringify(allEvents));
           localStorage.setItem(cacheTimeKey, Date.now());
           processAndDisplayEvents();
+        } catch (error) {
+          logDebug('❌ Erreur lors de la récupération des événements:', error);
+          showErrorMessage("Impossible de charger les événements. Veuillez réessayer plus tard.");
         }
       }
+    }
+
+    function showErrorMessage(message) {
+      const container = document.getElementById('events-container');
+      container.innerHTML = `
+        <div class="no-events">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h2>Erreur</h2>
+          <p>${message}</p>
+        </div>
+      `;
     }
 
     function processEvents(data) {
@@ -858,6 +882,10 @@
       script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
       script.async = true;
       script.onload = initApp;
+      script.onerror = function() {
+        logDebug('❌ Erreur lors du chargement de Supabase');
+        showErrorMessage("Impossible de charger les événements. Veuillez vérifier votre connexion Internet.");
+      };
       document.body.appendChild(script);
     }
 
