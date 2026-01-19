@@ -914,7 +914,13 @@
       script.async = true;
       script.onload = function() {
         logDebug('✅ Supabase chargé avec succès');
-        initApp();
+        // Vérifier à nouveau si supabase est disponible
+        if (window.supabase && window.supabase.createClient) {
+          initApp();
+        } else {
+          logDebug('❌ Supabase chargé mais pas disponible dans window.supabase');
+          showErrorMessage("Impossible de charger les événements. Veuillez réessayer plus tard.");
+        }
       };
       script.onerror = function() {
         logDebug('❌ Erreur lors du chargement de Supabase');
