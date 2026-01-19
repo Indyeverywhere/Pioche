@@ -581,7 +581,7 @@
       return data.map((row, index) => {
         const event = {};
         try {
-          event.id = row["ID de l'evenement"] || row["ID de l'événement"] || `event-${index}`;
+          event.id = row.eventID || row["ID de l'evenement"] || row["ID de l'événement"] || `event-${index}`;
           event.title = row.Titre || `Événement ${index + 1}`;
           event.description = row.Description || row["Description courte"] || 'Description non disponible';
           event.price = row.Prix || 'Prix non précisé';
@@ -962,5 +962,6 @@
   </script>
 </body>
 </html>
+
 
 
