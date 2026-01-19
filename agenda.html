@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- SEO Meta Tags -->
   <title>Agenda des Événements à Marseille - Pioche | Concerts, Expos, Sorties 2026</title>
   <meta name="description" content="Découvrez l'agenda complet des événements à Marseille sur Pioche : concerts, expositions, théâtres, festivals. Trouvez que faire ce week-end et planifiez vos sorties.">
   <meta name="keywords" content="agenda Marseille, événements Marseille, concerts Marseille, expositions Marseille, sorties Marseille, Pioche agenda">
-  
+
   <!-- Open Graph -->
   <meta property="og:title" content="Agenda Marseille - Tous les événements sur Pioche">
   <meta property="og:description" content="L'agenda complet des sorties à Marseille : concerts, expos, théâtres, festivals. Planifiez vos sorties avec Pioche.">
   <meta property="og:url" content="https://pioche.me/agenda.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Pioche">
-  
+
   <!-- Canonical URL -->
   <link rel="canonical" href="https://pioche.me/agenda.html">
-  
+
   <!-- CSS externe -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  
+
   <!-- Préchargement des polices critiques -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"></noscript>
@@ -31,10 +31,12 @@
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
-  <!-- Supabase Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
+  <link rel="preconnect" href="https://umrozxtgxwjfkzudlmmf.supabase.co">
+
+  <!-- Préchargement des ressources critiques -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" as="script">
+
+  <!-- Critical CSS -->
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -45,16 +47,17 @@
       --accent-color: #e91e63;
       --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
-    
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
+      opacity: 0;
     }
-    
+
     /* Navigation */
     nav {
       background: linear-gradient(135deg, var(--primary-color), #0d47a1);
@@ -62,7 +65,7 @@
       position: relative;
       z-index: 100;
     }
-    
+
     .nav-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -72,7 +75,7 @@
       align-items: center;
       background: linear-gradient(135deg, var(--primary-color), #0d47a1);
     }
-    
+
     .logo {
       font-family: 'Playfair Display', serif;
       font-size: 1.8rem;
@@ -80,12 +83,12 @@
       text-decoration: none;
       font-weight: 700;
     }
-    
+
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
     .nav-links a:hover { color: var(--secondary-color); }
     .nav-links a.active { color: var(--secondary-color); font-weight: 600; }
-    
+
     header {
       background: linear-gradient(135deg, var(--primary-color), #0d47a1);
       color: white;
@@ -93,20 +96,20 @@
       text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    
+
     .header-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
     h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem; }
     .subtitle { font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem; }
     .marseille-icon { font-size: 2rem; margin-bottom: 1rem; color: var(--secondary-color); }
-    
+
     main { max-width: 1200px; margin: 1rem auto; padding: 0 20px; }
-    
+
     .filters {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;
       background: white; padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);
     }
-    
+
     .search-box { flex-grow: 1; max-width: 500px; position: relative; }
     .search-box input {
       width: 100%; padding: 12px 20px; border: 2px solid #e0e0e0; border-radius: 30px;
@@ -114,7 +117,7 @@
     }
     .search-box input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
     .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #888; }
-    
+
     .filter-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .filter-btn {
       padding: 8px 16px; border: 1px solid #ddd; border-radius: 20px; background: white;
@@ -135,6 +138,7 @@
       z-index: 50; display: flex; align-items: center; gap: 12px;
       border-bottom: 3px solid var(--primary-color);
       transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transform: translateZ(0);
     }
     .sticky-date::before { content: '\f073'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 1.2rem; opacity: 0.8; }
     .sticky-date:hover { background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); }
@@ -145,22 +149,25 @@
     }
 
     .event {
-      position: relative; /* Pour positionner la cloche en absolu */
+      position: relative;
       background-color: var(--card-color); border-radius: 12px; overflow: hidden;
       box-shadow: var(--shadow); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
       height: 100%; display: flex; flex-direction: column; cursor: pointer; text-decoration: none; color: inherit;
       will-change: transform; contain: content; backface-visibility: hidden;
     }
     .event:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
-    
+
     .event-image {
       height: 200px; overflow: hidden; position: relative;
       background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
       display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;
     }
-    .event-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; decoding: "async"; }
+    .event-image img {
+      width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform; decoding: "async"; content-visibility: auto; contain-intrinsic-size: 400px 200px;
+    }
     .event:hover .event-image img { transform: scale(1.03); }
-    
+
     .event-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
     .event-date { display: inline-block; background-color: var(--accent-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem; font-weight: 600; }
     .event h2 { font-size: 1.4rem; margin-bottom: 0.8rem; color: var(--primary-color); font-weight: 600; }
@@ -168,34 +175,34 @@
     .event-details { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem; margin-top: auto; }
     .event-detail { display: flex; align-items: flex-start; gap: 0.5rem; }
     .event-detail i { color: var(--primary-color); min-width: 20px; margin-top: 4px; }
-    
+
     .view-more-btn {
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
       color: white; border: none; padding: 10px 20px; border-radius: 25px; font-size: 0.9rem;
       cursor: pointer; transition: all 0.3s; margin-top: 1rem; text-align: center; display: inline-block; text-decoration: none; font-weight: 600;
     }
     .view-more-btn:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3); }
-    
+
     .no-events {
       text-align: center; padding: 4rem 2rem; background-color: var(--card-color); border-radius: 12px; box-shadow: var(--shadow);
     }
     .no-events i { font-size: 4rem; color: #ddd; margin-bottom: 1rem; }
     .no-events h2 { color: #666; margin-bottom: 1rem; }
-    
+
     .loading { text-align: center; padding: 3rem; font-size: 1.2rem; color: #666; }
     .loading i { font-size: 2rem; margin-bottom: 1rem; }
-    
+
     .price-tag { display: inline-block; background-color: var(--secondary-color); color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; }
 
     .events-wrapper::-webkit-scrollbar { width: 8px; }
     .events-wrapper::-webkit-scrollbar-track { background: #f8f9fa; border-radius: 10px; }
     .events-wrapper::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 10px; border: 2px solid #f8f9fa; }
     .events-wrapper::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, var(--accent-color), var(--primary-color)); }
-    
+
     footer { background: #2c3e50; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem; }
     .footer-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
     .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--secondary-color); }
-    
+
     .debug-info {
       background-color: #f8f9fa; border: 1px solid #ddd; padding: 10px; margin-top: 20px; border-radius: 5px; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; display: none;
     }
@@ -215,7 +222,7 @@
       background: var(--primary-color); color: #fff; border-color: var(--primary-color);
       box-shadow: 0 4px 14px rgba(30, 136, 229, 0.35);
     }
-    
+
     @media (max-width: 768px) {
       .nav-links { gap: 1rem; font-size: 0.9rem; }
       .events-list { grid-template-columns: 1fr; }
@@ -224,6 +231,13 @@
       .search-box { max-width: 100%; }
       .filter-buttons { justify-content: center; }
       h1 { font-size: 2rem; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .event:hover {
+        transform: translateY(-4px);
+        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -249,8 +263,8 @@
 
   <script>
     // Detect if running in Flutter WebView and hide navigation
-    if (navigator.userAgent.includes('Flutter') || 
-        navigator.userAgent.includes('wv') || 
+    if (navigator.userAgent.includes('Flutter') ||
+        navigator.userAgent.includes('wv') ||
         window.flutter_inappwebview) {
       document.querySelector('nav').style.display = 'none';
     }
@@ -271,7 +285,7 @@
         <button class="filter-btn" data-filter="gratuit">Gratuit</button>
       </div>
     </div>
-       
+
     <!-- Liste des événements avec dates collantes -->
     <div id="events-container" class="events-wrapper">
       <div class="loading">
@@ -279,7 +293,7 @@
         <p>Chargement des événements...</p>
       </div>
     </div>
-    
+
     <button class="debug-toggle" onclick="toggleDebug()">Debug</button>
     <div id="debug-info" class="debug-info"></div>
   </main>
@@ -295,14 +309,10 @@
     // Configuration Supabase
     const SUPABASE_URL = 'https://umrozxtgxwjfkzudlmmf.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcm96eHRneHdqZmt6dWRsbW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MzczOTEsImV4cCI6MjA3NDIxMzM5MX0.T139ua0oJKZTn3Kn8HPRh-KFWl4oOP5dacVP_zXfbFs';
-    
+
     // Initialiser Supabase Client
-    let supabase;
-if (typeof window.supabaseClientInstance === 'undefined') {
-    window.supabaseClientInstance = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}
-supabase = window.supabaseClientInstance;
-    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     let allEvents = [];
     let debugLogs = [];
     // Map des événements visibles (clé = id)
@@ -315,7 +325,7 @@ supabase = window.supabaseClientInstance;
       debugLogs.push(logEntry);
       console.log(message, data);
     }
-    
+
     function toggleDebug() {
       const debugDiv = document.getElementById('debug-info');
       const button = document.querySelector('.debug-toggle');
@@ -413,7 +423,7 @@ supabase = window.supabaseClientInstance;
           e.preventDefault();
           e.stopPropagation();
           if (!isInAppWebView()) return false;
-          
+
           const isFav = isFavoriteLocally(id);
           const ev = window.eventsById[id];
           if (!ev) return false;
@@ -455,7 +465,7 @@ supabase = window.supabaseClientInstance;
       }
     };
     // ====== Fin bridge / Rappel (liste) ======
-    
+
     function formatDateForDisplay(date) {
       const today = new Date(); today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -477,98 +487,126 @@ supabase = window.supabaseClientInstance;
       return grouped;
     }
 
+    // Cache pour les prix et les recherches
+    const priceCache = new Map();
+    const searchCache = new Map();
+
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
     async function fetchEvents() {
+      const cacheKey = 'events_cache';
+      const cacheTimeKey = 'events_cache_time';
+
       try {
-        logDebug('🚀 Chargement des événements depuis Supabase');
-        
-        const container = document.getElementById('events-container');
-        container.style.pointerEvents = 'none';
-        container.style.opacity = '0.7';
-        
+        // Vérifier le cache
+        const cached = localStorage.getItem(cacheKey);
+        const cacheTime = localStorage.getItem(cacheTimeKey);
+
+        if (cached && cacheTime && (Date.now() - cacheTime < CACHE_DURATION)) {
+          allEvents = JSON.parse(cached);
+          processAndDisplayEvents();
+          // Rafraîchir en arrière-plan
+          setTimeout(fetchFromSupabase, 1000);
+          return;
+        }
+
+        await fetchFromSupabase();
+
+      } catch (error) {
+        logDebug('❌ Erreur:', error);
+        // Fallback au cache même expiré en cas d'erreur
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          allEvents = JSON.parse(cached);
+          processAndDisplayEvents();
+        }
+      }
+
+      async function fetchFromSupabase() {
         const { data, error } = await supabase
           .from('Pioche_events')
           .select('*')
           .order('Date', { ascending: true });
-        
-        if (error) { throw new Error(`Erreur Supabase: ${error.message}`); }
-        
-        logDebug('📊 Données reçues de Supabase', {
-          nombreEvents: data.length,
-          premiersEvents: data.slice(0, 3)
-        });
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        allEvents = data.map((row, index) => {
-          const event = {};
-          try {
-            event.id = row["ID de l'evenement"] || row["ID de l'événement"] || `event-${index}`;
-            event.title = row.Titre || `Événement ${index + 1}`;
-            event.description = row.Description || row["Description courte"] || 'Description non disponible';
-            event.price = row.Prix || 'Prix non précisé';
-            event.location = row.Lieu || 'Lieu non précisé';
-            event.address = row.Adresse || '';
-            event.thumbnail = row.Thumbnail || '';
-            event.category = row.Catégorie || row.Category || '';
-            event.time = row.Heure || '';
-            
-            const dateValue = row.Date;
-            if (dateValue) {
-              event.eventDate = new Date(dateValue + "T00:00:00");
-              if (isNaN(event.eventDate.getTime())) {
-                event.eventDate = new Date(); event.eventDate.setDate(event.eventDate.getDate() + 7);
-                event.formattedDate = "Date à confirmer";
-              } else {
-                event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
-                  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-                });
-              }
-            } else {
-              event.eventDate = new Date(); event.eventDate.setDate(event.eventDate.getDate() + 7);
-              event.formattedDate = "Date à confirmer";
-            }
-            return event;
-          } catch (e) {
-            logDebug(`Erreur événement ${index}:`, e.message);
-            return null;
-          }
-        }).filter(event => event && event.title && event.title.trim() !== '');
-        
-        localStorage.setItem('marseilleEvents', JSON.stringify(allEvents));
-        
-        const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
-        
-        logDebug(`✅ ${upcomingEvents.length} événements à venir chargés`);
-        
-        displayEventsWithStickyDates(upcomingEvents);
-        setupSearch();
-        setupFilters();
 
-        // Init des boutons rappel après affichage
-        initRemindersUIForList();
-        
-        container.style.pointerEvents = 'auto';
-        container.style.opacity = '1';
-        
-      } catch (error) {
-        logDebug('❌ Erreur:', error);
-        document.getElementById('events-container').innerHTML = `
-          <div class="no-events">
-            <i class="fas fa-exclamation-circle"></i>
-            <h2>Erreur de chargement</h2>
-            <p>${error.message}</p>
-          </div>
-        `;
-        const container = document.getElementById('events-container');
-        container.style.pointerEvents = 'auto';
-        container.style.opacity = '1';
+        if (!error && data) {
+          allEvents = processEvents(data);
+          localStorage.setItem(cacheKey, JSON.stringify(allEvents));
+          localStorage.setItem(cacheTimeKey, Date.now());
+          processAndDisplayEvents();
+        }
       }
     }
-    
+
+    function processEvents(data) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      return data.map((row, index) => {
+        const event = {};
+        try {
+          event.id = row["ID de l'evenement"] || row["ID de l'événement"] || `event-${index}`;
+          event.title = row.Titre || `Événement ${index + 1}`;
+          event.description = row.Description || row["Description courte"] || 'Description non disponible';
+          event.price = row.Prix || 'Prix non précisé';
+          event.location = row.Lieu || 'Lieu non précisé';
+          event.address = row.Adresse || '';
+          event.thumbnail = row.Thumbnail || '';
+          event.category = row.Catégorie || row.Category || '';
+
+          event.time = row.Heure || '';
+
+          const dateValue = row.Date;
+          if (dateValue) {
+            event.eventDate = new Date(dateValue + "T00:00:00");
+            if (isNaN(event.eventDate.getTime())) {
+              event.eventDate = new Date(); event.eventDate.setDate(event.eventDate.getDate() + 7);
+              event.formattedDate = "Date à confirmer";
+            } else {
+              event.formattedDate = event.eventDate.toLocaleDateString('fr-FR', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+              });
+            }
+          } else {
+            event.eventDate = new Date(); event.eventDate.setDate(event.eventDate.getDate() + 7);
+            event.formattedDate = "Date à confirmer";
+          }
+          return event;
+        } catch (e) {
+          logDebug(`Erreur événement ${index}:`, e.message);
+          return null;
+        }
+      }).filter(event => event && event.title && event.title.trim() !== '');
+    }
+
+    function processAndDisplayEvents() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const upcomingEvents = allEvents.filter(e => e.eventDate >= today).sort((a, b) => a.eventDate - b.eventDate);
+
+      logDebug(`✅ ${upcomingEvents.length} événements à venir chargés`);
+
+      displayEventsWithStickyDates(upcomingEvents);
+      setupSearch();
+      setupFilters();
+
+      // Init des boutons rappel après affichage
+      initRemindersUIForList();
+
+      const container = document.getElementById('events-container');
+      container.style.pointerEvents = 'auto';
+      container.style.opacity = '1';
+
+      // Initialiser le lazy loading des images
+      initImageLazyLoading();
+
+      // Initialiser l'observateur pour les sticky dates
+      initStickyDatesObserver();
+    }
+
     function displayEventsWithStickyDates(events) {
       const container = document.getElementById('events-container');
-      
+
       if (events.length === 0) {
         container.innerHTML = `
           <div class="no-events">
@@ -579,30 +617,38 @@ supabase = window.supabaseClientInstance;
         `;
         return;
       }
-      
+
       // Map des événements visibles pour le bridge
       window.eventsById = {};
       events.forEach(ev => { window.eventsById[String(ev.id)] = ev; });
 
       const groupedEvents = groupEventsByDate(events);
       container.innerHTML = '';
-      
+
       Object.keys(groupedEvents).forEach(dateKey => {
         const dateSection = document.createElement('div');
         dateSection.className = 'date-section';
-        
+
         const stickyDate = document.createElement('div');
         stickyDate.className = 'sticky-date';
         stickyDate.innerHTML = dateKey;
-        
+
         const eventsList = document.createElement('div');
         eventsList.className = 'events-list';
-        
+
         groupedEvents[dateKey].forEach(event => {
           const imageHTML = (event.thumbnail && event.thumbnail.trim() !== '')
-            ? `<img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-music\\'></i>'">`
+            ? `<img
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'%3E%3C/svg%3E"
+                data-src="${event.thumbnail}"
+                alt="${event.title}"
+                loading="lazy"
+                width="400"
+                height="200"
+                onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2Fsvg%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22400%22%20height%3D%22200%22%20fill%3D%22%23f0f0f0%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23999%22%20font-size%3D%2216%22%3EImage%20non%20disponible%3C%2Ftext%3E%3C%2Fsvg%3E';"
+              >`
             : '<i class="fas fa-music"></i>';
-          
+
           const eventCard = document.createElement('a');
           eventCard.href = `event-detail.html?id=${event.id}`;
           eventCard.className = 'event';
@@ -644,24 +690,29 @@ supabase = window.supabaseClientInstance;
               <span class="view-more-btn">Voir les détails <i class="fas fa-arrow-right"></i></span>
             </div>
           `;
-          
+
           eventsList.appendChild(eventCard);
         });
-        
+
         dateSection.appendChild(stickyDate);
         dateSection.appendChild(eventsList);
         container.appendChild(dateSection);
       });
     }
-    
+
+    // Utiliser le debouncing pour la recherche
+    let searchTimeout;
     function setupSearch() {
       const searchInput = document.getElementById('search-input');
       searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        filterEvents(searchTerm);
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          const searchTerm = e.target.value.toLowerCase().trim();
+          filterEvents(searchTerm);
+        }, 300);
       });
     }
-    
+
     function setupFilters() {
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -671,14 +722,22 @@ supabase = window.supabaseClientInstance;
         });
       });
     }
-    
+
     function filterEvents(searchTerm) {
+      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+      const cacheKey = `${searchTerm}_${activeFilter}`;
+
+      if (searchCache.has(cacheKey)) {
+        displayEventsWithStickyDates(searchCache.get(cacheKey));
+        initRemindersUIForList();
+        return;
+      }
+
       const today = new Date(); today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
-      
+
       let filtered = allEvents.filter(e => e.eventDate >= today);
-      
-      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
       if (activeFilter === 'today') {
         const todayEnd = new Date(today); todayEnd.setHours(23, 59, 59, 999);
         filtered = filtered.filter(e => e.eventDate >= today && e.eventDate <= todayEnd);
@@ -696,27 +755,129 @@ supabase = window.supabaseClientInstance;
       } else if (activeFilter === 'gratuit') {
         filtered = filtered.filter(e => e.price && (e.price.toLowerCase().includes('gratuit') || e.price === '0'));
       }
-      
+
       if (searchTerm) {
         filtered = filtered.filter(event => {
           const searchableText = `${event.title} ${event.description} ${event.location} ${event.category}`.toLowerCase();
           return searchableText.includes(searchTerm);
         });
       }
-      
+
       filtered.sort((a, b) => a.eventDate - b.eventDate);
       displayEventsWithStickyDates(filtered);
 
       // Réinitialiser les boutons rappel après réaffichage
       initRemindersUIForList();
+
+      // Mettre en cache le résultat
+      searchCache.set(cacheKey, filtered);
+      // Limiter la taille du cache
+      if (searchCache.size > 50) {
+        const firstKey = searchCache.keys().next().value;
+        searchCache.delete(firstKey);
+      }
     }
-    
-    document.addEventListener('DOMContentLoaded', () => {
+
+    // Utiliser Intersection Observer pour les sticky dates
+    function initStickyDatesObserver() {
+      const dateSections = document.querySelectorAll('.date-section');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            const sticky = entry.target.querySelector('.sticky-date');
+            if (sticky) {
+              if (entry.isIntersecting) {
+                sticky.style.position = 'sticky';
+              } else {
+                sticky.style.position = 'relative';
+              }
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '-50px 0px 0px 0px' }
+      );
+
+      dateSections.forEach(section => observer.observe(section));
+    }
+
+    // Utiliser Intersection Observer pour le lazy loading des images
+    function initImageLazyLoading() {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            const src = img.getAttribute('data-src');
+            if (src) {
+              img.src = src;
+              img.removeAttribute('data-src');
+            }
+            imageObserver.unobserve(img);
+          }
+        });
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.1
+      });
+
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+
+    // Utiliser la délégation d'événements
+    document.addEventListener('click', (e) => {
+      // Filtres
+      if (e.target.classList.contains('filter-btn')) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        filterEvents(document.getElementById('search-input').value.toLowerCase().trim());
+      }
+
+      // Rappels
+      if (e.target.closest('.reminder-toggle')) {
+        const btn = e.target.closest('.reminder-toggle');
+        const id = btn.dataset.id;
+        const isFav = isFavoriteLocally(id);
+        const ev = window.eventsById[id];
+        if (!ev) return;
+
+        if (isFav) {
+          // Demande de suppression
+          try { window.Pioche.postMessage(JSON.stringify({ action: 'removeReminder', id: String(id) })); } catch(_) {}
+        } else {
+          // Demande d’ajout
+          const payload = buildReminderPayloadFromList(ev);
+          try { window.Pioche.postMessage(JSON.stringify(payload)); } catch(_) {}
+        }
+      }
+    });
+
+    // Charger Supabase de façon asynchrone
+    function loadSupabase() {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      script.async = true;
+      script.onload = initApp;
+      document.body.appendChild(script);
+    }
+
+    function initApp() {
       logDebug('Initialisation Pioche Agenda avec Supabase');
       fetchEvents();
+    }
+
+    // Afficher le body une fois le CSS chargé
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.style.opacity = '1';
+      loadSupabase();
     });
+
+    // Service Worker pour le cache
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(console.error);
+      });
+    }
   </script>
 </body>
 </html>
-
-
