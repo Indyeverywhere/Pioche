@@ -324,6 +324,12 @@
       if (data) { logEntry += "\n" + JSON.stringify(data, null, 2); }
       debugLogs.push(logEntry);
       console.log(message, data);
+
+      // Mettre à jour l'affichage du debug
+      const debugDiv = document.getElementById('debug-info');
+      if (debugDiv.style.display !== 'none') {
+        debugDiv.textContent = debugLogs.join('\n\n');
+      }
     }
 
     function toggleDebug() {
@@ -504,6 +510,7 @@
 
         if (cached && cacheTime && (Date.now() - cacheTime < CACHE_DURATION)) {
           allEvents = JSON.parse(cached);
+          logDebug('✅ Événements chargés depuis le cache');
           processAndDisplayEvents();
           // Rafraîchir en arrière-plan
           setTimeout(fetchFromSupabase, 1000);
@@ -518,6 +525,7 @@
         const cached = localStorage.getItem(cacheKey);
         if (cached) {
           allEvents = JSON.parse(cached);
+          logDebug('✅ Événements chargés depuis le cache (erreur réseau)');
           processAndDisplayEvents();
         } else {
           // Si pas de cache, afficher un message d'erreur
@@ -527,6 +535,7 @@
 
       async function fetchFromSupabase() {
         try {
+          logDebug('⏳ Tentative de récupération des événements depuis Supabase...');
           const { data, error } = await supabase
             .from('Pioche_events')
             .select('*')
@@ -542,6 +551,7 @@
           allEvents = processEvents(data);
           localStorage.setItem(cacheKey, JSON.stringify(allEvents));
           localStorage.setItem(cacheTimeKey, Date.now());
+          logDebug(`✅ ${allEvents.length} événements récupérés depuis Supabase`);
           processAndDisplayEvents();
         } catch (error) {
           logDebug('❌ Erreur lors de la récupération des événements:', error);
@@ -878,26 +888,50 @@
 
     // Charger Supabase de façon asynchrone
     function loadSupabase() {
+      logDebug('⏳ Tentative de chargement de Supabase...');
+
+      // Vérifier si Supabase est déjà chargé
+      if (window.supabase && window.supabase.createClient) {
+        logDebug('✅ Supabase déjà chargé');
+        initApp();
+        return;
+      }
+
+      // Créer un script pour charger Supabase
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
       script.async = true;
-      script.onload = initApp;
+      script.onload = function() {
+        logDebug('✅ Supabase chargé avec succès');
+        initApp();
+      };
       script.onerror = function() {
         logDebug('❌ Erreur lors du chargement de Supabase');
         showErrorMessage("Impossible de charger les événements. Veuillez vérifier votre connexion Internet.");
       };
+
+      // Ajouter le script au document
       document.body.appendChild(script);
     }
 
     function initApp() {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      logDebug('Initialisation Pioche Agenda avec Supabase');
-      fetchEvents();
+      try {
+        // Initialiser Supabase
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        logDebug('✅ Supabase initialisé avec succès');
+
+        // Démarrer le chargement des événements
+        fetchEvents();
+      } catch (error) {
+        logDebug('❌ Erreur lors de l\'initialisation de Supabase:', error);
+        showErrorMessage("Impossible de charger les événements. Veuillez réessayer plus tard.");
+      }
     }
 
     // Afficher le body une fois le CSS chargé
     document.addEventListener('DOMContentLoaded', () => {
       document.body.style.opacity = '1';
+      logDebug('✅ Page chargée, démarrage du chargement de Supabase...');
       loadSupabase();
     });
 
