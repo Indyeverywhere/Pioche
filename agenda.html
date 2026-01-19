@@ -327,7 +327,7 @@
 
       // Mettre à jour l'affichage du debug
       const debugDiv = document.getElementById('debug-info');
-      if (debugDiv.style.display !== 'none') {
+      if (debugDiv && debugDiv.style.display !== 'none') {
         debugDiv.textContent = debugLogs.join('\n\n');
       }
     }
@@ -562,13 +562,15 @@
 
     function showErrorMessage(message) {
       const container = document.getElementById('events-container');
-      container.innerHTML = `
-        <div class="no-events">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h2>Erreur</h2>
-          <p>${message}</p>
-        </div>
-      `;
+      if (container) {
+        container.innerHTML = `
+          <div class="no-events">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>Erreur</h2>
+            <p>${message}</p>
+          </div>
+        `;
+      }
     }
 
     function processEvents(data) {
@@ -628,8 +630,10 @@
       initRemindersUIForList();
 
       const container = document.getElementById('events-container');
-      container.style.pointerEvents = 'auto';
-      container.style.opacity = '1';
+      if (container) {
+        container.style.pointerEvents = 'auto';
+        container.style.opacity = '1';
+      }
 
       // Initialiser le lazy loading des images
       initImageLazyLoading();
@@ -640,6 +644,7 @@
 
     function displayEventsWithStickyDates(events) {
       const container = document.getElementById('events-container');
+      if (!container) return;
 
       if (events.length === 0) {
         container.innerHTML = `
@@ -738,13 +743,15 @@
     let searchTimeout;
     function setupSearch() {
       const searchInput = document.getElementById('search-input');
-      searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          const searchTerm = e.target.value.toLowerCase().trim();
-          filterEvents(searchTerm);
-        }, 300);
-      });
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            filterEvents(searchTerm);
+          }, 300);
+        });
+      }
     }
 
     function setupFilters() {
@@ -752,7 +759,9 @@
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          filterEvents(document.getElementById('search-input').value.toLowerCase().trim());
+          const searchInput = document.getElementById('search-input');
+          const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+          filterEvents(searchTerm);
         });
       });
     }
@@ -864,7 +873,9 @@
       if (e.target.classList.contains('filter-btn')) {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
-        filterEvents(document.getElementById('search-input').value.toLowerCase().trim());
+        const searchInput = document.getElementById('search-input');
+        const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        filterEvents(searchTerm);
       }
 
       // Rappels
