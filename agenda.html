@@ -510,7 +510,10 @@
         const cacheTime = localStorage.getItem(cacheTimeKey);
 
         if (cached && cacheTime && (Date.now() - cacheTime < CACHE_DURATION)) {
-          allEvents = JSON.parse(cached);
+  allEvents = JSON.parse(cached).map(ev => ({
+    ...ev,
+    eventDate: ev.eventDate ? new Date(ev.eventDate) : null
+  }));
           logDebug('✅ Événements chargés depuis le cache');
           processAndDisplayEvents();
           // Rafraîchir en arrière-plan
@@ -962,6 +965,7 @@
   </script>
 </body>
 </html>
+
 
 
 
