@@ -310,8 +310,9 @@
     const SUPABASE_URL = 'https://umrozxtgxwjfkzudlmmf.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcm96eHRneHdqZmt6dWRsbW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MzczOTEsImV4cCI6MjA3NDIxMzM5MX0.T139ua0oJKZTn3Kn8HPRh-KFWl4oOP5dacVP_zXfbFs';
 
-    // Initialiser Supabase Client
-    let supabase;
+    // Initialiser le namespace pour l'application
+    window.PiocheApp = window.PiocheApp || {};
+    window.PiocheApp.supabaseClient = null;
 
     let allEvents = [];
     let debugLogs = [];
@@ -536,7 +537,7 @@
       async function fetchFromSupabase() {
         try {
           logDebug('⏳ Tentative de récupération des événements depuis Supabase...');
-          const { data, error } = await supabase
+          const { data, error } = await window.PiocheApp.supabaseClient
             .from('Pioche_events')
             .select('*')
             .order('Date', { ascending: true });
@@ -904,6 +905,7 @@
       // Vérifier si Supabase est déjà chargé
       if (window.supabase && window.supabase.createClient) {
         logDebug('✅ Supabase déjà chargé');
+        window.PiocheApp.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         initApp();
         return;
       }
@@ -916,6 +918,7 @@
         logDebug('✅ Supabase chargé avec succès');
         // Vérifier à nouveau si supabase est disponible
         if (window.supabase && window.supabase.createClient) {
+          window.PiocheApp.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
           initApp();
         } else {
           logDebug('❌ Supabase chargé mais pas disponible dans window.supabase');
@@ -933,8 +936,6 @@
 
     function initApp() {
       try {
-        // Initialiser Supabase
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         logDebug('✅ Supabase initialisé avec succès');
 
         // Démarrer le chargement des événements
