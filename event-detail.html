@@ -33,9 +33,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- Supabase Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     :root {
       --primary-color: #1e88e5;
@@ -298,8 +295,9 @@
     const SUPABASE_URL = 'https://umrozxtgxwjfkzudlmmf.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcm96eHRneHdqZmt6dWRsbW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MzczOTEsImV4cCI6MjA3NDIxMzM5MX0.T139ua0oJKZTn3Kn8HPRh-KFWl4oOP5dacVP_zXfbFs';
 
-    // Initialiser Supabase Client
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Initialiser le namespace pour l'application
+    window.PiocheApp = window.PiocheApp || {};
+    window.PiocheApp.supabaseClient = null;
 
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('id');
@@ -552,13 +550,18 @@
             displayEvent(event);
             return;
           }
-
         }
 
         // Supabase
         logDebug('📡 Chargement depuis Supabase...');
 
-        const { data: allEvents, error } = await supabase
+        // Vérifier si Supabase est déjà chargé
+        if (!window.PiocheApp.supabaseClient) {
+          logDebug('⚠️ Supabase non initialisé, chargement du script...');
+          await loadSupabaseScript();
+        }
+
+        const { data: allEvents, error } = await window.PiocheApp.supabaseClient
           .from('Pioche_events')
           .select('*');
 
@@ -622,6 +625,30 @@
           </div>
         `;
       }
+    }
+
+    function loadSupabaseScript() {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.async = true;
+        script.onload = function() {
+          logDebug('✅ Script Supabase chargé avec succès');
+          if (window.supabase && window.supabase.createClient) {
+            window.PiocheApp.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            logDebug('✅ Supabase initialisé avec succès');
+            resolve();
+          } else {
+            logDebug('❌ Supabase chargé mais pas disponible dans window.supabase');
+            reject(new Error('Supabase non disponible après chargement du script'));
+          }
+        };
+        script.onerror = function() {
+          logDebug('❌ Erreur lors du chargement du script Supabase');
+          reject(new Error('Erreur lors du chargement du script Supabase'));
+        };
+        document.body.appendChild(script);
+      });
     }
 
     function displayEvent(event) {
