@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transférer Playlist YouTube → Spotify</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #1ed760;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transférer une playlist YouTube vers Spotify</h1>
+    <p>Renseignez le nom de votre playlist et collez son lien YouTube :</p>
+
+    <input type="text" id="playlistName" placeholder="Nom de ta playlist (ex: Road Trip 2026)">
+    <input type="text" id="playlistUrl" placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
+    <br>
+    <button onclick="sendToN8n()">Transférer</button>
+
+    <script>
+        function sendToN8n() {
+            const playlistName = document.getElementById('playlistName').value.trim();
+            const url = document.getElementById('playlistUrl').value.trim();
+
+            if (!playlistName) {
+                alert("Merci de renseigner le nom de la playlist.");
+                return;
+            }
+
+            // Extraire l'ID de la playlist YouTube
+            const playlistId = extractPlaylistId(url);
+            if (!playlistId) {
+                alert("Lien de playlist YouTube invalide. Veuillez vérifier le format.");
+                return;
+            }
+
+            // Envoyer l'ID + le nom à ton workflow n8n
+            fetch('https://everywhere.app.n8n.cloud/webhook-test/transfert-playlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    playlistId: playlistId,
+                    playlistName: playlistName
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Transfert lancé avec succès ! Vous allez recevoir une notification une fois terminé.");
+                } else {
+                    alert("Erreur lors du transfert. Veuillez réessayer.");
+                }
+            })
+            .catch(error => {
+                alert("Erreur réseau. Veuillez vérifier votre connexion.");
+            });
+        }
+
+        function extractPlaylistId(url) {
+            // Gère les formats :
+            // - https://www.youtube.com/playlist?list=PL...
+            // - https://youtube.com/playlist?list=PL...
+            // - https://www.youtube.com/watch?v=...&list=PL...
+            const regExp = /^.*(youtu\.be\/|list=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length >= 10) {
+                return match[2];
+            }
+            return null;
+        }
+    </script>
+</body>
+</html>
