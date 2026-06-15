@@ -81,7 +81,7 @@
         }
 
         button:disabled {
-            opacity: 0.7;
+            opacity: 0.5;
             cursor: not-allowed;
         }
 
@@ -103,6 +103,40 @@
         .success {
             color: #14833b;
         }
+
+        .spotify-connection-wrapper {
+            margin: 12px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .spotify-connected {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #14833b;
+            background: #f3fff7;
+            border: 1px solid #bfe8cb;
+            border-radius: 999px;
+            padding: 10px 16px;
+        }
+
+        .green-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #1DB954;
+            display: inline-block;
+            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -119,12 +153,19 @@
     <h1>Transférer une playlist YouTube → Spotify</h1>
     <p>Commence par connecter ton compte Spotify, puis renseigne le nom de ta playlist et colle son lien YouTube :</p>
 
-    <button class="secondary-button" onclick="loginSpotify()">Connecter Spotify</button>
+    <div class="spotify-connection-wrapper">
+        <button id="spotifyLoginBtn" class="secondary-button" onclick="loginSpotify()">Connecter Spotify</button>
+
+        <div id="spotifyConnectedBadge" class="spotify-connected hidden">
+            <span class="green-dot"></span>
+            <span>Spotify : Connecté</span>
+        </div>
+    </div>
 
     <input type="text" id="playlistName" placeholder="Nom de ta playlist (ex: Road Trip 2026)">
     <input type="text" id="playlistUrl" placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
     <br>
-    <button id="transferBtn" onclick="sendToN8n()">Transférer</button>
+    <button id="transferBtn" onclick="sendToN8n()" disabled>Transférer</button>
 
     <div class="status" id="statusMessage"></div>
 
@@ -147,6 +188,22 @@
             return sessionId;
         }
 
+        function setSpotifyConnectedUI(isConnected) {
+            const loginBtn = document.getElementById("spotifyLoginBtn");
+            const connectedBadge = document.getElementById("spotifyConnectedBadge");
+            const transferBtn = document.getElementById("transferBtn");
+
+            if (isConnected) {
+                loginBtn.classList.add("hidden");
+                connectedBadge.classList.remove("hidden");
+                transferBtn.disabled = false;
+            } else {
+                loginBtn.classList.remove("hidden");
+                connectedBadge.classList.add("hidden");
+                transferBtn.disabled = true;
+            }
+        }
+
         function loginSpotify() {
             const sessionId = getOrCreateSessionId();
             const status = document.getElementById("statusMessage");
@@ -160,16 +217,31 @@
             const spotifyStatus = params.get("spotify");
 
             if (spotifyStatus === "success") {
+                localStorage.setItem("spotifyConnected", "true");
+
                 const status = document.getElementById("statusMessage");
                 status.className = "status success";
                 status.textContent = "Compte Spotify connecté avec succès.";
+
+                setSpotifyConnectedUI(true);
 
                 const cleanUrl = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, cleanUrl);
             }
         }
 
+        function restoreSpotifyState() {
+            const spotifyConnected = localStorage.getItem("spotifyConnected") === "true";
+            setSpotifyConnectedUI(spotifyConnected);
+        }
+
         function sendToN8n() {
+            const spotifyConnected = localStorage.getItem("spotifyConnected") === "true";
+            if (!spotifyConnected) {
+                alert("Merci de connecter Spotify avant de lancer le transfert.");
+                return;
+            }
+
             const playlistName = document.getElementById("playlistName").value.trim();
             const url = document.getElementById("playlistUrl").value.trim();
             const button = document.getElementById("transferBtn");
@@ -232,6 +304,7 @@
             return null;
         }
 
+        restoreSpotifyState();
         handleSpotifyReturn();
     </script>
 </body>
