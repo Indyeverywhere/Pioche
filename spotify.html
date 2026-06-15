@@ -4,7 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transférer Playlist YouTube → Spotify</title>
+
+    <!-- Google Publisher Tag (GPT) -->
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
+    <script>
+        window.googletag = window.googletag || { cmd: [] };
+
+        googletag.cmd.push(function () {
+            // Responsive size mapping
+            const mapping = googletag.sizeMapping()
+                .addSize([1024, 0], [[970, 250], [728, 90], [320, 100]])
+                .addSize([768, 0], [[728, 90], [320, 100]])
+                .addSize([0, 0], [[320, 100], [300, 250]])
+                .build();
+
+            googletag.defineSlot(
+                '/123456789/spotify_top_banner',
+                [[970, 250], [728, 90], [320, 100], [300, 250]],
+                'div-gpt-ad-top-banner'
+            )
+            .defineSizeMapping(mapping)
+            .addService(googletag.pubads());
+
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             max-width: 600px;
@@ -12,12 +43,32 @@
             padding: 20px;
             text-align: center;
         }
+
+        .top-banner-wrapper {
+            width: 100%;
+            margin: 0 auto 24px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+        }
+
+        #div-gpt-ad-top-banner {
+            width: 100%;
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
         input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             font-size: 16px;
         }
+
         button {
             background-color: #1DB954;
             color: white;
@@ -27,38 +78,67 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
         button:hover {
             background-color: #1ed760;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #444;
+            min-height: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Transférer une playlist YouTube vers Spotify</h1>
+    <!-- Bannière responsive unique en haut de page -->
+    <div class="top-banner-wrapper">
+        <div id="div-gpt-ad-top-banner">
+            <script>
+                googletag.cmd.push(function () {
+                    googletag.display('div-gpt-ad-top-banner');
+                });
+            </script>
+        </div>
+    </div>
+
+    <h1>Transférer une playlist YouTube → Spotify</h1>
     <p>Renseigne le nom de ta playlist et colle son lien YouTube :</p>
 
     <input type="text" id="playlistName" placeholder="Nom de ta playlist (ex: Road Trip 2026)">
     <input type="text" id="playlistUrl" placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
     <br>
-    <button onclick="sendToN8n()">Transférer</button>
+    <button id="transferBtn" onclick="sendToN8n()">Transférer</button>
+
+    <div class="status" id="statusMessage"></div>
 
     <script>
         function sendToN8n() {
             const playlistName = document.getElementById('playlistName').value.trim();
             const url = document.getElementById('playlistUrl').value.trim();
+            const button = document.getElementById('transferBtn');
+            const status = document.getElementById('statusMessage');
 
             if (!playlistName) {
                 alert("Merci de renseigner le nom de la playlist.");
                 return;
             }
 
-            // Extraire l'ID de la playlist YouTube
             const playlistId = extractPlaylistId(url);
             if (!playlistId) {
                 alert("Lien de playlist YouTube invalide. Veuillez vérifier le format.");
                 return;
             }
 
-            // Envoyer l'ID + le nom à ton workflow n8n
+            button.disabled = true;
+            status.textContent = "Transfert en cours...";
+
             fetch('https://everywhere.app.n8n.cloud/webhook/transfert-playlist', {
                 method: 'POST',
                 headers: {
@@ -72,20 +152,22 @@
             .then(response => {
                 if (response.ok) {
                     alert("Transfert lancé avec succès ! Cela peut prendre plusieurs minutes en fonction du nombre de titres.");
+                    status.textContent = "Transfert lancé avec succès.";
                 } else {
                     alert("Erreur lors du transfert. Veuillez réessayer.");
+                    status.textContent = "Erreur lors du transfert.";
                 }
             })
             .catch(error => {
                 alert("Erreur réseau. Veuillez vérifier votre connexion.");
+                status.textContent = "Erreur réseau. Veuillez vérifier votre connexion.";
+            })
+            .finally(() => {
+                button.disabled = false;
             });
         }
 
         function extractPlaylistId(url) {
-            // Gère les formats :
-            // - https://www.youtube.com/playlist?list=PL...
-            // - https://youtube.com/playlist?list=PL...
-            // - https://www.youtube.com/watch?v=...&list=PL...
             const regExp = /^.*(youtu\.be\/|list=)([^#\&\?]*).*/;
             const match = url.match(regExp);
             if (match && match[2].length >= 10) {
