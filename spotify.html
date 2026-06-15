@@ -11,7 +11,6 @@
         window.googletag = window.googletag || { cmd: [] };
 
         googletag.cmd.push(function () {
-            // Responsive size mapping
             const mapping = googletag.sizeMapping()
                 .addSize([1024, 0], [[970, 250], [728, 90], [320, 100]])
                 .addSize([768, 0], [[728, 90], [320, 100]])
@@ -77,6 +76,7 @@
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
+            margin: 6px;
         }
 
         button:hover {
@@ -86,6 +86,14 @@
         button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+        }
+
+        .secondary-button {
+            background-color: #191414;
+        }
+
+        .secondary-button:hover {
+            background-color: #333333;
         }
 
         .status {
@@ -109,7 +117,9 @@
     </div>
 
     <h1>Transférer une playlist YouTube → Spotify</h1>
-    <p>Renseigne le nom de ta playlist et colle son lien YouTube :</p>
+    <p>Commence par connecter ton compte Spotify, puis renseigne le nom de ta playlist et colle son lien YouTube :</p>
+
+    <button class="secondary-button" onclick="loginSpotify()">Connecter Spotify</button>
 
     <input type="text" id="playlistName" placeholder="Nom de ta playlist (ex: Road Trip 2026)">
     <input type="text" id="playlistUrl" placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
@@ -119,6 +129,28 @@
     <div class="status" id="statusMessage"></div>
 
     <script>
+        const SPOTIFY_LOGIN_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/spotify-login";
+
+        function getOrCreateSessionId() {
+            let sessionId = localStorage.getItem("sessionId");
+
+            if (!sessionId) {
+                if (window.crypto && crypto.randomUUID) {
+                    sessionId = crypto.randomUUID();
+                } else {
+                    sessionId = "session-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
+                }
+                localStorage.setItem("sessionId", sessionId);
+            }
+
+            return sessionId;
+        }
+
+        function loginSpotify() {
+            const sessionId = getOrCreateSessionId();
+            window.location.href = `${SPOTIFY_LOGIN_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`;
+        }
+
         function sendToN8n() {
             const playlistName = document.getElementById('playlistName').value.trim();
             const url = document.getElementById('playlistUrl').value.trim();
@@ -158,7 +190,7 @@
                     status.textContent = "Erreur lors du transfert.";
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 alert("Erreur réseau. Veuillez vérifier votre connexion.");
                 status.textContent = "Erreur réseau. Veuillez vérifier votre connexion.";
             })
