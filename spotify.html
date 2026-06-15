@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transférer Playlist YouTube → Spotify</title>
 
-    <!-- Google Publisher Tag (GPT) -->
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
     <script>
         window.googletag = window.googletag || { cmd: [] };
@@ -31,9 +30,7 @@
     </script>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: Arial, sans-serif;
@@ -102,10 +99,13 @@
             color: #444;
             min-height: 20px;
         }
+
+        .success {
+            color: #14833b;
+        }
     </style>
 </head>
 <body>
-    <!-- Bannière responsive unique en haut de page -->
     <div class="top-banner-wrapper">
         <div id="div-gpt-ad-top-banner">
             <script>
@@ -130,6 +130,7 @@
 
     <script>
         const SPOTIFY_LOGIN_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/spotify-login";
+        const TRANSFER_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/transfert-playlist";
 
         function getOrCreateSessionId() {
             let sessionId = localStorage.getItem("sessionId");
@@ -148,14 +149,32 @@
 
         function loginSpotify() {
             const sessionId = getOrCreateSessionId();
+            const status = document.getElementById("statusMessage");
+            status.className = "status";
+            status.textContent = "Redirection vers Spotify...";
             window.location.href = `${SPOTIFY_LOGIN_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`;
         }
 
+        function handleSpotifyReturn() {
+            const params = new URLSearchParams(window.location.search);
+            const spotifyStatus = params.get("spotify");
+
+            if (spotifyStatus === "success") {
+                const status = document.getElementById("statusMessage");
+                status.className = "status success";
+                status.textContent = "Compte Spotify connecté avec succès.";
+
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        }
+
         function sendToN8n() {
-            const playlistName = document.getElementById('playlistName').value.trim();
-            const url = document.getElementById('playlistUrl').value.trim();
-            const button = document.getElementById('transferBtn');
-            const status = document.getElementById('statusMessage');
+            const playlistName = document.getElementById("playlistName").value.trim();
+            const url = document.getElementById("playlistUrl").value.trim();
+            const button = document.getElementById("transferBtn");
+            const status = document.getElementById("statusMessage");
+            const sessionId = getOrCreateSessionId();
 
             if (!playlistName) {
                 alert("Merci de renseigner le nom de la playlist.");
@@ -169,14 +188,16 @@
             }
 
             button.disabled = true;
+            status.className = "status";
             status.textContent = "Transfert en cours...";
 
-            fetch('https://everywhere.app.n8n.cloud/webhook/transfert-playlist', {
-                method: 'POST',
+            fetch(TRANSFER_WEBHOOK, {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
+                    sessionId: sessionId,
                     playlistId: playlistId,
                     playlistName: playlistName
                 })
@@ -184,14 +205,17 @@
             .then(response => {
                 if (response.ok) {
                     alert("Transfert lancé avec succès ! Cela peut prendre plusieurs minutes en fonction du nombre de titres.");
+                    status.className = "status success";
                     status.textContent = "Transfert lancé avec succès.";
                 } else {
                     alert("Erreur lors du transfert. Veuillez réessayer.");
+                    status.className = "status";
                     status.textContent = "Erreur lors du transfert.";
                 }
             })
             .catch(() => {
                 alert("Erreur réseau. Veuillez vérifier votre connexion.");
+                status.className = "status";
                 status.textContent = "Erreur réseau. Veuillez vérifier votre connexion.";
             })
             .finally(() => {
@@ -207,6 +231,8 @@
             }
             return null;
         }
+
+        handleSpotifyReturn();
     </script>
 </body>
 </html>
