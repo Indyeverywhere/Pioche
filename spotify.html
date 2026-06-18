@@ -7,7 +7,7 @@
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6987888174560386"
      crossorigin="anonymous"></script>
-    
+
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
     <script>
         window.googletag = window.googletag || { cmd: [] };
@@ -107,6 +107,10 @@
             color: #14833b;
         }
 
+        .error {
+            color: #c0392b;
+        }
+
         .spotify-connection-wrapper {
             margin: 12px 0;
             display: flex;
@@ -140,6 +144,68 @@
         .hidden {
             display: none !important;
         }
+
+        /* ---- Indicateur de progression du transfert ---- */
+        .progress-wrapper {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .spinner {
+            width: 38px;
+            height: 38px;
+            border: 4px solid rgba(29, 185, 84, 0.2);
+            border-top-color: #1DB954;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-text {
+            font-size: 15px;
+            color: #444;
+        }
+
+        /* trois points qui s'affichent progressivement */
+        .dots::after {
+            content: '';
+            animation: dots 1.4s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%   { content: ''; }
+            25%  { content: '.'; }
+            50%  { content: '..'; }
+            75%  { content: '...'; }
+            100% { content: ''; }
+        }
+
+        .result-box {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .result-box.ok {
+            background: #f3fff7;
+            border: 1px solid #bfe8cb;
+            color: #14833b;
+        }
+
+        .result-box.ko {
+            background: #fff5f4;
+            border: 1px solid #f1c4bf;
+            color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -172,9 +238,24 @@
 
     <div class="status" id="statusMessage"></div>
 
+    <!-- Indicateur de transfert en cours -->
+    <div id="progressWrapper" class="progress-wrapper hidden">
+        <div class="spinner"></div>
+        <div class="progress-text"><span id="progressLabel">Transfert en cours</span><span class="dots"></span></div>
+    </div>
+
+    <!-- Résultat final -->
+    <div id="resultBox" class="result-box hidden"></div>
+
     <script>
         const SPOTIFY_LOGIN_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/spotify-login";
         const TRANSFER_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/transfert-playlist";
+        const STATUS_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/transfert-status";
+
+        const POLL_INTERVAL_MS = 3000;      // intervalle d'interrogation du statut
+        const MAX_POLL_MS = 15 * 60 * 1000; // garde-fou : on arrête de poller au bout de 15 min
+
+        let pollTimer = null;
 
         function getOrCreateSessionId() {
             let sessionId = localStorage.getItem("sessionId");
@@ -238,6 +319,66 @@
             setSpotifyConnectedUI(spotifyConnected);
         }
 
+        // ---- Affichage de la progression / du résultat ----
+        function showProgress(label) {
+            document.getElementById("resultBox").classList.add("hidden");
+            document.getElementById("progressLabel").textContent = label || "Transfert en cours";
+            document.getElementById("progressWrapper").classList.remove("hidden");
+        }
+
+        function hideProgress() {
+            document.getElementById("progressWrapper").classList.add("hidden");
+        }
+
+        function showResult(text, isError) {
+            hideProgress();
+            const box = document.getElementById("resultBox");
+            box.textContent = text;
+            box.className = "result-box " + (isError ? "ko" : "ok");
+            box.classList.remove("hidden");
+        }
+
+        function stopPolling() {
+            if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
+            }
+        }
+
+        function startPolling(sessionId, button) {
+            const startedAt = Date.now();
+            stopPolling();
+
+            pollTimer = setInterval(async () => {
+                if (Date.now() - startedAt > MAX_POLL_MS) {
+                    stopPolling();
+                    showResult("Le transfert prend plus de temps que prévu. Il se poursuit en arrière-plan, reviens dans quelques minutes.", true);
+                    button.disabled = false;
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${STATUS_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`, { cache: "no-store" });
+                    const data = await res.json().catch(() => ({}));
+
+                    if (data.status === "done") {
+                        stopPolling();
+                        showResult(data.recap || "Transfert terminé.", false);
+                        button.disabled = false;
+                    } else if (data.status === "error") {
+                        stopPolling();
+                        showResult(data.recap || "Une erreur est survenue pendant le transfert.", true);
+                        button.disabled = false;
+                    } else {
+                        // status running / unknown : on met à jour le libellé si disponible
+                        showProgress(data.step || (data.total ? `Traitement de ${data.total} titres` : "Transfert en cours"));
+                    }
+                } catch (e) {
+                    // erreur réseau transitoire : on laisse le polling continuer
+                }
+            }, POLL_INTERVAL_MS);
+        }
+
         function sendToN8n() {
             const spotifyConnected = localStorage.getItem("spotifyConnected") === "true";
             if (!spotifyConnected) {
@@ -264,7 +405,9 @@
 
             button.disabled = true;
             status.className = "status";
-            status.textContent = "Transfert en cours...";
+            status.textContent = "";
+            document.getElementById("resultBox").classList.add("hidden");
+            showProgress("Transfert en cours");
 
             fetch(TRANSFER_WEBHOOK, {
                 method: "POST",
@@ -277,23 +420,22 @@
                     playlistName: playlistName
                 })
             })
-            .then(response => {
-                if (response.ok) {
-                    alert("Transfert lancé avec succès ! Cela peut prendre plusieurs minutes en fonction du nombre de titres.");
-                    status.className = "status success";
-                    status.textContent = "Transfert lancé avec succès.";
-                } else {
-                    alert("Erreur lors du transfert. Veuillez réessayer.");
-                    status.className = "status";
-                    status.textContent = "Erreur lors du transfert.";
+            .then(async (response) => {
+                const data = await response.json().catch(() => ({}));
+
+                // En cas d'erreur de validation (400), n8n renvoie un texte / pas de status "running"
+                if (!response.ok) {
+                    const txt = data && data.message ? data.message : "Erreur lors du lancement du transfert.";
+                    showResult(txt, true);
+                    button.disabled = false;
+                    return;
                 }
+
+                // Transfert accepté : on bascule en mode polling
+                startPolling(sessionId, button);
             })
             .catch(() => {
-                alert("Erreur réseau. Veuillez vérifier votre connexion.");
-                status.className = "status";
-                status.textContent = "Erreur réseau. Veuillez vérifier votre connexion.";
-            })
-            .finally(() => {
+                showResult("Erreur réseau. Veuillez vérifier votre connexion.", true);
                 button.disabled = false;
             });
         }
