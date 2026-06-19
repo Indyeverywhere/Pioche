@@ -5,26 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transférer Playlist YouTube → Spotify</title>
 
-    <!--
-      ============================================================
-      SÉCURITÉ : à compléter CÔTÉ SERVEUR (impossible via <meta>)
-      ============================================================
-      - HSTS                : Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-      - Isolation contexte  : Cross-Origin-Opener-Policy: same-origin
-                              Cross-Origin-Embedder-Policy: require-corp   (recos #16)
-      - Anti-clickjacking    : X-Frame-Options / CSP frame-ancestors
-      - CSRF (validation)    : n8n DOIT vérifier l'en-tête X-CSRF-Token (reco #3)
-      - Auth réelle          : n8n DOIT revalider la session Spotify à chaque
-                               appel transfer/status. Le flag client n'est qu'un
-                               indice d'UI, jamais une frontière de sécurité (reco #4)
-      - Rate limiting        : limiter par sessionId / IP côté n8n (reco #11)
-      ============================================================
-    -->
-
-    <!-- (#5)(#1) Content Security Policy stricte + upgrade-insecure-requests.
-         NB : pas de 'unsafe-inline' pour les scripts -> tout le JS est dans app.js.
-         Si une régie pub remonte une violation CSP en console, ajoutez le domaine
-         Google concerné à script-src / frame-src. -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
                    script-src 'self' https://pagead2.googlesyndication.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://tpc.googlesyndication.com;
