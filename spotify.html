@@ -5,32 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transférer Playlist YouTube → Spotify</title>
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6987888174560386"
-     crossorigin="anonymous"></script>
+    <!--
+      ============================================================
+      SÉCURITÉ : à compléter CÔTÉ SERVEUR (impossible via <meta>)
+      ============================================================
+      - HSTS                : Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+      - Isolation contexte  : Cross-Origin-Opener-Policy: same-origin
+                              Cross-Origin-Embedder-Policy: require-corp   (recos #16)
+      - Anti-clickjacking    : X-Frame-Options / CSP frame-ancestors
+      - CSRF (validation)    : n8n DOIT vérifier l'en-tête X-CSRF-Token (reco #3)
+      - Auth réelle          : n8n DOIT revalider la session Spotify à chaque
+                               appel transfer/status. Le flag client n'est qu'un
+                               indice d'UI, jamais une frontière de sécurité (reco #4)
+      - Rate limiting        : limiter par sessionId / IP côté n8n (reco #11)
+      ============================================================
+    -->
 
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
-    <script>
-        window.googletag = window.googletag || { cmd: [] };
+    <!-- (#5)(#1) Content Security Policy stricte + upgrade-insecure-requests.
+         NB : pas de 'unsafe-inline' pour les scripts -> tout le JS est dans app.js.
+         Si une régie pub remonte une violation CSP en console, ajoutez le domaine
+         Google concerné à script-src / frame-src. -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' https://pagead2.googlesyndication.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://tpc.googlesyndication.com;
+                   style-src 'self' 'unsafe-inline';
+                   connect-src 'self' https://everywhere.app.n8n.cloud https://pagead2.googlesyndication.com https://securepubads.g.doubleclick.net;
+                   img-src 'self' data: https:;
+                   font-src 'self' data:;
+                   frame-src https://accounts.spotify.com https://googleads.g.doubleclick.net https://*.safeframe.googlesyndication.com https://*.doubleclick.net https://www.google.com;
+                   form-action 'self' https://everywhere.app.n8n.cloud;
+                   base-uri 'self';
+                   object-src 'none';
+                   upgrade-insecure-requests;">
 
-        googletag.cmd.push(function () {
-            const mapping = googletag.sizeMapping()
-                .addSize([1024, 0], [[970, 250], [728, 90], [320, 100]])
-                .addSize([768, 0], [[728, 90], [320, 100]])
-                .addSize([0, 0], [[320, 100], [300, 250]])
-                .build();
+    <!-- (#15) Limite la fuite des URLs n8n dans l'en-tête Referer -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
-            googletag.defineSlot(
-                '/123456789/spotify_top_banner',
-                [[970, 250], [728, 90], [320, 100], [300, 250]],
-                'div-gpt-ad-top-banner'
-            )
-            .defineSizeMapping(mapping)
-            .addService(googletag.pubads());
+    <!--
+      (#6) Subresource Integrity (SRI) : recommandé, mais NON applicable aux scripts
+      publicitaires Google (adsbygoogle.js / gpt.js). Google les met à jour en
+      continu et ne fournit pas de hash stable : ajouter integrity="sha384-..."
+      CASSERAIT le chargement des pubs. La protection réaliste ici est
+      l'allow-list 'script-src' de la CSP ci-dessus + crossorigin + referrerpolicy.
+    -->
+    <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6987888174560386"
+            crossorigin="anonymous"
+            referrerpolicy="strict-origin-when-cross-origin"></script>
 
-            googletag.pubads().enableSingleRequest();
-            googletag.enableServices();
-        });
-    </script>
+    <script async
+            src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
+            crossorigin="anonymous"
+            referrerpolicy="strict-origin-when-cross-origin"></script>
+
+    <!-- Logique applicative externalisée (couverte par script-src 'self') -->
+    <script src="app.js" defer></script>
 
     <style>
         * { box-sizing: border-box; }
@@ -96,6 +125,23 @@
             background-color: #333333;
         }
 
+        .link-button {
+            background: none;
+            border: none;
+            color: #14833b;
+            text-decoration: underline;
+            font-size: 13px;
+            padding: 0;
+            margin: 0 0 0 4px;
+            cursor: pointer;
+        }
+        .link-button:hover { background: none; color: #0f6b30; }
+
+        .cancel-button {
+            background-color: #c0392b;
+        }
+        .cancel-button:hover { background-color: #e05545; }
+
         .status {
             margin-top: 12px;
             font-size: 14px;
@@ -103,13 +149,8 @@
             min-height: 20px;
         }
 
-        .success {
-            color: #14833b;
-        }
-
-        .error {
-            color: #c0392b;
-        }
+        .success { color: #14833b; }
+        .error { color: #c0392b; }
 
         .spotify-connection-wrapper {
             margin: 12px 0;
@@ -141,8 +182,16 @@
             box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
         }
 
-        .hidden {
-            display: none !important;
+        .hidden { display: none !important; }
+
+        /* Accessibilité : libellés visuellement masqués mais lus par les lecteurs d'écran */
+        .visually-hidden {
+            position: absolute;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap; border: 0;
         }
 
         /* ---- Indicateur de progression du transfert ---- */
@@ -210,247 +259,46 @@
 </head>
 <body>
     <div class="top-banner-wrapper">
-        <div id="div-gpt-ad-top-banner">
-            <script>
-                googletag.cmd.push(function () {
-                    googletag.display('div-gpt-ad-top-banner');
-                });
-            </script>
-        </div>
+        <!-- (#14) Le slot est défini et rafraîchi par app.js après DOMContentLoaded,
+             via disableInitialLoad() + refresh(), pour ne pas bloquer le rendu. -->
+        <div id="div-gpt-ad-top-banner"></div>
     </div>
 
     <h1>Transférer une playlist YouTube → Spotify</h1>
     <p>Commence par connecter ton compte Spotify, puis renseigne le nom de ta playlist et colle son lien YouTube :</p>
 
     <div class="spotify-connection-wrapper">
-        <button id="spotifyLoginBtn" class="secondary-button" onclick="loginSpotify()">Connecter Spotify</button>
+        <button id="spotifyLoginBtn" class="secondary-button" type="button">Connecter Spotify</button>
 
         <div id="spotifyConnectedBadge" class="spotify-connected hidden">
             <span class="green-dot"></span>
             <span>Spotify : Connecté</span>
+            <!-- (#10) Déconnexion = rotation de session -->
+            <button id="spotifyLogoutBtn" class="link-button" type="button">Déconnecter</button>
         </div>
     </div>
 
-    <input type="text" id="playlistName" placeholder="Nom de ta playlist (ex: Road Trip 2026)">
-    <input type="text" id="playlistUrl" placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
-    <br>
-    <button id="transferBtn" onclick="sendToN8n()" disabled>Transférer</button>
+    <label for="playlistName" class="visually-hidden">Nom de la playlist</label>
+    <input type="text" id="playlistName" maxlength="100" autocomplete="off"
+           placeholder="Nom de ta playlist (ex: Road Trip 2026)">
 
-    <div class="status" id="statusMessage"></div>
+    <label for="playlistUrl" class="visually-hidden">Lien de la playlist YouTube</label>
+    <input type="url" id="playlistUrl" inputmode="url" autocomplete="off"
+           placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
+    <br>
+    <button id="transferBtn" type="button" disabled>Transférer</button>
+    <!-- (#19) Bouton d'annulation, masqué tant qu'aucun transfert n'est en cours -->
+    <button id="cancelBtn" type="button" class="cancel-button hidden">Annuler</button>
+
+    <div class="status" id="statusMessage" role="status" aria-live="polite"></div>
 
     <!-- Indicateur de transfert en cours -->
-    <div id="progressWrapper" class="progress-wrapper hidden">
-        <div class="spinner"></div>
+    <div id="progressWrapper" class="progress-wrapper hidden" aria-live="polite">
+        <div class="spinner" role="img" aria-label="Transfert en cours"></div>
         <div class="progress-text"><span id="progressLabel">Transfert en cours</span><span class="dots"></span></div>
     </div>
 
     <!-- Résultat final -->
-    <div id="resultBox" class="result-box hidden"></div>
-
-    <script>
-        const SPOTIFY_LOGIN_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/spotify-login";
-        const TRANSFER_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/transfert-playlist";
-        const STATUS_WEBHOOK = "https://everywhere.app.n8n.cloud/webhook/transfert-status";
-
-        const POLL_INTERVAL_MS = 3000;      // intervalle d'interrogation du statut
-        const MAX_POLL_MS = 15 * 60 * 1000; // garde-fou : on arrête de poller au bout de 15 min
-
-        let pollTimer = null;
-
-        function getOrCreateSessionId() {
-            let sessionId = localStorage.getItem("sessionId");
-
-            if (!sessionId) {
-                if (window.crypto && crypto.randomUUID) {
-                    sessionId = crypto.randomUUID();
-                } else {
-                    sessionId = "session-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
-                }
-                localStorage.setItem("sessionId", sessionId);
-            }
-
-            return sessionId;
-        }
-
-        function setSpotifyConnectedUI(isConnected) {
-            const loginBtn = document.getElementById("spotifyLoginBtn");
-            const connectedBadge = document.getElementById("spotifyConnectedBadge");
-            const transferBtn = document.getElementById("transferBtn");
-
-            if (isConnected) {
-                loginBtn.classList.add("hidden");
-                connectedBadge.classList.remove("hidden");
-                transferBtn.disabled = false;
-            } else {
-                loginBtn.classList.remove("hidden");
-                connectedBadge.classList.add("hidden");
-                transferBtn.disabled = true;
-            }
-        }
-
-        function loginSpotify() {
-            const sessionId = getOrCreateSessionId();
-            const status = document.getElementById("statusMessage");
-            status.className = "status";
-            status.textContent = "Redirection vers Spotify...";
-            window.location.href = `${SPOTIFY_LOGIN_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`;
-        }
-
-        function handleSpotifyReturn() {
-            const params = new URLSearchParams(window.location.search);
-            const spotifyStatus = params.get("spotify");
-
-            if (spotifyStatus === "success") {
-                localStorage.setItem("spotifyConnected", "true");
-
-                const status = document.getElementById("statusMessage");
-                status.className = "status success";
-                status.textContent = "Compte Spotify connecté avec succès.";
-
-                setSpotifyConnectedUI(true);
-
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
-        }
-
-        function restoreSpotifyState() {
-            const spotifyConnected = localStorage.getItem("spotifyConnected") === "true";
-            setSpotifyConnectedUI(spotifyConnected);
-        }
-
-        // ---- Affichage de la progression / du résultat ----
-        function showProgress(label) {
-            document.getElementById("resultBox").classList.add("hidden");
-            document.getElementById("progressLabel").textContent = label || "Transfert en cours";
-            document.getElementById("progressWrapper").classList.remove("hidden");
-        }
-
-        function hideProgress() {
-            document.getElementById("progressWrapper").classList.add("hidden");
-        }
-
-        function showResult(text, isError) {
-            hideProgress();
-            const box = document.getElementById("resultBox");
-            box.textContent = text;
-            box.className = "result-box " + (isError ? "ko" : "ok");
-            box.classList.remove("hidden");
-        }
-
-        function stopPolling() {
-            if (pollTimer) {
-                clearInterval(pollTimer);
-                pollTimer = null;
-            }
-        }
-
-        function startPolling(sessionId, button) {
-            const startedAt = Date.now();
-            stopPolling();
-
-            pollTimer = setInterval(async () => {
-                if (Date.now() - startedAt > MAX_POLL_MS) {
-                    stopPolling();
-                    showResult("Le transfert prend plus de temps que prévu. Il se poursuit en arrière-plan, reviens dans quelques minutes.", true);
-                    button.disabled = false;
-                    return;
-                }
-
-                try {
-                    const res = await fetch(`${STATUS_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`, { cache: "no-store" });
-                    const data = await res.json().catch(() => ({}));
-
-                    if (data.status === "done") {
-                        stopPolling();
-                        showResult(data.recap || "Transfert terminé.", false);
-                        button.disabled = false;
-                    } else if (data.status === "error") {
-                        stopPolling();
-                        showResult(data.recap || "Une erreur est survenue pendant le transfert.", true);
-                        button.disabled = false;
-                    } else {
-                        // status running / unknown : on met à jour le libellé si disponible
-                        showProgress(data.step || (data.total ? `Traitement de ${data.total} titres` : "Transfert en cours"));
-                    }
-                } catch (e) {
-                    // erreur réseau transitoire : on laisse le polling continuer
-                }
-            }, POLL_INTERVAL_MS);
-        }
-
-        function sendToN8n() {
-            const spotifyConnected = localStorage.getItem("spotifyConnected") === "true";
-            if (!spotifyConnected) {
-                alert("Merci de connecter Spotify avant de lancer le transfert.");
-                return;
-            }
-
-            const playlistName = document.getElementById("playlistName").value.trim();
-            const url = document.getElementById("playlistUrl").value.trim();
-            const button = document.getElementById("transferBtn");
-            const status = document.getElementById("statusMessage");
-            const sessionId = getOrCreateSessionId();
-
-            if (!playlistName) {
-                alert("Merci de renseigner le nom de la playlist.");
-                return;
-            }
-
-            const playlistId = extractPlaylistId(url);
-            if (!playlistId) {
-                alert("Lien de playlist YouTube invalide. Veuillez vérifier le format.");
-                return;
-            }
-
-            button.disabled = true;
-            status.className = "status";
-            status.textContent = "";
-            document.getElementById("resultBox").classList.add("hidden");
-            showProgress("Transfert en cours");
-
-            fetch(TRANSFER_WEBHOOK, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    sessionId: sessionId,
-                    playlistId: playlistId,
-                    playlistName: playlistName
-                })
-            })
-            .then(async (response) => {
-                const data = await response.json().catch(() => ({}));
-
-                // En cas d'erreur de validation (400), n8n renvoie un texte / pas de status "running"
-                if (!response.ok) {
-                    const txt = data && data.message ? data.message : "Erreur lors du lancement du transfert.";
-                    showResult(txt, true);
-                    button.disabled = false;
-                    return;
-                }
-
-                // Transfert accepté : on bascule en mode polling
-                startPolling(sessionId, button);
-            })
-            .catch(() => {
-                showResult("Erreur réseau. Veuillez vérifier votre connexion.", true);
-                button.disabled = false;
-            });
-        }
-
-        function extractPlaylistId(url) {
-            const regExp = /^.*(youtu\.be\/|list=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            if (match && match[2].length >= 10) {
-                return match[2];
-            }
-            return null;
-        }
-
-        restoreSpotifyState();
-        handleSpotifyReturn();
-    </script>
+    <div id="resultBox" class="result-box hidden" role="status" aria-live="polite"></div>
 </body>
 </html>
