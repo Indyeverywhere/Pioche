@@ -143,26 +143,13 @@
           ni l'en-tête Referer.
        NB : le webhook n8n de login doit lire ces champs dans le CORPS POST.
        --------------------------------------------------------------- */
-    function loginSpotify() {
-        // (#10) nouvelle connexion = nouvelle session
-        const sessionId = rotateSession();
-
-        const status = $("statusMessage");
-        status.className = "status";
-        status.textContent = "Redirection vers Spotify…";
-
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = SPOTIFY_LOGIN_WEBHOOK;
-        form.style.display = "none";
-
-        const addField = (name, value) => {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = name;
-            input.value = value;
-            form.appendChild(input);
-        };
+function loginSpotify() {
+    const sessionId = rotateSession();
+    const status = $("statusMessage");
+    status.className = "status";
+    status.textContent = "Redirection vers Spotify…";
+    window.location.href = `${SPOTIFY_LOGIN_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`;
+};
         addField("sessionId", sessionId);
         addField("csrfToken", getCsrfToken());
 
