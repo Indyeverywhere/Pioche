@@ -151,23 +151,8 @@
         status.className = "status";
         status.textContent = "Redirection vers Spotify…";
 
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = SPOTIFY_LOGIN_WEBHOOK;
-        form.style.display = "none";
-
-        const addField = (name, value) => {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = name;
-            input.value = value;
-            form.appendChild(input);
-        };
-        addField("sessionId", sessionId);
-        addField("csrfToken", getCsrfToken());
-
-        document.body.appendChild(form);
-        form.submit();
+        // Login en GET : sessionId passé en query (cohérent avec le webhook n8n GET)
+        window.location.href = `${SPOTIFY_LOGIN_WEBHOOK}?sessionId=${encodeURIComponent(sessionId)}`;
     }
 
     function logoutSpotify() {
