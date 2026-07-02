@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transférer Playlist YouTube → Spotify</title>
+    <title>Transférer une playlist YouTube → Spotify</title>
+    <meta name="description" content="Transfère tes playlists YouTube vers Spotify en quelques secondes.">
+    <meta name="theme-color" content="#0a0c10">
 
+    <!-- =====================================================================
+         SÉCURITÉ — Content Security Policy
+         - script-src : uniquement 'self' + domaines publicitaires Google.
+         - style-src  : 'unsafe-inline' reste requis UNIQUEMENT parce que
+           GPT/AdSense posent des attributs style inline sur leurs conteneurs.
+           Nos propres styles sont externalisés dans styles.css ('self').
+         - object-src 'none', base-uri 'self', form-action restreint.
+         NB : frame-ancestors, X-Frame-Options, HSTS et Permissions-Policy ne
+         peuvent PAS être posés via <meta> : à configurer côté serveur/CDN.
+         ===================================================================== -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
                    script-src 'self' https://pagead2.googlesyndication.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://tpc.googlesyndication.com;
@@ -22,11 +34,9 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <!--
-      (#6) Subresource Integrity (SRI) : recommandé, mais NON applicable aux scripts
-      publicitaires Google (adsbygoogle.js / gpt.js). Google les met à jour en
-      continu et ne fournit pas de hash stable : ajouter integrity="sha384-..."
-      CASSERAIT le chargement des pubs. La protection réaliste ici est
-      l'allow-list 'script-src' de la CSP ci-dessus + crossorigin + referrerpolicy.
+      (#6) SRI non applicable aux scripts publicitaires Google (mis à jour en
+      continu, pas de hash stable). Protection réelle : allow-list script-src
+      de la CSP + crossorigin + referrerpolicy.
     -->
     <script async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6987888174560386"
@@ -38,247 +48,130 @@
             crossorigin="anonymous"
             referrerpolicy="strict-origin-when-cross-origin"></script>
 
-    <!-- Logique applicative externalisée (couverte par script-src 'self') -->
+    <!-- Styles et logique applicative externalisés (couverts par 'self') -->
+    <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
-
-    <style>
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .top-banner-wrapper {
-            width: 100%;
-            margin: 0 auto 24px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100px;
-        }
-
-        #div-gpt-ad-top-banner {
-            width: 100%;
-            min-height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #1DB954;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 6px;
-        }
-
-        button:hover {
-            background-color: #1ed760;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .secondary-button {
-            background-color: #191414;
-        }
-
-        .secondary-button:hover {
-            background-color: #333333;
-        }
-
-        .link-button {
-            background: none;
-            border: none;
-            color: #14833b;
-            text-decoration: underline;
-            font-size: 13px;
-            padding: 0;
-            margin: 0 0 0 4px;
-            cursor: pointer;
-        }
-        .link-button:hover { background: none; color: #0f6b30; }
-
-        .cancel-button {
-            background-color: #c0392b;
-        }
-        .cancel-button:hover { background-color: #e05545; }
-
-        .status {
-            margin-top: 12px;
-            font-size: 14px;
-            color: #444;
-            min-height: 20px;
-        }
-
-        .success { color: #14833b; }
-        .error { color: #c0392b; }
-
-        .spotify-connection-wrapper {
-            margin: 12px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 44px;
-        }
-
-        .spotify-connected {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #14833b;
-            background: #f3fff7;
-            border: 1px solid #bfe8cb;
-            border-radius: 999px;
-            padding: 10px 16px;
-        }
-
-        .green-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #1DB954;
-            display: inline-block;
-            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
-        }
-
-        .hidden { display: none !important; }
-
-        /* Accessibilité : libellés visuellement masqués mais lus par les lecteurs d'écran */
-        .visually-hidden {
-            position: absolute;
-            width: 1px; height: 1px;
-            padding: 0; margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap; border: 0;
-        }
-
-        /* ---- Indicateur de progression du transfert ---- */
-        .progress-wrapper {
-            margin-top: 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .spinner {
-            width: 38px;
-            height: 38px;
-            border: 4px solid rgba(29, 185, 84, 0.2);
-            border-top-color: #1DB954;
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .progress-text {
-            font-size: 15px;
-            color: #444;
-        }
-
-        /* trois points qui s'affichent progressivement */
-        .dots::after {
-            content: '';
-            animation: dots 1.4s steps(4, end) infinite;
-        }
-
-        @keyframes dots {
-            0%   { content: ''; }
-            25%  { content: '.'; }
-            50%  { content: '..'; }
-            75%  { content: '...'; }
-            100% { content: ''; }
-        }
-
-        .result-box {
-            margin-top: 18px;
-            padding: 14px 16px;
-            border-radius: 8px;
-            font-size: 15px;
-            line-height: 1.4;
-            text-align: left;
-        }
-
-        .result-box.ok {
-            background: #f3fff7;
-            border: 1px solid #bfe8cb;
-            color: #14833b;
-        }
-
-        .result-box.ko {
-            background: #fff5f4;
-            border: 1px solid #f1c4bf;
-            color: #c0392b;
-        }
-    </style>
 </head>
 <body>
-    <div class="top-banner-wrapper">
-        <!-- (#14) Le slot est défini et rafraîchi par app.js après DOMContentLoaded,
-             via disableInitialLoad() + refresh(), pour ne pas bloquer le rendu. -->
-        <div id="div-gpt-ad-top-banner"></div>
-    </div>
 
-    <h1>Transférer une playlist YouTube → Spotify</h1>
-    <p>Commence par connecter ton compte Spotify, puis renseigne le nom de ta playlist et colle son lien YouTube :</p>
+    <!-- Halos d'ambiance : rouge (YouTube) en haut, vert (Spotify) en bas -->
+    <div class="glow glow-red" aria-hidden="true"></div>
+    <div class="glow glow-green" aria-hidden="true"></div>
 
-    <div class="spotify-connection-wrapper">
-        <button id="spotifyLoginBtn" class="secondary-button" type="button">Connecter Spotify</button>
+    <!-- =====================================================================
+         (i18n) Sélecteur de langue — en haut à droite.
+         La langue est détectée automatiquement (navigator.languages) puis
+         mémorisée quand l'utilisateur clique. Tous les textes de la page
+         portent un attribut data-i18n / data-i18n-placeholder / data-i18n-aria
+         et sont remplis par app.js via textContent UNIQUEMENT (pas d'innerHTML).
+         ===================================================================== -->
+    <nav class="lang-switch" aria-label="Langue / Language / Idioma">
+        <button type="button" class="lang-btn" data-lang="fr" lang="fr" aria-label="Français">FR</button>
+        <button type="button" class="lang-btn" data-lang="en" lang="en" aria-label="English">EN</button>
+        <button type="button" class="lang-btn" data-lang="es" lang="es" aria-label="Español">ES</button>
+    </nav>
 
-        <div id="spotifyConnectedBadge" class="spotify-connected hidden">
-            <span class="green-dot"></span>
-            <span>Spotify : Connecté</span>
-            <!-- (#10) Déconnexion = rotation de session -->
-            <button id="spotifyLogoutBtn" class="link-button" type="button">Déconnecter</button>
+    <main class="page">
+
+        <!-- Bandeau publicitaire, clairement identifié -->
+        <div class="top-banner-wrapper">
+            <span class="ad-label" data-i18n="ad.label">Publicité</span>
+            <!-- (#14) Slot défini et rafraîchi par app.js après DOMContentLoaded,
+                 via disableInitialLoad() + refresh(), pour ne pas bloquer le rendu. -->
+            <div id="div-gpt-ad-top-banner"></div>
         </div>
-    </div>
 
-    <label for="playlistName" class="visually-hidden">Nom de la playlist</label>
-    <input type="text" id="playlistName" maxlength="100" autocomplete="off"
-           placeholder="Nom de ta playlist (ex: Road Trip 2026)">
+        <!-- ===== Signature visuelle : le pont YouTube → Spotify ===== -->
+        <header class="hero">
+            <div class="bridge" id="bridge" aria-hidden="true">
+                <span class="platform platform-yt">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                        <path d="M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.4a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8ZM10 15.2V8.8L15.2 12 10 15.2Z"/>
+                    </svg>
+                    YouTube
+                </span>
 
-    <label for="playlistUrl" class="visually-hidden">Lien de la playlist YouTube</label>
-    <input type="url" id="playlistUrl" inputmode="url" autocomplete="off"
-           placeholder="Ex: https://www.youtube.com/playlist?list=PL...">
-    <br>
-    <button id="transferBtn" type="button" disabled>Transférer</button>
-    <!-- (#19) Bouton d'annulation, masqué tant qu'aucun transfert n'est en cours -->
-    <button id="cancelBtn" type="button" class="cancel-button hidden">Annuler</button>
+                <span class="track">
+                    <span class="note">♪</span>
+                </span>
 
-    <div class="status" id="statusMessage" role="status" aria-live="polite"></div>
+                <span class="platform platform-sp">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm4.6 14.5a.7.7 0 0 1-1 .2c-2.6-1.6-5.9-2-9.8-1.1a.7.7 0 0 1-.3-1.4c4.2-1 7.9-.5 10.8 1.3.3.2.4.7.3 1Zm1.2-2.8a.9.9 0 0 1-1.2.3c-3-1.8-7.5-2.4-11-1.3a.9.9 0 0 1-.5-1.7c4-1.2 9-.6 12.4 1.5.4.2.5.8.3 1.2Zm.1-2.9C14.3 8.7 8.5 8.5 5.1 9.5a1 1 0 1 1-.6-2c3.9-1.2 10.3-1 14.4 1.5a1 1 0 0 1-1 1.8Z"/>
+                    </svg>
+                    Spotify
+                </span>
+            </div>
 
-    <!-- Indicateur de transfert en cours -->
-    <div id="progressWrapper" class="progress-wrapper hidden" aria-live="polite">
-        <div class="spinner" role="img" aria-label="Transfert en cours"></div>
-        <div class="progress-text"><span id="progressLabel">Transfert en cours</span><span class="dots"></span></div>
-    </div>
+            <h1>
+                <span data-i18n="hero.line1">Fais voyager ta playlist</span><br>
+                <span class="grad-text" data-i18n="hero.line2">de YouTube vers Spotify</span>
+            </h1>
+            <p class="lede" data-i18n="hero.lede">Connecte ton compte Spotify, colle le lien de ta playlist YouTube, et on s'occupe du reste.</p>
+        </header>
 
-    <!-- Résultat final -->
-    <div id="resultBox" class="result-box hidden" role="status" aria-live="polite"></div>
+        <!-- ===== Carte principale ===== -->
+        <section class="card">
+
+            <!-- Étape 1 -->
+            <p class="eyebrow"><span class="step-dot">1</span> <span data-i18n="step1">Connexion Spotify</span></p>
+
+            <div class="spotify-connection-wrapper">
+                <button id="spotifyLoginBtn" class="btn btn-dark" type="button" data-i18n="login">
+                    Connecter Spotify
+                </button>
+
+                <div id="spotifyConnectedBadge" class="spotify-connected hidden">
+                    <span class="green-dot"></span>
+                    <span data-i18n="connectedBadge">Spotify : connecté</span>
+                    <!-- (#10) Déconnexion = rotation de session -->
+                    <button id="spotifyLogoutBtn" class="link-button" type="button" data-i18n="logout">Déconnecter</button>
+                </div>
+            </div>
+
+            <!-- Étape 2 -->
+            <p class="eyebrow"><span class="step-dot">2</span> <span data-i18n="step2">Ta playlist</span></p>
+
+            <div class="field">
+                <label for="playlistName" data-i18n="name.label">Nom de la playlist</label>
+                <input type="text" id="playlistName" maxlength="100"
+                       autocomplete="off" spellcheck="false"
+                       data-i18n-placeholder="name.placeholder"
+                       placeholder="Ex : Road Trip 2026">
+            </div>
+
+            <div class="field">
+                <label for="playlistUrl" data-i18n="url.label">Lien de la playlist YouTube</label>
+                <input type="url" id="playlistUrl" inputmode="url"
+                       autocomplete="off" spellcheck="false" class="mono"
+                       placeholder="https://www.youtube.com/playlist?list=PL…">
+            </div>
+
+            <!-- Étape 3 -->
+            <div class="actions">
+                <button id="transferBtn" class="btn btn-green" type="button" disabled data-i18n="transfer">
+                    Transférer →
+                </button>
+                <!-- (#19) Bouton d'annulation, masqué hors transfert -->
+                <button id="cancelBtn" type="button" class="btn btn-cancel hidden" data-i18n="cancel">Annuler</button>
+            </div>
+
+            <div class="status" id="statusMessage" role="status" aria-live="polite"></div>
+
+            <!-- Indicateur de transfert en cours -->
+            <div id="progressWrapper" class="progress-wrapper hidden" aria-live="polite">
+                <div class="spinner" role="img" data-i18n-aria="progress.default" aria-label="Transfert en cours"></div>
+                <div class="progress-text"><span id="progressLabel">Transfert en cours</span><span class="dots"></span></div>
+            </div>
+
+            <!-- Résultat final -->
+            <div id="resultBox" class="result-box hidden" role="status" aria-live="polite"></div>
+        </section>
+
+        <footer class="footnote">
+            <span data-i18n="footnote">Tes identifiants Spotify ne transitent jamais par ce site : la connexion se fait directement sur</span>
+            <strong>accounts.spotify.com</strong>.
+        </footer>
+    </main>
 </body>
 </html>
