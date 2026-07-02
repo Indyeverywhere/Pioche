@@ -1,0 +1,489 @@
+/* =====================================================================
+   Transfert playlist YouTube → Spotify — feuille de style
+   Direction : nuit "app musicale", pont chromatique rouge (YouTube)
+   → vert (Spotify). Styles externalisés pour garder une CSP stricte.
+   ===================================================================== */
+
+:root {
+    --bg:          #0a0c10;
+    --surface:     #14171d;
+    --surface-2:   #0e1116;
+    --line:        rgba(255, 255, 255, 0.08);
+    --text:        #f2f5f3;
+    --text-dim:    #98a1a8;
+    --green:       #1db954;
+    --green-hover: #24d763;
+    --red:         #ff3b30;
+    --grad:        linear-gradient(90deg, var(--red), var(--green));
+    --radius:      18px;
+    --shadow:      0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ---- Halos d'ambiance (rouge en haut = départ, vert en bas = arrivée) ---- */
+.glow {
+    position: fixed;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+}
+.glow-red   { top: -30vmax; left: -20vmax; background: rgba(255, 59, 48, 0.14); }
+.glow-green { bottom: -30vmax; right: -20vmax; background: rgba(29, 185, 84, 0.16); }
+
+/* =====================================================================
+   (i18n) Sélecteur de langue — fixé en haut à droite
+   ===================================================================== */
+.lang-switch {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: rgba(20, 23, 29, 0.85);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+}
+
+.lang-btn {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    background: transparent;
+    padding: 6px 11px;
+    border-radius: 999px;
+    transition: color 0.12s, background-color 0.12s;
+}
+.lang-btn:hover { color: var(--text); }
+.lang-btn.active {
+    color: #06170c;
+    background: var(--green);
+}
+.lang-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 20px 56px;
+    text-align: center;
+}
+
+/* =====================================================================
+   Publicité
+   ===================================================================== */
+.top-banner-wrapper {
+    margin: 0 auto 36px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.ad-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0.7;
+}
+
+#div-gpt-ad-top-banner {
+    width: 100%;
+    min-height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* =====================================================================
+   Héros + signature : le pont YouTube → Spotify
+   ===================================================================== */
+.hero { margin-bottom: 28px; }
+
+.bridge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 26px;
+    user-select: none;
+}
+
+.platform {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+}
+.platform svg { flex: none; }
+.platform-yt { color: #ff6b62; box-shadow: 0 0 24px rgba(255, 59, 48, 0.18); }
+.platform-sp { color: #35e070; box-shadow: 0 0 24px rgba(29, 185, 84, 0.22); }
+
+/* La piste : pointillés dégradés rouge → vert, animés vers la droite */
+.track {
+    position: relative;
+    flex: 1;
+    max-width: 190px;
+    height: 3px;
+    border-radius: 2px;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(10, 12, 16, 1) 0 6px,
+            transparent 6px 14px),
+        var(--grad);
+    background-size: 28px 100%, 100% 100%;
+    animation: flow 1.6s linear infinite;
+}
+
+/* La note qui voyage de YouTube vers Spotify */
+.note {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 0 -58%;
+    font-size: 17px;
+    color: var(--text);
+    text-shadow: 0 0 10px rgba(29, 185, 84, 0.8);
+    animation: travel 2.6s ease-in-out infinite;
+}
+
+@keyframes flow   { to { background-position: 28px 0, 0 0; } }
+@keyframes travel {
+    0%   { left: -4%;  opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { left: 96%;  opacity: 0; }
+}
+
+/* Pendant un transfert, le pont s'emballe */
+body.is-transferring .track { animation-duration: 0.5s; }
+body.is-transferring .note  { animation-duration: 1s; }
+
+h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 5.6vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+}
+
+.grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.lede {
+    margin: 0 auto;
+    max-width: 44ch;
+    color: var(--text-dim);
+    font-size: 16px;
+}
+
+/* =====================================================================
+   Carte principale
+   ===================================================================== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 26px 26px;
+    text-align: left;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+.eyebrow + .eyebrow,
+.spotify-connection-wrapper + .eyebrow { margin-top: 26px; }
+
+.step-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #06170c;
+    background: var(--green);
+    letter-spacing: 0;
+}
+
+/* ---- Connexion Spotify ---- */
+.spotify-connection-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    margin-bottom: 6px;
+}
+
+.spotify-connected {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #35e070;
+    background: rgba(29, 185, 84, 0.1);
+    border: 1px solid rgba(29, 185, 84, 0.35);
+    border-radius: 999px;
+    padding: 10px 16px;
+}
+
+.green-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.18);
+    animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.18); }
+    50%      { box-shadow: 0 0 0 7px rgba(29, 185, 84, 0.07); }
+}
+
+/* ---- Champs ---- */
+.field { margin: 0 0 16px; }
+
+.field label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+input {
+    width: 100%;
+    padding: 13px 15px;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+input::placeholder { color: #566068; }
+input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.22);
+}
+input.mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14.5px;
+}
+input:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ---- Boutons ---- */
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 13px 26px;
+    border-radius: 999px;
+    transition: transform 0.12s, box-shadow 0.12s, background-color 0.12s, opacity 0.12s;
+}
+.btn:focus-visible,
+input:focus-visible,
+.link-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-green {
+    flex: 1;
+    min-width: 180px;
+    color: #06170c;
+    background: var(--green);
+    box-shadow: 0 8px 26px rgba(29, 185, 84, 0.35);
+}
+.btn-green:hover:not(:disabled) {
+    background: var(--green-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 32px rgba(29, 185, 84, 0.45);
+}
+
+.btn-dark {
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+}
+.btn-dark:hover:not(:disabled) { border-color: var(--green); color: #35e070; }
+
+.btn-cancel {
+    color: #ff6b62;
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.4);
+}
+.btn-cancel:hover { background: rgba(255, 59, 48, 0.2); }
+
+.link-button {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    text-decoration: underline;
+    font-size: 13px;
+    padding: 0;
+    margin-left: 4px;
+    cursor: pointer;
+}
+.link-button:hover { color: var(--text); }
+
+/* ---- Statut / progression / résultat ---- */
+.status {
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--text-dim);
+    min-height: 20px;
+}
+.status.success { color: #35e070; }
+.status.error   { color: #ff6b62; }
+
+.progress-wrapper {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.spinner {
+    width: 38px;
+    height: 38px;
+    border: 4px solid rgba(29, 185, 84, 0.18);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.progress-text { font-size: 15px; color: var(--text-dim); }
+
+.dots::after {
+    content: '';
+    animation: dots 1.4s steps(4, end) infinite;
+}
+@keyframes dots {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: ''; }
+}
+
+.result-box {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.45;
+}
+.result-box.ok {
+    background: rgba(29, 185, 84, 0.1);
+    border: 1px solid rgba(29, 185, 84, 0.35);
+    color: #35e070;
+}
+.result-box.ko {
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.4);
+    color: #ff6b62;
+}
+
+/* ---- Pied de page ---- */
+.footnote {
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    opacity: 0.85;
+}
+
+/* ---- Utilitaires ---- */
+.hidden { display: none !important; }
+
+.visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+}
+
+/* ---- Accessibilité : mouvement réduit ---- */
+@media (prefers-reduced-motion: reduce) {
+    .track, .note, .green-dot, .spinner, .dots::after {
+        animation-duration: 0.001s !important;
+        animation-iteration-count: 1 !important;
+    }
+    .btn, input { transition: none; }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+    .card { padding: 22px 18px; }
+    .track { max-width: 70px; }
+    .platform { font-size: 13px; padding: 8px 12px; }
+    .btn-green { min-width: 100%; }
+}
