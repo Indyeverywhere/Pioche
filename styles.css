@@ -391,9 +391,9 @@ input:focus-visible,
 }
 .link-button:hover { color: var(--text); }
 
-/* ---- Statut / progression / résultat ---- */
+/* ---- Statut / progression / résultat (affichés AU-DESSUS des boutons) ---- */
 .status {
-    margin-top: 14px;
+    margin: 4px 0 10px;
     font-size: 14px;
     color: var(--text-dim);
     min-height: 20px;
@@ -402,11 +402,15 @@ input:focus-visible,
 .status.error   { color: #ff6b62; }
 
 .progress-wrapper {
-    margin-top: 18px;
+    margin: 6px 0 18px;
+    padding: 16px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    background: var(--surface-2);
+    border: 1px solid rgba(29, 185, 84, 0.25);
+    border-radius: 12px;
 }
 
 .spinner {
@@ -434,7 +438,7 @@ input:focus-visible,
 }
 
 .result-box {
-    margin-top: 18px;
+    margin: 6px 0 18px;
     padding: 14px 16px;
     border-radius: 12px;
     font-size: 15px;
