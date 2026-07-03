@@ -147,15 +147,8 @@
                        placeholder="https://www.youtube.com/playlist?list=PL…">
             </div>
 
-            <!-- Étape 3 -->
-            <div class="actions">
-                <button id="transferBtn" class="btn btn-green" type="button" disabled data-i18n="transfer">
-                    Transférer →
-                </button>
-                <!-- (#19) Bouton d'annulation, masqué hors transfert -->
-                <button id="cancelBtn" type="button" class="btn btn-cancel hidden" data-i18n="cancel">Annuler</button>
-            </div>
-
+            <!-- Statut / progression / résultat — AVANT les boutons pour rester
+                 dans le champ de vision de l'utilisateur -->
             <div class="status" id="statusMessage" role="status" aria-live="polite"></div>
 
             <!-- Indicateur de transfert en cours -->
@@ -166,6 +159,15 @@
 
             <!-- Résultat final -->
             <div id="resultBox" class="result-box hidden" role="status" aria-live="polite"></div>
+
+            <!-- Étape 3 -->
+            <div class="actions">
+                <button id="transferBtn" class="btn btn-green" type="button" disabled data-i18n="transfer">
+                    Transférer →
+                </button>
+                <!-- (#19) Bouton d'annulation, masqué hors transfert -->
+                <button id="cancelBtn" type="button" class="btn btn-cancel hidden" data-i18n="cancel">Annuler</button>
+            </div>
         </section>
 
         <footer class="footnote">
