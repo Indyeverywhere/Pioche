@@ -147,26 +147,20 @@
                        placeholder="https://www.youtube.com/playlist?list=PL…">
             </div>
 
-            <!-- Statut / progression / résultat — AVANT les boutons pour rester
-                 dans le champ de vision de l'utilisateur -->
+            <!-- Statut du formulaire (erreurs de saisie, confirmations d'ajout) -->
             <div class="status" id="statusMessage" role="status" aria-live="polite"></div>
 
-            <!-- Indicateur de transfert en cours -->
-            <div id="progressWrapper" class="progress-wrapper hidden" aria-live="polite">
-                <div class="spinner" role="img" data-i18n-aria="progress.default" aria-label="Transfert en cours"></div>
-                <div class="progress-text"><span id="progressLabel">Transfert en cours</span><span class="dots"></span></div>
-            </div>
-
-            <!-- Résultat final -->
-            <div id="resultBox" class="result-box hidden" role="status" aria-live="polite"></div>
-
-            <!-- Étape 3 -->
+            <!-- Étape 3 : ajout à la file -->
             <div class="actions">
                 <button id="transferBtn" class="btn btn-green" type="button" disabled data-i18n="transfer">
-                    Transférer →
+                    Ajouter à la file →
                 </button>
-                <!-- (#19) Bouton d'annulation, masqué hors transfert -->
-                <button id="cancelBtn" type="button" class="btn btn-cancel hidden" data-i18n="cancel">Annuler</button>
+            </div>
+
+            <!-- ===== File de transfert (rendue par app.js, jamais d'innerHTML) ===== -->
+            <div id="queueSection" class="hidden">
+                <p class="eyebrow"><span class="step-dot">3</span> <span data-i18n="step3">File de transfert</span></p>
+                <div class="jobs-list" id="jobsList" role="status" aria-live="polite"></div>
             </div>
         </section>
 

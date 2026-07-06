@@ -491,3 +491,70 @@ input:focus-visible,
     .platform { font-size: 13px; padding: 8px 12px; }
     .btn-green { min-width: 100%; }
 }
+
+/* =====================================================================
+   File de transfert (backend séquentiel) — cartes de jobs
+   ===================================================================== */
+#queueSection .eyebrow { margin-top: 26px; }
+
+.jobs-list { text-align: left; }
+
+.job-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 15px;
+    margin-bottom: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.15s;
+}
+.job-card.job-running { border-color: rgba(29, 185, 84, 0.35); }
+.job-card.job-error   { border-color: rgba(255, 59, 48, 0.35); }
+
+.job-info { flex: 1; min-width: 0; }
+
+.job-name {
+    font-weight: 700;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.job-step {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    line-height: 1.4;
+}
+.job-step a { color: #35e070; }
+
+.badge {
+    flex: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.badge.queued  { color: #ffd479; background: rgba(255, 200, 60, 0.12);  border: 1px solid rgba(255, 200, 60, 0.35); }
+.badge.running { color: #7cc4ff; background: rgba(60, 150, 255, 0.12);  border: 1px solid rgba(60, 150, 255, 0.35); }
+.badge.done    { color: #35e070; background: rgba(29, 185, 84, 0.12);   border: 1px solid rgba(29, 185, 84, 0.35); }
+.badge.error   { color: #ff6b62; background: rgba(255, 59, 48, 0.12);   border: 1px solid rgba(255, 59, 48, 0.4); }
+
+.mini-spinner {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(29, 185, 84, 0.2);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mini-spinner { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
+}
