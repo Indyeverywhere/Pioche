@@ -294,16 +294,22 @@
       border-top: 1px solid #3b4247;
     }
     .map-block {
-      margin-top: 14px;
+      width: fit-content;
+      max-width: 100%;
+      margin: 14px auto 0;
       border: 1px solid #3b4247;
       background: #111418;
-      padding: 10px;
+      padding: 8px;
     }
     .map-block img {
       display: block;
-      width: 100%;
+      width: 120px;
+      max-width: 100%;
       height: auto;
     }
+    /* Après déverrouillage, le document commence en haut de la page. */
+    .wrap.show-result { justify-content: flex-start; }
+    .wrap.show-result .frame { min-height: 0; }
     @media (max-width: 640px) {
       .wrap { width: min(100% - 18px, 860px); padding: 18px 0; }
       .top { margin-bottom: 14px; font-size: 9px; }
@@ -456,9 +462,14 @@
           inputs[0].focus();
           return;
         }
+        document.activeElement?.blur();
         document.getElementById('locked').hidden = true;
         document.getElementById('unlocked').hidden = false;
+        document.querySelector('.wrap').classList.add('show-result');
         document.title = 'La dernière trace — Message retrouvé';
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        // Confirme la position après le recalcul de la mise en page.
+        requestAnimationFrame(() => window.scrollTo(0, 0));
       });
     })();
   </script>
