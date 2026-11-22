@@ -321,6 +321,43 @@
       font-size: 0.95rem;
     }
 
+
+    /* Oberkampf invitation below the Marseille categories */
+    .oberkampf-invitation {
+      text-align: center;
+      margin: 1.5rem auto 0;
+      padding: 2rem 1rem 0;
+    }
+
+    .oberkampf-invitation h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.25;
+      color: var(--primary-color);
+      margin-bottom: 1.75rem;
+    }
+
+    .oberkampf-link {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      padding: 1.25rem 2.5rem;
+      border-radius: 40px;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(30, 136, 229, 0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .oberkampf-link:hover,
+    .oberkampf-link:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(30, 136, 229, 0.3);
+    }
+
     /* Content Section */
     .content-section {
       background: white;
@@ -574,6 +611,11 @@
             <h3>Bars & Vie Nocturne</h3>
             <p>Marseille by night : rooftops, bars à cocktails, clubs. Vivez les nuits marseillaises.</p>
           </a>
+        </div>
+
+        <div class="oberkampf-invitation">
+          <h2>Vous n'habitez pas Marseille mais Oberkampf ?</h2>
+          <a class="oberkampf-link" href="https://pioche.me/oberkampf">Pour Oberkampf cliquer ici</a>
         </div>
       </div>
     </section>
