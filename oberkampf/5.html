@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0f12">
+  <meta name="description" content="Un message attend d'être déverrouillé.">
+  <title>La dernière trace — Accès verrouillé</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0f12;
+      --surface: #15191d;
+      --edge: #30363d;
+      --text: #ece8e1;
+      --muted: #7f868c;
+      --accent: #7f2d2d;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background: radial-gradient(circle at 50% 42%, #161a1f 0%, var(--bg) 72%);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    button, input { font: inherit; }
+    button:focus-visible, input:focus-visible { outline: 2px solid #b9b0a5; outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    .wrap {
+      min-height: 100svh;
+      width: min(100% - 28px, 980px);
+      margin: 0 auto;
+      padding: 28px 0 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .top {
+      width: min(100%, 860px);
+      margin-bottom: 18px;
+      color: #d8d3ca;
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .frame {
+      position: relative;
+      width: min(100%, 860px);
+      min-height: 445px;
+      display: grid;
+      place-items: center;
+      padding: clamp(32px, 7vw, 75px) 22px;
+      border: 1px solid #353a40;
+      background: linear-gradient(150deg, #181c20, #111418 70%);
+      box-shadow: 0 18px 60px rgba(0,0,0,.42);
+      overflow: hidden;
+    }
+    .frame::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 72px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .frame::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      bottom: -150px;
+      width: 290px;
+      height: 290px;
+      border: 1px solid rgba(255,255,255,.035);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .panel {
+      width: min(100%, 510px);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--muted);
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(29px, 5vw, 45px);
+      line-height: 1.18;
+      font-weight: 400;
+      letter-spacing: -.025em;
+    }
+    .subtitle {
+      margin: 18px 0 34px;
+      color: #95999b;
+      font-size: 11px;
+      line-height: 1.7;
+      letter-spacing: .02em;
+    }
+    .digits {
+      display: flex;
+      justify-content: center;
+      gap: clamp(9px, 2vw, 17px);
+      margin-bottom: 29px;
+    }
+    .digit {
+      width: clamp(68px, 17vw, 90px);
+      height: clamp(80px, 20vw, 105px);
+      border: 1px solid #42484f;
+      border-radius: 0;
+      background: #0d1013;
+      color: #f3eee6;
+      text-align: center;
+      font-size: clamp(31px, 6vw, 46px);
+      font-weight: 400;
+      line-height: 1;
+      caret-color: #b9b0a5;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 140ms ease, background 140ms ease;
+    }
+    .digit:focus { border-color: #afa9a0; background: #171c20; outline: none; }
+    .digit::selection { background: #484342; }
+    /* Pastilles des lignes du métro parisien. */
+    .metro-badge {
+      --metro-bg: #666;
+      --metro-fg: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.95em;
+      height: 1.95em;
+      padding: 0 .38em;
+      border-radius: 999px;
+      background: var(--metro-bg);
+      color: var(--metro-fg);
+      font-size: .92em;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 0 0 1px rgba(0,0,0,.2);
+      vertical-align: middle;
+    }
+    .metro-1 { --metro-bg: #FFCD00; --metro-fg: #111; }
+    .metro-3 { --metro-bg: #9A9940; --metro-fg: #fff; }
+    .metro-4 { --metro-bg: #CF009E; --metro-fg: #fff; }
+    .metro-5 { --metro-bg: #FF7E2E; --metro-fg: #111; }
+    .metro-6 { --metro-bg: #6ECA97; --metro-fg: #111; }
+    .metro-7 { --metro-bg: #FA9ABA; --metro-fg: #111; }
+    .metro-8 { --metro-bg: #E19BDF; --metro-fg: #111; }
+    .metro-9 { --metro-bg: #B6BD00; --metro-fg: #111; }
+    .metro-10 { --metro-bg: #C9910D; --metro-fg: #111; }
+    .metro-11 { --metro-bg: #8E6538; --metro-fg: #fff; }
+    .metro-12 { --metro-bg: #328E5B; --metro-fg: #fff; }
+    .metro-13 { --metro-bg: #6EC4E8; --metro-fg: #111; }
+    .metro-14 { --metro-bg: #67328E; --metro-fg: #fff; }
+    .clue {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin: 4px auto 28px;
+      max-width: 100%;
+      font-size: clamp(11px, 1.7vw, 13px);
+      font-weight: 500;
+      letter-spacing: .005em;
+      line-height: 1.8;
+    }
+    .clue-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      padding: 8px 0;
+    }
+    .clue-line + .clue-line {
+      margin-top: 2px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 14px;
+    }
+    .clue-step { display: inline-flex; white-space: nowrap; align-items: center; }
+    .group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .clue .plus {
+      color: #9ca2a6;
+      padding: 0 3px;
+      font-weight: 500;
+      font-size: 1.45em;
+      line-height: 1;
+    }
+    .clue .arrow {
+      color: #9ca2a6;
+      padding-right: 5px;
+      font-weight: 500;
+      font-size: 1.45em;
+      line-height: 1;
+    }
+    .submit {
+      min-width: 180px;
+      min-height: 44px;
+      padding: 12px 24px;
+      color: #e5e1d9;
+      background: #272c31;
+      border: 1px solid #4a4f54;
+      cursor: pointer;
+      font-size: 11px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+    .submit:hover { background: #33383e; border-color: #777b7f; }
+    .error {
+      min-height: 20px;
+      margin: 19px 0 0;
+      color: #d19a92;
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+    .digits.shake { animation: shake 260ms ease-in-out; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-5px); }
+      40%,80% { transform: translateX(5px); }
+    }
+    .revealed { animation: appear 480ms ease both; }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .result-intro {
+      margin: 18px auto 0;
+      max-width: 680px;
+      color: #e4dfd7;
+      font-size: clamp(14px, 2vw, 16px);
+      line-height: 1.9;
+      letter-spacing: .01em;
+    }
+    .message {
+      margin: 22px auto 0;
+      max-width: 680px;
+      padding: 0;
+      color: #dad6cf;
+      font-size: clamp(13px, 1.9vw, 15px);
+      line-height: 1.9;
+      letter-spacing: .012em;
+      overflow-wrap: anywhere;
+      text-align: left;
+    }
+    .press-card {
+      margin-top: 18px;
+      border: 1px solid #3b4247;
+      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+      padding: clamp(18px, 4vw, 28px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+    .press-label {
+      display: inline-block;
+      margin: 0 0 12px;
+      color: #9da3a8;
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .press-title {
+      margin: 0 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(25px, 4.1vw, 34px);
+      line-height: 1.16;
+      font-weight: 400;
+      color: #f0ebe3;
+    }
+    .press-meta {
+      margin: 0 0 16px;
+      color: #8c949a;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .press-card p {
+      margin: 0 0 14px;
+      color: #ddd8d0;
+    }
+    .follow-up {
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid #3b4247;
+    }
+    .map-block {
+      width: fit-content;
+      max-width: 100%;
+      margin: 14px auto 0;
+      border: 1px solid #3b4247;
+      background: #111418;
+      padding: 8px;
+    }
+    .map-block img {
+      display: block;
+      width: 120px;
+      max-width: 100%;
+      height: auto;
+    }
+    /* Après déverrouillage, le document commence en haut de la page. */
+    .wrap.show-result { justify-content: flex-start; }
+    .wrap.show-result .frame { min-height: 0; }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 18px, 860px); padding: 18px 0; }
+      .top { margin-bottom: 14px; font-size: 9px; }
+      .frame { min-height: 410px; padding: 32px 13px; }
+      .subtitle { margin-bottom: 28px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">La dernière trace</div>
+
+    <section class="frame" aria-label="Accès au message">
+      <div class="panel" id="locked">
+        <p class="eyebrow">Document / 02</p>
+        <h1>Accès verrouillé.</h1>
+        <p class="subtitle">Entrez trois chiffres</p>
+        <form id="codeForm" autocomplete="off" novalidate>
+          <div class="digits" id="digits">
+            <input class="digit" aria-label="Premier chiffre" inputmode="numeric" pattern="[0-9]" maxlength="1" type="text" autocomplete="off" spellcheck="false">
+            <input class="digit" aria-label="Deuxième chiffre" inputmode="numeric" pattern="[0-9]" maxlength="1" type="text" autocomplete="off" spellcheck="false">
+            <input class="digit" aria-label="Troisième chiffre" inputmode="numeric" pattern="[0-9]" maxlength="1" type="text" autocomplete="off" spellcheck="false">
+          </div>
+          <!-- Indice : chaque ligne est affichée comme une pastille ronde de métro. -->
+          <div class="clue" aria-label="Indice : trajets de lignes du métro parisien">
+            <div class="clue-line">
+              <span class="clue-step"><span class="group"><span class="metro-badge metro-1" title="Métro ligne 1">1</span><span class="plus">+</span><span class="metro-badge metro-9" title="Métro ligne 9">9</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-9" title="Métro ligne 9">9</span><span class="plus">+</span><span class="metro-badge metro-13" title="Métro ligne 13">13</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-10" title="Métro ligne 10">10</span><span class="plus">+</span><span class="metro-badge metro-13" title="Métro ligne 13">13</span></span></span>
+            </div>
+            <div class="clue-line">
+              <span class="clue-step"><span class="group"><span class="metro-badge metro-1" title="Métro ligne 1">1</span><span class="plus">+</span><span class="metro-badge metro-7" title="Métro ligne 7">7</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-1" title="Métro ligne 1">1</span><span class="plus">+</span><span class="metro-badge metro-4" title="Métro ligne 4">4</span><span class="plus">+</span><span class="metro-badge metro-7" title="Métro ligne 7">7</span><span class="plus">+</span><span class="metro-badge metro-11" title="Métro ligne 11">11</span><span class="plus">+</span><span class="metro-badge metro-14" title="Métro ligne 14">14</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-4" title="Métro ligne 4">4</span><span class="plus">+</span><span class="metro-badge metro-10" title="Métro ligne 10">10</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-10" title="Métro ligne 10">10</span><span class="plus">+</span><span class="metro-badge metro-12" title="Métro ligne 12">12</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-6" title="Métro ligne 6">6</span><span class="plus">+</span><span class="metro-badge metro-12" title="Métro ligne 12">12</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-4" title="Métro ligne 4">4</span><span class="plus">+</span><span class="metro-badge metro-6" title="Métro ligne 6">6</span></span></span>
+            </div>
+            <div class="clue-line">
+              <span class="clue-step"><span class="group"><span class="metro-badge metro-3" title="Métro ligne 3">3</span><span class="plus">+</span><span class="metro-badge metro-11" title="Métro ligne 11">11</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-3" title="Métro ligne 3">3</span><span class="plus">+</span><span class="metro-badge metro-5" title="Métro ligne 5">5</span><span class="plus">+</span><span class="metro-badge metro-8" title="Métro ligne 8">8</span><span class="plus">+</span><span class="metro-badge metro-9" title="Métro ligne 9">9</span><span class="plus">+</span><span class="metro-badge metro-11" title="Métro ligne 11">11</span></span></span>
+              <span class="clue-step"><span class="arrow" aria-hidden="true">→</span><span class="group"><span class="metro-badge metro-1" title="Métro ligne 1">1</span><span class="plus">+</span><span class="metro-badge metro-5" title="Métro ligne 5">5</span><span class="plus">+</span><span class="metro-badge metro-8" title="Métro ligne 8">8</span></span></span>
+            </div>
+          </div>
+          <button type="submit" class="submit">Déverrouiller</button>
+          <p class="error" id="error" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="panel revealed" id="unlocked" hidden>
+        <p class="eyebrow">Document / 02</p>
+        <h1>Message retrouvé.</h1>
+        <div class="message" id="message">
+          <p class="result-intro">Bravo ! Vous avez résolu la 1ère étape de la journée. Piste suivante :</p>
+          <article class="press-card">
+            <div class="press-label">Édition spéciale</div>
+            <h2 class="press-title">À Paris, l’ombre de mystérieuses disparitions plane sur l’abattoir de Voltaire</h2>
+            <div class="press-meta">Paris — Enquête locale</div>
+            <p>Depuis plusieurs semaines, plusieurs disparitions jugées troublantes alimentent les investigations des services de police parisiens. Malgré de nombreux recoupements, aucune avancée décisive n’a pour l’instant permis d’éclaircir ces affaires, qui entretiennent un climat d’inquiétude dans plusieurs quartiers de la capitale.</p>
+            <p>Selon différentes sources proches du dossier, l’attention des enquêteurs se porterait désormais vers l’abattoir de Voltaire, un site abandonné aussi discret qu’inquiétant. Longtemps délaissé, le lieu attire aujourd’hui les regards en raison de témoignages concordants et d’éléments relevés sur place au cours des dernières semaines.</p>
+            <p>Les soupçons se sont renforcés après la découverte de plusieurs sacs portant la mention « Cadaveroo », retrouvés à l’intérieur ou à proximité immédiate du bâtiment. Si la nature exacte de ces objets n’a pas été officiellement commentée, leur présence aurait suffi à relancer certaines vérifications et à renforcer la surveillance autour du secteur.</p>
+            <p>À ce stade, les autorités ne confirment aucun lien formel entre ces découvertes et les disparitions en cours d’examen. Mais pour les riverains comme pour les observateurs du dossier, l’abattoir de Voltaire s’impose désormais comme l’un des points les plus obscurs d’une enquête qui, semaine après semaine, semble gagner en étrangeté.</p>
+          </article>
+          <div class="follow-up">
+            <p>Rendez-vous à 11h40 maximum en G5 et plus précisément là :</p>
+            <div class="map-block"><img src="data:image/png;base64,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" alt="Repère de localisation marqué par une croix rouge"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      // ==========================================
+      // À PERSONNALISER AVANT DE PUBLIER SUR GITHUB
+      // ==========================================
+      const CODE_SECRET = '121';  // Code à trois chiffres de l'énigme.
+      // ==========================================
+
+      const inputs = Array.from(document.querySelectorAll('.digit'));
+      const form = document.getElementById('codeForm');
+      const digits = document.getElementById('digits');
+      const error = document.getElementById('error');
+
+      const currentCode = () => inputs.map(input => input.value).join('');
+      const clearError = () => { error.textContent = ''; digits.classList.remove('shake'); };
+
+      inputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+          // Accepte uniquement 0-9. Gère aussi le collage de plusieurs chiffres.
+          const parsed = input.value.replace(/\D/g, '');
+          if (parsed.length > 1) {
+            [...parsed].slice(0, 3 - index).forEach((num, offset) => {
+              inputs[index + offset].value = num;
+            });
+            inputs[Math.min(2, index + parsed.length - 1)].focus();
+          } else {
+            input.value = parsed;
+            if (parsed && index < 2) inputs[index + 1].focus();
+          }
+          clearError();
+        });
+        input.addEventListener('keydown', event => {
+          if (event.key === 'Backspace' && !input.value && index > 0) {
+            inputs[index - 1].value = '';
+            inputs[index - 1].focus();
+            clearError();
+          }
+          if (event.key === 'ArrowLeft' && index > 0) {
+            event.preventDefault(); inputs[index - 1].focus();
+          }
+          if (event.key === 'ArrowRight' && index < 2) {
+            event.preventDefault(); inputs[index + 1].focus();
+          }
+        });
+        input.addEventListener('paste', event => {
+          const content = event.clipboardData?.getData('text') ?? '';
+          const numbers = content.replace(/\D/g, '');
+          if (!numbers) return;
+          event.preventDefault();
+          [...numbers].slice(0, 3 - index).forEach((num, offset) => {
+            inputs[index + offset].value = num;
+          });
+          inputs[Math.min(2, index + numbers.length - 1)].focus();
+          clearError();
+        });
+      });
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        clearError();
+        const entered = currentCode();
+        if (entered.length !== 3) {
+          error.textContent = 'Saisissez les trois chiffres.';
+          (inputs.find(input => !input.value) ?? inputs[0]).focus();
+          return;
+        }
+        if (entered !== CODE_SECRET) {
+          error.textContent = 'Code incorrect.';
+          // Relance l'animation même après plusieurs erreurs.
+          void digits.offsetWidth;
+          digits.classList.add('shake');
+          inputs.forEach(input => { input.value = ''; });
+          inputs[0].focus();
+          return;
+        }
+        document.activeElement?.blur();
+        document.getElementById('locked').hidden = true;
+        document.getElementById('unlocked').hidden = false;
+        document.querySelector('.wrap').classList.add('show-result');
+        document.title = 'La dernière trace — Message retrouvé';
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        // Confirme la position après le recalcul de la mise en page.
+        requestAnimationFrame(() => window.scrollTo(0, 0));
+      });
+    })();
+  </script>
+</body>
+</html>
